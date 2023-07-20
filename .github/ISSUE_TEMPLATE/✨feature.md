@@ -1,19 +1,9 @@
 ---
-name: "✨FEATURE"
+name: '✨FEATURE'
 about: Suggest an idea for this project
-title: "[✨FEATURE]"
-labels: ''
+title: '[FEATURE] 작업 내용'
+labels: '✨feature'
 assignees: ''
-
----
-
----
-name: "✨FEATURE"
-about: Suggest an idea for this project
-title: "[FEATURE] 작업 내용"
-labels: "✨feature"
-assignees: ''
-
 ---
 
 ## 🌳 작업 브랜치
@@ -23,7 +13,6 @@ assignees: ''
 `type/#issueNum`
 
 ## 📝 TASK 개요
-
 
 ## ✅ TO DO 및 진행현황
 
