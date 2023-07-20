@@ -3,11 +3,7 @@
 		"browser": true,
 		"es2021": true
 	},
-	"extends": [
-		"plugin:react/recommended",
-		"plugin:@typescript-eslint/recommended",
-		"plugin:prettier/recommended"
-	],
+	"extends": ["plugin:react/recommended", "plugin:@typescript-eslint/recommended", "plugin:prettier/recommended"],
 	"overrides": [],
 	"parser": "@typescript-eslint/parser",
 	"parserOptions": {
@@ -16,7 +12,7 @@
 	},
 	"plugins": ["react", "@typescript-eslint", "react-hooks"],
 	"rules": {
-		"prettier/prettier": ["error", { "singleQuote": true, "parser": "flow" }],
+		"prettier/prettier": ["error", { "singleQuote": true, "parser": "flow", "endOfLine": "auto" }],
 		"react/react-in-jsx-scope": "off",
 		"react/jsx-filename-extension": ["warn", { "extensions": [".tsx"] }],
 		"import/extensions": "off",
