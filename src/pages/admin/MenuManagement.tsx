@@ -1,9 +1,10 @@
 import React from 'react';
+import Header from '../../components/MenuManagement/Header';
 
 function MenuManagement() {
 	return (
 		<div>
-			<h1>메뉴 관리</h1>
+			<Header />
 		</div>
 	);
 }
