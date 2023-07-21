@@ -9,10 +9,14 @@ import Waiting from './pages/user/Waiting';
 import MenuManagement from './pages/admin/MenuManagement';
 import OrderCheck from './pages/user/OrderCheck';
 import NotFound from './pages/NotFound';
+import { ThemeProvider } from 'styled-components';
+import { defaultTheme, darkTheme } from './style/theme';
+import { GlobalStyles } from './style/global';
 
 function App() {
 	return (
-		<div className="App">
+		<ThemeProvider theme={defaultTheme}>
+			<GlobalStyles />
 			<BrowserRouter>
 				<Routes>
 					<Route path="/home/*" element={<Home />} />
@@ -27,7 +31,7 @@ function App() {
 					<Route path="/admin/waiting" element={<WaitingManagement />} />
 				</Routes>
 			</BrowserRouter>
-		</div>
+		</ThemeProvider>
 	);
 }
 

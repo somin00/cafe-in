@@ -23,6 +23,6 @@ const Button = styled.button`
 	width: 200px;
 	height: 60px;
 	font-size: 20px;
-	background-color: #fafad2;
+	background-color: ${({ theme }) => theme.lightColor?.blue.background};
 	margin: 10px;
 `;
