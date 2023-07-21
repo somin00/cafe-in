@@ -10,7 +10,7 @@ function Home() {
 			<h1>Home</h1>
 			<div className="button">
 				<Button onClick={() => navigate('/menu')}>메뉴 주문 클릭 🎈 </Button>
-				<Button onClick={() => navigate('/admin/main')}>관리자 메뉴 클릭 ✨</Button>
+				<Button onClick={() => navigate('/admin/main')}>관리자 메뉴 클릭✨</Button>
 				<Button onClick={() => navigate('/waiting')}>대기 신청 클릭 💙</Button>
 			</div>
 		</div>
