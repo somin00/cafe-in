@@ -25,7 +25,6 @@ const WaitingItemWrapper = styled.tr`
 	height: 72px;
 	border-radius: 10px;
 	display: flex;
-	/* justify-content: space-between; */
 	align-items: center;
 	padding-left: 40px;
 	padding-right: 30px;

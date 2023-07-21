@@ -154,7 +154,6 @@ const TableHeader = styled.tr`
 	font-weight: ${({ theme }) => theme.fontWeight.semibold};
 	border-radius: 15px;
 	display: flex;
-	/* justify-content: space-around; */
 	align-items: center;
 	margin: 0 32px 15px 32px;
 	padding-left: 32px;
