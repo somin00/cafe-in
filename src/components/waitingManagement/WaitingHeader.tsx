@@ -4,7 +4,9 @@ import { styled } from 'styled-components';
 function WaitingHeader() {
 	return (
 		<WaitingHeaderWrapper>
-			<img src={process.env.PUBLIC_URL + '/assets/admin/back_light.svg'} alt="뒤로가기 버튼" />
+			<button>
+				<img src={process.env.PUBLIC_URL + '/assets/admin/back_light.svg'} alt="뒤로가기 버튼" />
+			</button>
 			<HeaderTitle>대기 관리</HeaderTitle>
 		</WaitingHeaderWrapper>
 	);

@@ -62,6 +62,7 @@ const WaitingManagementWrapper = styled.div`
 	width: 1194px;
 	height: 834px;
 	background-color: ${({ theme }) => theme.textColor.white};
+	user-select: none;
 `;
 
 const WaitingTableWrapper = styled.div`
