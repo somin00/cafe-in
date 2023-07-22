@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-export const Head = styled.header`
+export const HeadWrapper = styled.header`
 	height: 80px;
 	display: flex;
 	align-items: center;
@@ -10,7 +10,14 @@ export const Head = styled.header`
 		font-weight: ${({ theme }) => theme.fontWeight.semibold};
 		margin: 0 227px 0 449px;
 	}
+`;
 
+export const ImageContainer = styled.button`
+	margin-left: 33px;
+	width: 60px;
+`;
+
+export const ButtonContainer = styled.div`
 	button {
 		width: 140px;
 		height: 56px;
@@ -22,9 +29,4 @@ export const Head = styled.header`
 			margin-right: 6px;
 		}
 	}
-`;
-
-export const ImageContainer = styled.div`
-	margin-left: 33px;
-	width: 60px;
 `;
