@@ -1,6 +1,28 @@
+import React from 'react';
 import styled from 'styled-components';
 
-export const Nav = styled.nav`
+function CategoryList() {
+	return (
+		<NavWrapper>
+			<ul>
+				<li>
+					<button>커피</button>
+				</li>
+				<li>
+					<button>음료</button>
+				</li>
+				<li>
+					<button>티</button>
+				</li>
+			</ul>
+		</NavWrapper>
+	);
+}
+
+export default CategoryList;
+
+export const NavWrapper = styled.nav`
+	background-color: ${({ theme }) => theme.textColor.white};
 	height: 60px;
 	ul {
 		margin-left: 50px;
