@@ -2,12 +2,12 @@ import React from 'react';
 import MenuItem from '../../components/MenuItem';
 import SeletedItemContainer from '../../components/SeletedItemContainer';
 import { styled } from 'styled-components';
+import MenuListHeader from '../../components/MenuListHeader';
+
 function MenuList() {
 	return (
 		<Layout>
-			<div>
-				<h1>메뉴 주문</h1>
-			</div>
+			<MenuListHeader />
 			<Main>
 				<MenuItem />
 				<SeletedItemContainer />
@@ -17,12 +17,13 @@ function MenuList() {
 }
 
 const Layout = styled.div`
-	background-color: aliceblue;
+	background-color: ${({ theme }) => theme.textColor.lightgray};
 	width: 1194px;
+	height: 834px;
 `;
 const Main = styled.div`
 	display: flex;
 	justify-content: space-between;
-	padding: 15px;
 `;
+
 export default MenuList;

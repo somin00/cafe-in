@@ -3,7 +3,7 @@ import { styled } from 'styled-components';
 
 function SeletedItemContainer() {
 	return (
-		<div>
+		<Background>
 			<Layout>
 				<MenuSeletedContainer>
 					<SeletedItem>
@@ -42,44 +42,8 @@ function SeletedItemContainer() {
 							<button className="delete">x</button>
 						</div>
 					</SeletedItem>
-					<SeletedItem>
-						<p>아메리카노</p>
-						<div className="counter">
-							<button className="minus">-</button>
-							<p>x1</p>
-							<button className="plus">+</button>
-						</div>
-						<div className="price">
-							<p>4,500원</p>
-							<button className="delete">x</button>
-						</div>
-					</SeletedItem>{' '}
-					<SeletedItem>
-						<p>아메리카노</p>
-						<div className="counter">
-							<button className="minus">-</button>
-							<p>x1</p>
-							<button className="plus">+</button>
-						</div>
-						<div className="price">
-							<p>4,500원</p>
-							<button className="delete">x</button>
-						</div>
-					</SeletedItem>{' '}
-					<SeletedItem>
-						<p>아메리카노</p>
-						<div className="counter">
-							<button className="minus">-</button>
-							<p>x1</p>
-							<button className="plus">+</button>
-						</div>
-						<div className="price">
-							<p>4,500원</p>
-							<button className="delete">x</button>
-						</div>
-					</SeletedItem>
 				</MenuSeletedContainer>
-				<div className="pay-container">
+				<PayContainer>
 					<TotalPrice>
 						<p>총 결제 금액</p>
 						<p className="total-price">14,500원</p>
@@ -91,12 +55,15 @@ function SeletedItemContainer() {
 					<OrderBtn>
 						<p>주문하기</p>
 					</OrderBtn>
-				</div>
+				</PayContainer>
 			</Layout>
-		</div>
+		</Background>
 	);
 }
-
+const Background = styled.div`
+	background-color: ${({ theme }) => theme.textColor.white};
+	padding: 10px;
+`;
 const Layout = styled.div`
 	width: 381px;
 	display: flex;
@@ -106,8 +73,16 @@ const Layout = styled.div`
 const MenuSeletedContainer = styled.ul`
 	display: flex;
 	flex-direction: column;
-	padding: 15px 0;
+	height: 440px;
 	background-color: ${({ theme }) => theme.lightColor?.yellow.background};
+	border-radius: 10px;
+	overflow-y: auto;
+
+	&::-webkit-scrollbar {
+		display: none;
+	}
+	/* Firefox */
+	scrollbar-width: none;
 `;
 const SeletedItem = styled.li`
 	display: flex;
@@ -153,6 +128,9 @@ const SeletedItem = styled.li`
 		}
 	}
 `;
+const PayContainer = styled.div`
+	flex: 0.3;
+`;
 
 const TotalPrice = styled.div`
 	position: relative;
@@ -171,10 +149,11 @@ const TotalPrice = styled.div`
 		bottom: 15px;
 	}
 `;
-const AllDeleteBtn = styled.div`
+const AllDeleteBtn = styled.button`
 	display: flex;
 	justify-content: center;
 	margin-top: 20px;
+	width: 100%;
 	padding: 15px;
 	border: 1px solid ${({ theme }) => theme.textColor.darkgray};
 	color: ${({ theme }) => theme.textColor.darkgray};
@@ -185,8 +164,9 @@ const AllDeleteBtn = styled.div`
 		padding-right: 10px;
 	}
 `;
-const OrderBtn = styled.div`
+const OrderBtn = styled.button`
 	display: flex;
+	width: 100%;
 	justify-content: center;
 	border-radius: 10px;
 	margin-top: 13px;
