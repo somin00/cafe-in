@@ -14,8 +14,8 @@ function Waiting() {
 					<img src={process.env.PUBLIC_URL + '/assets/user/plusIcon_light.svg'} alt="1 더하기 버튼" />
 				</NumCheckBox>
 				<InputBoxWrapper>
-					<InputBox>이름을 입력해주세요.</InputBox>
-					<InputBox>전화 번호를 입력해주세요.</InputBox>
+					<InputBox type="text" placeholder="이름을 입력해주세요." />
+					<InputBox type="tel" placeholder="전화 번호를 입력해주세요." />
 				</InputBoxWrapper>
 				<ApplicationButtnoWrapper>
 					<ApplicationBtn>신청</ApplicationBtn>
@@ -49,6 +49,10 @@ const WaitingHeaderText = styled.h1`
 	align-items: center;
 	font-weight: ${({ theme }) => theme.fontWeight.semibold};
 	font-size: ${({ theme }) => theme.fontSize['5xl']};
+
+	p {
+		margin-top: 5px;
+	}
 `;
 
 const ApplicationBox = styled.div`
@@ -73,20 +77,35 @@ const ApplicationHeaderText = styled.h2`
 const NumCheckBox = styled.div`
 	width: 327px;
 	height: 96px;
-	background-color: #8c8c;
 	font-size: ${({ theme }) => theme.fontSize['6xl']};
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding-left: 16px;
+	padding-right: 16px;
+
+	img {
+		margin-bottom: 16px;
+	}
 `;
 
 const InputBoxWrapper = styled.div`
 	width: 400px;
 `;
-const InputBox = styled.div`
+const InputBox = styled.input`
 	width: 400px;
 	height: 70px;
 	border-radius: 10px;
 	background-color: ${({ theme }) => theme.textColor.lightbrown};
 	margin-bottom: 26px;
 	font-size: ${({ theme }) => theme.fontSize['2xl']};
+	border: none;
+	padding-left: 15px;
+
+	::placeholder {
+		color: ${({ theme }) => theme.textColor.darkgray};
+		font-size: ${({ theme }) => theme.fontSize['2xl']};
+	}
 `;
 
 const ApplicationButtnoWrapper = styled.div`
@@ -94,7 +113,6 @@ const ApplicationButtnoWrapper = styled.div`
 	height: 64px;
 	display: flex;
 	justify-content: space-between;
-	background-color: aquamarine;
 	margin-bottom: 20px;
 `;
 
@@ -105,4 +123,6 @@ const ApplicationBtn = styled.button`
 	color: ${({ theme }) => theme.textColor.white};
 
 	background-color: ${({ theme }) => theme.textColor.darkbrown};
+	font-size: ${({ theme }) => theme.fontSize['2xl']};
+	font-weight: ${({ theme }) => theme.fontWeight.semibold};
 `;
