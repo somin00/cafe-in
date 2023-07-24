@@ -14,11 +14,11 @@ const WaitingManagement = () => {
 			<WaitingTableWrapper>
 				<TableMenu>
 					<ListWrapper>
-						<WaitingList>
+						<WaitingList role="button" tabIndex={0} aria-label="대기 중 명단 선택하기">
 							<img src={process.env.PUBLIC_URL + '/assets/admin/check-able_light.svg'} alt="선택된 체크 버튼" />
 							대기 중 명단
 						</WaitingList>
-						<WaitedList>
+						<WaitedList role="button" tabIndex={0} aria-label="대기 완료 명단 선택하기">
 							<img
 								src={process.env.PUBLIC_URL + '/assets/admin/check-disable_light.svg'}
 								alt="선택되지 않은 체크 버튼"
