@@ -69,11 +69,16 @@ const ImageContainer = styled.div`
 	label {
 		font-size: ${({ theme }) => theme.fontSize['2xl']};
 		font-weight: ${({ theme }) => theme.fontWeight.regular};
+		color: ${({ theme }) => (theme.lightColor ? theme.textColor.black : theme.textColor.white)};
 		cursor: pointer;
 	}
 
 	input {
-		display: none;
+		position: absolute;
+		width: 1px;
+		height: 1px;
+		overflow: hidden;
+		clip-path: polygon(0 0, 0 0, 0 0);
 	}
 `;
 
@@ -92,6 +97,7 @@ const InputList = styled.ul`
 		text-align: right;
 		font-size: ${({ theme }) => theme.fontSize['3xl']};
 		font-weight: ${({ theme }) => theme.fontWeight.regular};
+		color: ${({ theme }) => (theme.lightColor ? theme.textColor.black : theme.textColor.white)};
 		margin-right: 8px;
 	}
 
@@ -116,6 +122,8 @@ const InventoryButton = styled.button`
 	}
 
 	&.is-selected {
-		background-color: ${({ theme }) => theme.lightColor?.yellow.main};
+		/* 색상 코드 추가되면 수정 */
+		background-color: ${({ theme }) => (theme.lightColor ? theme.lightColor?.yellow.main : '#068FFF')};
+		color: ${({ theme }) => (theme.lightColor ? theme.textColor.black : theme.textColor.white)};
 	}
 `;

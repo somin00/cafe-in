@@ -4,7 +4,7 @@ function Header() {
 	return (
 		<HeadWrapper>
 			<ImageContainer>
-				<img src="/assets/admin/back_light.svg" alt="뒤로가기" />
+				<img alt="뒤로가기" />
 			</ImageContainer>
 			<h1>메뉴관리</h1>
 			<ButtonContainer>
@@ -18,7 +18,8 @@ function Header() {
 export default Header;
 
 const HeadWrapper = styled.header`
-	background-color: ${({ theme }) => theme.textColor.white};
+	/* 색상 코드 추가되면 수정 */
+	background-color: ${({ theme }) => (theme.lightColor ? theme.textColor.white : '#222222')};
 	height: 80px;
 	display: flex;
 	align-items: center;
@@ -26,6 +27,7 @@ const HeadWrapper = styled.header`
 	h1 {
 		font-size: ${({ theme }) => theme.fontSize['4xl']};
 		font-weight: ${({ theme }) => theme.fontWeight.semibold};
+		color: ${({ theme }) => (theme.lightColor ? theme.textColor.black : theme.textColor.white)};
 		margin: 0 227px 0 449px;
 	}
 `;
@@ -33,16 +35,20 @@ const HeadWrapper = styled.header`
 const ImageContainer = styled.button`
 	margin-left: 33px;
 	width: 60px;
+	img {
+		content: ${({ theme }) =>
+			theme.lightColor ? 'url(/assets/admin/back_light.svg)' : 'url(/assets/admin/back_dark.svg)'};
+	}
 `;
 
 const ButtonContainer = styled.div`
 	button {
 		width: 140px;
 		height: 56px;
-		background-color: ${({ theme }) => theme.lightColor?.yellow.point};
+		background-color: ${({ theme }) => (theme.lightColor ? theme.lightColor?.yellow.point : theme.textColor.white)};
 		border-radius: 10px;
 		font-size: ${({ theme }) => theme.fontSize['xl']};
-		color: ${({ theme }) => theme.textColor.white};
+		color: ${({ theme }) => (theme.lightColor ? theme.textColor.white : theme.textColor.black)};
 		&:first-child {
 			margin-right: 6px;
 		}

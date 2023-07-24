@@ -5,14 +5,14 @@ function CategoryList() {
 	return (
 		<NavWrapper>
 			<ul>
-				<li>
-					<button>커피</button>
+				<li className="is-selected">
+					<button type="button">커피</button>
 				</li>
 				<li>
-					<button>음료</button>
+					<button type="button">음료</button>
 				</li>
 				<li>
-					<button>티</button>
+					<button type="button">티</button>
 				</li>
 			</ul>
 		</NavWrapper>
@@ -22,7 +22,8 @@ function CategoryList() {
 export default CategoryList;
 
 export const NavWrapper = styled.nav`
-	background-color: ${({ theme }) => theme.textColor.white};
+	/* 색상 코드 추가되면 수정 */
+	background-color: ${({ theme }) => (theme.lightColor ? theme.textColor.white : '#222222')};
 	height: 60px;
 	ul {
 		margin-left: 50px;
@@ -30,16 +31,18 @@ export const NavWrapper = styled.nav`
 		align-items: center;
 	}
 
-	/* 선택된 카테고리만 이 스타일 사용할 것 */
-	li:first-child {
-		color: ${({ theme }) => theme.lightColor?.yellow.sub};
-		font-weight: ${({ theme }) => theme.fontWeight.semibold};
-	}
-
 	button {
 		font-size: ${({ theme }) => theme.fontSize['4xl']};
+		color: ${({ theme }) => (theme.lightColor ? theme.textColor.black : theme.textColor.white)};
 		width: 123px;
 		height: 60px;
 		margin-right: 10px;
+	}
+
+	/* 선택된 카테고리만 이 스타일 사용할 것 is-selected 클래스 사용*/
+	li.is-selected button {
+		/* 색상 코드 추가되면 수정 */
+		color: ${({ theme }) => (theme.lightColor ? theme.lightColor?.yellow.sub : '#068FFF')};
+		font-weight: ${({ theme }) => theme.fontWeight.semibold};
 	}
 `;

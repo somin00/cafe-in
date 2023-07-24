@@ -32,7 +32,8 @@ const CategoryItemWrapper = styled.li`
 	button {
 		width: 83px;
 		height: 57px;
-		background-color: ${({ theme }) => theme.lightColor?.yellow.main};
+		/* 색상 코드 추가되면 수정 */
+		background-color: ${({ theme }) => (theme.lightColor ? theme.lightColor?.yellow.main : '#068FFF')};
 		color: ${({ theme }) => theme.textColor.white};
 		border-radius: 10px;
 		font-size: ${({ theme }) => theme.fontSize['2xl']};

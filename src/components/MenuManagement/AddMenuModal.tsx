@@ -21,7 +21,7 @@ const AddModalWrapper = styled.div`
 	align-items: center;
 	width: 896px;
 	height: 586px;
-	background-color: ${({ theme }) => theme.lightColor?.yellow.background};
+	background-color: ${({ theme }) => (theme.lightColor ? theme.lightColor?.yellow.background : theme.textColor.black)};
 	padding-top: 58px;
 	border-radius: 10px;
 `;
@@ -29,11 +29,12 @@ const AddModalWrapper = styled.div`
 const Button = styled.button`
 	width: 146px;
 	height: 57px;
-	background-color: ${({ theme }) => theme.lightColor?.yellow.sub};
 	border-radius: 10px;
 	font-size: ${({ theme }) => theme.fontSize['3xl']};
 	font-weight: ${({ theme }) => theme.fontWeight.regular};
 	color: ${({ theme }) => theme.textColor.white};
+	/* 색상 코드 추가되면 수정 */
+	background-color: ${({ theme }) => (theme.lightColor ? theme.lightColor?.yellow.sub : '#068FFF')};
 
 	&:first-child {
 		margin-right: 24px;

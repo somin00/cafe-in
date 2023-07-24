@@ -24,7 +24,7 @@ export default CategoryManagementModal;
 const CategoryManagementWrapper = styled.div`
 	width: 492px;
 	height: 758px;
-	background-color: ${({ theme }) => theme.lightColor?.yellow.background};
+	background-color: ${({ theme }) => (theme.lightColor ? theme.lightColor?.yellow.background : theme.textColor.black)};
 	border-radius: 10px;
 	display: flex;
 	flex-direction: column;
@@ -57,7 +57,8 @@ const AddContainer = styled.div`
 	button {
 		width: 97px;
 		height: 66px;
-		background-color: ${({ theme }) => theme.lightColor?.yellow.main};
+		/* 색상 코드 추가되면 수정 */
+		background-color: ${({ theme }) => (theme.lightColor ? theme.lightColor?.yellow.main : '#068FFF')};
 		color: ${({ theme }) => theme.textColor.white};
 		border-radius: 10px;
 		font-size: ${({ theme }) => theme.fontSize['3xl']};
@@ -71,7 +72,8 @@ const ButtonContainer = styled.div`
 	button {
 		width: 146px;
 		height: 57px;
-		background-color: ${({ theme }) => theme.lightColor?.yellow.main};
+		/* 색상 코드 추가되면 수정 */
+		background-color: ${({ theme }) => (theme.lightColor ? theme.lightColor?.yellow.main : '#068FFF')};
 		color: ${({ theme }) => theme.textColor.white};
 		border-radius: 10px;
 		font-size: ${({ theme }) => theme.fontSize['3xl']};

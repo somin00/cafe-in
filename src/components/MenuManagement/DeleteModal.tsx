@@ -18,16 +18,18 @@ export default DeleteModal;
 const DeleteModalWrapper = styled.div`
 	width: 896px;
 	height: 586px;
-	background-color: ${({ theme }) => theme.textColor.white};
+	background-color: ${({ theme }) => (theme.lightColor ? theme.textColor.white : theme.textColor.black)};
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
 	align-items: center;
+	border-radius: 10px;
 
 	p {
 		font-size: ${({ theme }) => theme.fontSize['3xl']};
 		font-weight: ${({ theme }) => theme.fontWeight.regular};
 		margin-bottom: 53px;
+		color: ${({ theme }) => (theme.lightColor ? theme.textColor.black : theme.textColor.white)};
 	}
 
 	button {
@@ -36,7 +38,8 @@ const DeleteModalWrapper = styled.div`
 		font-size: ${({ theme }) => theme.fontSize['3xl']};
 		font-weight: ${({ theme }) => theme.fontWeight.regular};
 		color: ${({ theme }) => theme.textColor.white};
-		background-color: ${({ theme }) => theme.lightColor?.yellow.sub};
+		/* 색상 코드 추가되면 수정 */
+		background-color: ${({ theme }) => (theme.lightColor ? theme.lightColor?.yellow.sub : '#068FFF')};
 		border-radius: 10px;
 
 		&:first-child {
