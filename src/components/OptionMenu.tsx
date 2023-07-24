@@ -29,6 +29,24 @@ function OptionMenu({ onClickToggleModal }: ModalDefaultType) {
 	const handleOptionClick = (e: React.MouseEvent, option: Option) => {
 		e.preventDefault();
 
+		// 카테고리별로 선택되어 있는 옵션 개수를 확인
+		const selectedInCategory = selectedOptions.filter((selectedOption) => selectedOption.category === option.category);
+		// 음료선택 카테고리의 선택 제한 로직
+		if (option.category === '음료선택') {
+			if (selectedInCategory.length >= 1) {
+				// 선택된 옵션을 취소하고 새로운 옵션을 선택
+				setSelectedOptions((oldSelectedOptions) =>
+					oldSelectedOptions.filter((selectedOption) => selectedOption.category !== option.category).concat(option),
+				);
+				setActiveOptions((oldActiveOptions) =>
+					oldActiveOptions
+						.filter((activeOption) => !selectedInCategory.map((o) => o.name).includes(activeOption))
+						.concat(option.name),
+				);
+				return;
+			}
+		}
+
 		if (activeOptions.includes(option.name)) {
 			setActiveOptions((oldActiveOptions) => oldActiveOptions.filter((activeOption) => activeOption !== option.name));
 			setSelectedOptions((oldSelectedOptions) =>

@@ -1,58 +1,73 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { styled } from 'styled-components';
 
 function SeletedItemContainer() {
+	const navigate = useNavigate();
+	const [selectedItems, setSelectedItems] = useState([
+		{ name: '아메리카노', count: 1, price: 4500 },
+		{ name: '캬라멜마끼아또', count: 1, price: 5500 },
+		{ name: '카페라떼', count: 1, price: 5000 },
+	]);
+	const handleItemDelete = (itemName: string) => {
+		setSelectedItems((prevItems) => prevItems.filter((item) => item.name !== itemName));
+	};
+
+	const handleIncreaseCount = (itemName: string) => {
+		setSelectedItems((prevItems) =>
+			prevItems.map((item) => (item.name === itemName ? { ...item, count: item.count + 1 } : item)),
+		);
+	};
+
+	const handleDecreaseCount = (itemName: string) => {
+		setSelectedItems((prevItems) =>
+			prevItems.map((item) => (item.name === itemName && item.count > 1 ? { ...item, count: item.count - 1 } : item)),
+		);
+	};
+
+	const totalPrice = selectedItems.reduce((acc, item) => acc + item.price * item.count, 0);
+
+	const handleDeleteAll = () => {
+		setSelectedItems([]);
+	};
 	return (
 		<Background>
 			<Layout>
 				<MenuSeletedContainer>
-					<SeletedItem>
-						<p>아메리카노</p>
-						<div className="counter">
-							<button className="minus">-</button>
-							<p>x1</p>
-							<button className="plus">+</button>
-						</div>
-						<div className="price">
-							<p>4,500원</p>
-							<button className="delete">x</button>
-						</div>
-					</SeletedItem>
-					<SeletedItem>
-						<p>아메리카노</p>
-						<div className="counter">
-							<button className="minus">-</button>
-							<p>x1</p>
-							<button className="plus">+</button>
-						</div>
-						<div className="price">
-							<p>4,500원</p>
-							<button className="delete">x</button>
-						</div>
-					</SeletedItem>
-					<SeletedItem>
-						<p>아메리카노</p>
-						<div className="counter">
-							<button className="minus">-</button>
-							<p>x1</p>
-							<button className="plus">+</button>
-						</div>
-						<div className="price">
-							<p>4,500원</p>
-							<button className="delete">x</button>
-						</div>
-					</SeletedItem>
+					{selectedItems.map((item) => (
+						<SeletedItem key={item.name}>
+							<p>{item.name}</p>
+							<div className="counter">
+								<button
+									className={item.count > 1 ? 'minus active' : 'minus'}
+									onClick={() => handleDecreaseCount(item.name)}
+								>
+									-
+								</button>
+								<p>x{item.count}</p>
+								<button className="plus" onClick={() => handleIncreaseCount(item.name)}>
+									+
+								</button>
+							</div>
+							<div className="price">
+								<p>{(item.price * item.count).toLocaleString()}원</p>
+								<button className="delete" onClick={() => handleItemDelete(item.name)}>
+									x
+								</button>
+							</div>
+						</SeletedItem>
+					))}
 				</MenuSeletedContainer>
 				<PayContainer>
 					<TotalPrice>
 						<p>총 결제 금액</p>
-						<p className="total-price">14,500원</p>
+						<p className="total-price">{totalPrice.toLocaleString()}원</p>
 					</TotalPrice>
-					<AllDeleteBtn>
+					<AllDeleteBtn onClick={handleDeleteAll}>
 						<img src="/assets/user/AllDeleteBtn.svg" alt="전체삭제" />
 						<p>전체삭제</p>
 					</AllDeleteBtn>
-					<OrderBtn>
+					<OrderBtn onClick={() => navigate('/order')}>
 						<p>주문하기</p>
 					</OrderBtn>
 				</PayContainer>
