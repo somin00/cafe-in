@@ -133,20 +133,19 @@ const PayContainer = styled.div`
 `;
 
 const TotalPrice = styled.div`
-	position: relative;
 	margin-top: 20px;
 	height: 100px;
-	padding: 15px;
+	padding: 20px 10px 10px 10px;
 	color: ${({ theme }) => theme.lightColor?.yellow.point};
 	background-color: ${({ theme }) => theme.textColor.lightbrown};
 	font-size: ${({ theme }) => theme.fontSize['2xl']};
 	font-weight: ${({ theme }) => theme.fontWeight.bold};
 	.total-price {
-		position: absolute;
+		float: right;
 		font-size: ${({ theme }) => theme.fontSize['4xl']};
 		color: ${({ theme }) => theme.textColor.black};
 		right: 15px;
-		bottom: 15px;
+		bottom: 500px;
 	}
 `;
 const AllDeleteBtn = styled.button`

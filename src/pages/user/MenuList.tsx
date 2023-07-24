@@ -22,6 +22,7 @@ const Layout = styled.div`
 	height: 834px;
 `;
 const Main = styled.div`
+	position: relative;
 	display: flex;
 	justify-content: space-between;
 `;
