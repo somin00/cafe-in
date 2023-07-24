@@ -1,7 +1,9 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { styled } from 'styled-components';
 
 function Waiting() {
+	const navigate = useNavigate();
 	return (
 		<WaitingWrapper>
 			<WaitingHeaderText>
@@ -10,29 +12,21 @@ function Waiting() {
 			<ApplicationBox>
 				<ApplicationHeaderText>대기를 원하시면 번호를 입력해주세요.</ApplicationHeaderText>
 				<NumCheckBox>
-					<img
-						src={process.env.PUBLIC_URL + '/assets/user/minusIcon_light.svg'}
-						alt="1 빼기 버튼"
-						aria-label="1 빼기"
-						role="button"
-						tabIndex={0}
-					/>
+					<MinusBtn>
+						<img alt="1 빼기 버튼" aria-label="1 빼기" />
+					</MinusBtn>
 					1
-					<img
-						src={process.env.PUBLIC_URL + '/assets/user/plusIcon_light.svg'}
-						alt="1 더하기 버튼"
-						aria-label="1 더하기"
-						role="button"
-						tabIndex={0}
-					/>
+					<PlusBtn>
+						<img alt="1 더하기 버튼" aria-label="1 더하기" />
+					</PlusBtn>
 				</NumCheckBox>
 				<InputBoxWrapper>
 					<InputBox type="text" placeholder="이름을 입력해주세요." required />
 					<InputBox type="tel" placeholder="전화 번호를 입력해주세요." required />
 				</InputBoxWrapper>
 				<ApplicationButtnoWrapper>
-					<ApplicationBtn>신청</ApplicationBtn>
 					<ApplicationBtn>취소</ApplicationBtn>
+					<ApplicationBtn onClick={() => navigate('/waitingcheck')}>신청</ApplicationBtn>
 				</ApplicationButtnoWrapper>
 			</ApplicationBox>
 		</WaitingWrapper>
@@ -44,7 +38,8 @@ export default Waiting;
 const WaitingWrapper = styled.div`
 	width: 1194px;
 	height: 834px;
-	background-color: ${({ theme }) => theme.lightColor?.yellow.background};
+	background-color: ${({ theme }) =>
+		theme.lightColor ? theme.lightColor?.yellow.background : theme.darkColor?.background};
 	user-select: none;
 	display: flex;
 	align-items: center;
@@ -62,6 +57,7 @@ const WaitingHeaderText = styled.h1`
 	align-items: center;
 	font-weight: ${({ theme }) => theme.fontWeight.semibold};
 	font-size: ${({ theme }) => theme.fontSize['5xl']};
+	color: ${({ theme }) => (theme.lightColor ? theme.textColor.black : theme.textColor.white)};
 
 	p {
 		margin-top: 5px;
@@ -73,7 +69,7 @@ const ApplicationBox = styled.div`
 	height: 582px;
 	border-radius: 10px;
 	border: 1px solid ${({ theme }) => theme.textColor.lightgray};
-	background-color: ${({ theme }) => theme.textColor.white};
+	background-color: ${({ theme }) => (theme.lightColor ? theme.textColor.white : theme.darkColor?.background)};
 	display: flex;
 	flex-flow: column nowrap;
 	align-items: center;
@@ -85,6 +81,7 @@ const ApplicationHeaderText = styled.h2`
 	height: 32px;
 	margin-top: 20px;
 	font-size: ${({ theme }) => theme.fontSize['3xl']};
+	color: ${({ theme }) => (theme.lightColor ? theme.textColor.black : theme.textColor.white)};
 `;
 
 const NumCheckBox = styled.div`
@@ -96,9 +93,20 @@ const NumCheckBox = styled.div`
 	align-items: center;
 	padding-left: 16px;
 	padding-right: 16px;
+	color: ${({ theme }) => (theme.lightColor ? theme.textColor.black : theme.textColor.white)};
+`;
 
+const MinusBtn = styled.button`
 	img {
-		margin-bottom: 16px;
+		content: ${({ theme }) =>
+			theme.lightColor ? 'url(/assets/user/minusIcon_disable.svg)' : 'url(/assets/user/minusIcon_disable.svg)'};
+	}
+`;
+
+const PlusBtn = styled.button`
+	img {
+		content: ${({ theme }) =>
+			theme.lightColor ? 'url(/assets/user/plusIcon_light.svg)' : 'url(/assets/user/plusIcon_dark.svg)'};
 	}
 `;
 
@@ -135,7 +143,7 @@ const ApplicationBtn = styled.button`
 	border-radius: 10px;
 	color: ${({ theme }) => theme.textColor.white};
 
-	background-color: ${({ theme }) => theme.textColor.darkbrown};
+	background-color: ${({ theme }) => (theme.lightColor ? theme.textColor.darkbrown : theme.textColor.darkgray)};
 	font-size: ${({ theme }) => theme.fontSize['2xl']};
 	font-weight: ${({ theme }) => theme.fontWeight.semibold};
 `;
