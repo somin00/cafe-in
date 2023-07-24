@@ -23,6 +23,8 @@ const WaitingModalWrapper = styled.div`
 	flex-flow: column nowrap;
 	justify-content: center;
 	align-items: center;
+	background-color: ${({ theme }) => (theme.lightColor ? theme.textColor.white : theme.darkColor?.background)};
+	color: ${({ theme }) => (theme.lightColor ? theme.textColor.black : theme.textColor.white)};
 
 	h1 {
 		font-size: ${({ theme }) => theme.fontSize['3xl']};
@@ -42,7 +44,7 @@ const ModalBtnWrapper = styled.div`
 const ModalBtn = styled.button`
 	width: 110px;
 	height: 65px;
-	background-color: ${({ theme }) => theme.lightColor?.yellow.sub};
+	background-color: ${({ theme }) => (theme.lightColor ? theme.lightColor?.yellow.sub : theme.darkColor?.main)};
 	border-radius: 10px;
 	color: ${({ theme }) => theme.textColor.white};
 	font-size: ${({ theme }) => theme.fontSize['3xl']};
