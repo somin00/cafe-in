@@ -10,12 +10,25 @@ function Waiting() {
 			<ApplicationBox>
 				<ApplicationHeaderText>대기를 원하시면 번호를 입력해주세요.</ApplicationHeaderText>
 				<NumCheckBox>
-					<img src={process.env.PUBLIC_URL + '/assets/user/minusIcon_light.svg'} alt="1 빼기 버튼" />1
-					<img src={process.env.PUBLIC_URL + '/assets/user/plusIcon_light.svg'} alt="1 더하기 버튼" />
+					<img
+						src={process.env.PUBLIC_URL + '/assets/user/minusIcon_light.svg'}
+						alt="1 빼기 버튼"
+						aria-label="1 빼기"
+						role="button"
+						tabIndex={0}
+					/>
+					1
+					<img
+						src={process.env.PUBLIC_URL + '/assets/user/plusIcon_light.svg'}
+						alt="1 더하기 버튼"
+						aria-label="1 더하기"
+						role="button"
+						tabIndex={0}
+					/>
 				</NumCheckBox>
 				<InputBoxWrapper>
-					<InputBox type="text" placeholder="이름을 입력해주세요." />
-					<InputBox type="tel" placeholder="전화 번호를 입력해주세요." />
+					<InputBox type="text" placeholder="이름을 입력해주세요." required />
+					<InputBox type="tel" placeholder="전화 번호를 입력해주세요." required />
 				</InputBoxWrapper>
 				<ApplicationButtnoWrapper>
 					<ApplicationBtn>신청</ApplicationBtn>
