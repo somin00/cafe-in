@@ -28,9 +28,18 @@ function OptionMenu({ onClickToggleModal }: ModalDefaultType) {
 	}, {});
 	const handleOptionClick = (e: React.MouseEvent, option: Option) => {
 		e.preventDefault();
-		setSelectedOptions((oldSelectedOptions: Option[]) => [...oldSelectedOptions, option]);
-		setActiveOptions((oldActiveOptions) => [...oldActiveOptions, option.name]);
+
+		if (activeOptions.includes(option.name)) {
+			setActiveOptions((oldActiveOptions) => oldActiveOptions.filter((activeOption) => activeOption !== option.name));
+			setSelectedOptions((oldSelectedOptions) =>
+				oldSelectedOptions.filter((selectedOption) => selectedOption.name !== option.name),
+			);
+		} else {
+			setSelectedOptions((oldSelectedOptions: Option[]) => [...oldSelectedOptions, option]);
+			setActiveOptions((oldActiveOptions) => [...oldActiveOptions, option.name]);
+		}
 	};
+
 	const handleCloseBtnClick = (e: React.MouseEvent) => {
 		e.stopPropagation();
 		onClickToggleModal();
@@ -125,6 +134,11 @@ const CheckOption = styled.button`
 		padding: 20px;
 	}
 	&:active {
+		background-image: url('/assets/user/check.svg');
+		background-repeat: no-repeat;
+		background-position: center;
+	}
+	&.active {
 		background-image: url('/assets/user/check.svg');
 		background-repeat: no-repeat;
 		background-position: center;
