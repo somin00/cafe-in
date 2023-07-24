@@ -55,9 +55,9 @@ export const defaultTheme: DefaultTheme = {
 
 export const darkTheme: DefaultTheme = {
 	darkColor: {
-		background: '#D1EFFE',
-		main: '#4B9AD3',
-		sub: ' #0070c0',
+		background: '#222222',
+		main: '#068fff',
+		sub: ' #4e4feb',
 		point: '#00b0f0',
 	},
 	textColor: {
