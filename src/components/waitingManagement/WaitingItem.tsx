@@ -20,7 +20,9 @@ function WaitingItem() {
 export default WaitingItem;
 
 const WaitingItemWrapper = styled.tr`
-	background-color: ${({ theme }) => theme.textColor.white};
+	background-color: ${({ theme }) => (theme.lightColor ? theme.textColor.white : theme.darkColor?.background)};
+	color: ${({ theme }) => (theme.lightColor ? theme.textColor.black : theme.textColor.white)};
+	border: ${({ theme }) => (theme.lightColor ? 'none' : `1px solid ${theme.textColor.white}`)};
 	width: 982px;
 	height: 72px;
 	border-radius: 10px;
@@ -51,12 +53,12 @@ const ShortBtn = styled.button`
 	height: 48px;
 	margin-right: 14px;
 	border-radius: 10px;
-	background-color: ${({ theme }) => theme.lightColor?.yellow.sub};
+	background-color: ${({ theme }) => (theme.lightColor ? theme.lightColor?.yellow.sub : theme.darkColor?.main)};
 `;
 
 const LongBtn = styled.button`
 	width: 113px;
 	height: 48px;
 	border-radius: 10px;
-	background-color: ${({ theme }) => theme.lightColor?.yellow.sub};
+	background-color: ${({ theme }) => (theme.lightColor ? theme.lightColor?.yellow.sub : theme.darkColor?.main)};
 `;

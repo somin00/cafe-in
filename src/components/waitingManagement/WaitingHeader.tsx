@@ -4,9 +4,9 @@ import { styled } from 'styled-components';
 function WaitingHeader() {
 	return (
 		<WaitingHeaderWrapper>
-			<button>
-				<img src={process.env.PUBLIC_URL + '/assets/admin/back_light.svg'} alt="뒤로가기 버튼" />
-			</button>
+			<IconWrapper>
+				<img alt="뒤로가기 버튼" />
+			</IconWrapper>
 			<HeaderTitle>대기 관리</HeaderTitle>
 		</WaitingHeaderWrapper>
 	);
@@ -24,7 +24,15 @@ const WaitingHeaderWrapper = styled.div`
 	align-items: center;
 	font-size: ${({ theme }) => theme.fontSize['4xl']};
 	font-weight: ${({ theme }) => theme.fontWeight.semibold};
-	background-color: ${({ theme }) => theme.textColor.white};
+	background-color: ${({ theme }) => (theme.lightColor ? theme.textColor.white : theme.darkColor?.background)};
+	color: ${({ theme }) => (theme.lightColor ? theme.textColor.black : theme.textColor.white)};
+`;
+
+const IconWrapper = styled.button`
+	img {
+		content: ${({ theme }) =>
+			theme.lightColor ? 'url(/assets/admin/back_light.svg)' : ' url(/assets/admin/back_dark.svg)'};
+	}
 `;
 
 const HeaderTitle = styled.h1`
