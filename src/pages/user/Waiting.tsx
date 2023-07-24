@@ -1,7 +1,9 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { styled } from 'styled-components';
 
 function Waiting() {
+	const navigate = useNavigate();
 	return (
 		<WaitingWrapper>
 			<WaitingHeaderText>
@@ -23,8 +25,8 @@ function Waiting() {
 					<InputBox type="tel" placeholder="전화 번호를 입력해주세요." required />
 				</InputBoxWrapper>
 				<ApplicationButtnoWrapper>
-					<ApplicationBtn>신청</ApplicationBtn>
 					<ApplicationBtn>취소</ApplicationBtn>
+					<ApplicationBtn onClick={() => navigate('/waitingcheck')}>신청</ApplicationBtn>
 				</ApplicationButtnoWrapper>
 			</ApplicationBox>
 		</WaitingWrapper>
