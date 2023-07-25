@@ -1,11 +1,13 @@
 import React, { useCallback, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import styled from 'styled-components';
+import styled, { useTheme } from 'styled-components';
 import AddPointModal from '../../components/AddPointModal';
 import UsePointUser from '../../components/UsePointUser';
+import { darkTheme, defaultTheme } from '../../style/theme';
 
 function OrderCheck() {
 	const navigate = useNavigate();
+	const theme = useTheme();
 	const [isOpenAddPointModal, setAddPointModalOpen] = useState<boolean>(false);
 	const [isOpenUsePointUserModal, setUsePointUserModalOpen] = useState<boolean>(false);
 	const onClickToggleAddPointModal = useCallback(() => {
@@ -19,7 +21,11 @@ function OrderCheck() {
 		<Layout>
 			<Header>
 				<BackBTn onClick={() => navigate('/menu')}>
-					<img src="/assets/user/BackBtn.svg" alt="메뉴페이지" />
+					<img
+						className="backBtn"
+						src={theme === defaultTheme ? '/assets/user/BackBtn_light.svg' : '/assets/user/BackBtn_dark.svg'}
+						alt="메뉴페이지"
+					/>
 				</BackBTn>
 				<h1>주문 내역 확인</h1>
 			</Header>
@@ -80,14 +86,17 @@ function OrderCheck() {
 }
 const Layout = styled.div`
 	width: 1194px;
-	height: 834px;
-	overflow-y: hidden;
+	height: 100%;
 	position: relative;
+	background-color: ${({ theme }) => (theme === defaultTheme ? theme.textColor.white : darkTheme.textColor.black)};
+	overflow-y: hidden;
 `;
 const Header = styled.div`
 	display: flex;
 	border-bottom: 1px solid ${({ theme }) => theme.textColor.lightgray};
 	padding: 10px;
+	color: ${({ theme }) => (theme === defaultTheme ? theme.textColor.black : darkTheme.textColor.white)};
+
 	h1 {
 		width: 100%;
 		display: flex;
@@ -100,9 +109,10 @@ const Container = styled.div`
 	display: flex;
 	flex-direction: row;
 	justify-content: space-between;
-	align-items: center;
-	height: 677px;
-	margin: 20px 0;
+	align-items: flex-start;
+	height: 100%;
+	padding: 20px 0;
+	margin: 0 20px;
 `;
 const TableHead = styled.ul`
 	display: flex;
@@ -111,14 +121,16 @@ const TableHead = styled.ul`
 	width: 100%;
 	height: 69px;
 	border-radius: 10px;
-	background-color: ${({ theme }) => theme.textColor.lightgray};
+	background-color: ${({ theme }) =>
+		theme === defaultTheme ? theme.textColor.lightgray : darkTheme.textColor.lightbrown};
 	font-weight: ${({ theme }) => theme.fontWeight.semibold};
 	font-size: ${({ theme }) => theme.fontSize.xl};
 `;
 const Tbody = styled.ul`
-	background-color: ${({ theme }) => theme.lightColor?.yellow.background};
+	background-color: ${({ theme }) => (theme === defaultTheme ? theme.lightColor?.yellow.background : 'none')};
+	border: ${({ theme }) => (theme === darkTheme ? '1px solid darkTheme.textColor.white' : 'none')};
 	border-radius: 10px;
-	height: 100%;
+	height: 650px;
 	display: flex;
 	flex-direction: column;
 	justify-content: flex-start;
@@ -135,7 +147,7 @@ const Tbody = styled.ul`
 const OrderMenuItem = styled.li`
 	display: flex;
 	align-items: center;
-	background-color: ${({ theme }) => theme.textColor.white};
+	background-color: ${({ theme }) => (theme === defaultTheme ? theme.textColor.white : darkTheme.textColor.lightbrown)};
 	margin: 10px 25px;
 	padding: 10px;
 	border-radius: 10px;
@@ -159,7 +171,7 @@ const OrderMenuItem = styled.li`
 const OrderList = styled.div`
 	width: 583px;
 	height: 100%;
-	margin: 0 48px;
+	margin: 0 40px;
 `;
 const BackBTn = styled.button`
 	:active {
@@ -170,6 +182,7 @@ const BackBTn = styled.button`
 const OrderTotalPriceContainer = styled.div`
 	flex-grow: 1;
 	height: 100%;
+	color: ${({ theme }) => (theme === defaultTheme ? theme.textColor.black : darkTheme.textColor.white)};
 `;
 const TotalPrice = styled.div`
 	display: flex;
@@ -177,7 +190,7 @@ const TotalPrice = styled.div`
 	justify-content: space-between;
 	height: 380px;
 	border-bottom: 1px solid ${({ theme }) => theme.textColor.lightgray};
-	margin-top: 40px;
+	margin-top: 10px;
 	padding-bottom: 100px;
 	div {
 		display: flex;
@@ -198,7 +211,8 @@ const Payment = styled.div`
 		justify-content: center;
 		align-items: center;
 		width: 230px;
-		background-color: ${({ theme }) => theme.lightColor?.blue.background};
+		background-color: ${({ theme }) =>
+			theme === defaultTheme ? theme.lightColor?.blue.background : darkTheme.darkColor?.sub};
 		height: 120px;
 		border-radius: 10px;
 		margin-bottom: 40px;
@@ -210,7 +224,8 @@ const Payment = styled.div`
 		justify-content: center;
 		align-items: center;
 		width: 230px;
-		background-color: ${({ theme }) => theme.lightColor?.blue.background};
+		background-color: ${({ theme }) =>
+			theme === defaultTheme ? theme.lightColor?.blue.background : darkTheme.darkColor?.sub};
 		border-radius: 10px;
 
 		img {
@@ -223,7 +238,8 @@ const Payment = styled.div`
 		justify-content: center;
 		align-items: center;
 		width: 230px;
-		background-color: ${({ theme }) => theme.lightColor?.blue.background};
+		background-color: ${({ theme }) =>
+			theme === defaultTheme ? theme.lightColor?.blue.background : darkTheme.darkColor?.sub};
 		height: 120px;
 		border-radius: 10px;
 	}

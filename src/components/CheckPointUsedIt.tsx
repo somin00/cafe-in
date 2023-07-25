@@ -1,11 +1,14 @@
 import React from 'react';
 import { ModalandModalType } from '../state/ModalOpen';
-import { styled } from 'styled-components';
-import { CloseBtn, ModalContainer, PointInput } from './UsePointUser';
+import { styled, useTheme } from 'styled-components';
+import { ModalContainer } from './UsePointUser';
+import { CloseBtn, PointInput } from './AddPointModal';
+import { darkTheme, defaultTheme } from '../style/theme';
 interface CheckPointUsedIt extends ModalandModalType {
 	isOpenModal: boolean;
 }
 function CheckPointUsedIt({ isOpenModal, onClickOpenModal }: CheckPointUsedIt) {
+	const theme = useTheme();
 	const handleCloseBtnClick = (e: React.MouseEvent) => {
 		e.stopPropagation();
 		onClickOpenModal();
@@ -16,15 +19,21 @@ function CheckPointUsedIt({ isOpenModal, onClickOpenModal }: CheckPointUsedIt) {
 				<div className="guide-ment">
 					<p>0 0 0 0 님, </p>
 					<p>사용하실 포인트 입력 해주세요 </p>
-					<img src="/assets/user/yellowcloud_light.svg" alt="" width={95} />
+					<img
+						src={theme === defaultTheme ? '/assets/user/yellowcloud_light.svg' : '/assets/user/pinkcloud_dark.svg'}
+						alt=""
+						width={95}
+					/>
 				</div>
-				<PointInput>
+				<div className="point-check-allBtn">
+					<button>전액</button>
+					<p>잔여 : 3000 point</p>
+				</div>
+				<InputExplain>
 					<label htmlFor="phone-number" hidden />
 					<input type="number" id="phone-number" name="phonnumber" placeholder="숫자만 입력해주세요"></input>
-					<button>
-						<img src="/assets/user/BackBtn.svg" alt="지우기" width={45} />
-					</button>
-				</PointInput>
+					<p>1,000 포인트 이상 사용 가능합니다. </p>
+				</InputExplain>
 				<BtnContainer>
 					<CloseBtn onClick={handleCloseBtnClick}>확인</CloseBtn>
 				</BtnContainer>
@@ -48,7 +57,7 @@ const DialogBox = styled.dialog`
 	flex-direction: column;
 	justify-content: center;
 	align-items: center;
-	background-color: ${({ theme }) => theme.textColor.white};
+	background-color: ${({ theme }) => (theme === defaultTheme ? theme.textColor.white : darkTheme.textColor.black)};
 	border: none;
 	border-radius: 10px;
 	box-sizing: border-box;
@@ -56,8 +65,9 @@ const DialogBox = styled.dialog`
 	.guide-ment {
 		position: relative;
 		text-align: center;
-		font-weight: ${({ theme }) => theme.fontWeight.semibold};
+		font-weight: ${({ theme }) => theme.fontWeight.bold};
 		font-size: ${({ theme }) => theme.fontSize['3xl']};
+		color: ${({ theme }) => (theme === defaultTheme ? theme.textColor.black : darkTheme.textColor.white)};
 		p {
 			padding-top: 10px;
 		}
@@ -68,6 +78,31 @@ const DialogBox = styled.dialog`
 			z-index: -1;
 		}
 	}
+	.point-check-allBtn {
+		display: flex;
+		align-items: end;
+		justify-content: space-between;
+		width: 370px;
+		padding-top: 50px;
+		font-size: ${({ theme }) => theme.fontSize.sm};
+		button {
+			background-color: ${({ theme }) => theme.textColor.lightgray};
+			padding: 5px 20px;
+			border-radius: 10px;
+		}
+		p {
+			color: ${({ theme }) => (theme === defaultTheme ? theme.textColor.black : darkTheme.textColor.lightgray)};
+		}
+	}
 `;
 
+const InputExplain = styled(PointInput)`
+	p {
+		font-size: ${({ theme }) => theme.fontSize.sm};
+		color: ${({ theme }) => theme.textColor.lightgray};
+		display: flex;
+		justify-content: end;
+		margin: 10px 0;
+	}
+`;
 export default CheckPointUsedIt;

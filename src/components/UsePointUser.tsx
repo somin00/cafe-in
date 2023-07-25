@@ -2,6 +2,7 @@ import React, { useCallback, useState } from 'react';
 import { ModalDefaultType } from '../state/ModalOpen';
 import { styled } from 'styled-components';
 import CheckPointUsedIt from './CheckPointUsedIt';
+import { darkTheme, defaultTheme } from '../style/theme';
 
 function UsePointUser({ onClickToggleModal }: ModalDefaultType) {
 	const [isOpenModal, setModalOpen] = useState<boolean>(false);
@@ -20,7 +21,7 @@ function UsePointUser({ onClickToggleModal }: ModalDefaultType) {
 					<label htmlFor="phone-number" hidden />
 					<input type="number" id="phone-number" name="phonnumber" placeholder="숫자만 입력해주세요"></input>
 					<button>
-						<img src="/assets/user/BackBtn.svg" alt="지우기" width={45} />
+						<img src="/assets/user/BackBtn_light.svg" alt="지우기" width={45} />
 					</button>
 				</PointInput>
 				<BtnContainer>
@@ -54,7 +55,7 @@ const DialogBox = styled.dialog`
 	flex-direction: column;
 	justify-content: center;
 	align-items: center;
-	background-color: ${({ theme }) => theme.textColor.white};
+	background-color: ${({ theme }) => (theme === defaultTheme ? theme.textColor.white : darkTheme.textColor.black)};
 	border: none;
 	border-radius: 10px;
 	box-shadow: 0 0 30px rgba(30, 30, 30, 0.185);
@@ -63,16 +64,17 @@ const DialogBox = styled.dialog`
 	p {
 		font-size: ${({ theme }) => theme.fontSize.xl};
 		font-weight: ${({ theme }) => theme.fontWeight.semibold};
-		color: ${({ theme }) => theme.textColor.black};
+		color: ${({ theme }) => (theme === defaultTheme ? theme.textColor.black : darkTheme.textColor.white)};
 	}
 `;
 
-export const PointInput = styled.div`
+const PointInput = styled.div`
 	font-size: ${({ theme }) => theme.fontSize.base};
 	margin-top: 50px;
 	input {
-		background-color: ${({ theme }) => theme.textColor.lightgray};
-		border: 1px solid ${({ theme }) => theme.textColor.lightbrown};
+		background-color: ${({ theme }) =>
+			theme === defaultTheme ? theme.textColor.lightgray : darkTheme.textColor.white};
+		border: 1px solid ${({ theme }) => (theme === defaultTheme ? theme.textColor.lightbrown : 'none')};
 		position: relative;
 		width: 390px;
 		padding: 20px;
@@ -83,8 +85,8 @@ export const PointInput = styled.div`
 		margin-top: 6px;
 		padding: 7px;
 		right: 60px;
-		background-color: ${({ theme }) => theme.textColor.lightgray};
-
+		background-color: ${({ theme }) =>
+			theme === defaultTheme ? theme.textColor.lightgray : darkTheme.textColor.white};
 		border-radius: 10px;
 	}
 	input:focus {
@@ -97,15 +99,15 @@ export const PointInput = styled.div`
 		margin: 0;
 	}
 `;
-export const CloseBtn = styled.button`
+const CloseBtn = styled.button`
 	margin-top: 50px;
 	margin-left: 20px;
 	border-radius: 10px;
-	background-color: ${({ theme }) => theme.textColor.lightgray};
+	background-color: ${({ theme }) => (theme === defaultTheme ? theme.textColor.lightgray : darkTheme.darkColor?.sub)};
 	width: 110px;
 	height: 35px;
 	font-size: ${({ theme }) => theme.fontSize.xl};
-	color: ${({ theme }) => theme.textColor.black};
+	color: ${({ theme }) => (theme === defaultTheme ? theme.textColor.black : darkTheme.textColor.white)};
 `;
 const BtnContainer = styled.div`
 	display: flex;

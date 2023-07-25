@@ -1,9 +1,12 @@
 import React, { useCallback, useState } from 'react';
-import { styled } from 'styled-components';
+import { styled, useTheme } from 'styled-components';
 import { ModalDefaultType } from '../state/ModalOpen';
 import PointAddCheckModal from './PointAddCheckModal';
+import { darkTheme, defaultTheme } from '../style/theme';
+import Dark_PointAddCheckModal from './darkThemeModal/Dark_PointAddCheckModal';
 
 function AddPointModal({ onClickToggleModal }: ModalDefaultType) {
+	const theme = useTheme();
 	const handleCloseBtnClick = (e: React.MouseEvent) => {
 		e.stopPropagation();
 		onClickToggleModal();
@@ -11,10 +14,10 @@ function AddPointModal({ onClickToggleModal }: ModalDefaultType) {
 	const [isOpenModal, setModalOpen] = useState<boolean>(false);
 	const onClickOpenModal = useCallback(() => {
 		setModalOpen(true);
-		setTimeout(() => {
-			setModalOpen(!setModalOpen);
-			onClickToggleModal();
-		}, 2000); // 15 seconds
+		// setTimeout(() => {
+		// 	setModalOpen(!setModalOpen);
+		// 	onClickToggleModal();
+		// }, 2000); // 15 seconds
 	}, [onClickToggleModal]);
 
 	return (
@@ -25,7 +28,7 @@ function AddPointModal({ onClickToggleModal }: ModalDefaultType) {
 					<label htmlFor="phone-number" hidden />
 					<input type="number" id="phone-number" name="phonnumber" placeholder="숫자만 입력해주세요"></input>
 					<button>
-						<img src="/assets/user/BackBtn.svg" alt="지우기" width={45} />
+						<img src="/assets/user/BackBtn_light.svg" alt="지우기" width={45} />
 					</button>
 				</PointInput>
 				<BtnContainer>
@@ -33,7 +36,12 @@ function AddPointModal({ onClickToggleModal }: ModalDefaultType) {
 					<CloseBtn onClick={onClickOpenModal}>적립</CloseBtn>
 				</BtnContainer>
 			</DialogBox>
-			{isOpenModal && <PointAddCheckModal onClickOpenModal={onClickOpenModal} isOpenModal={isOpenModal} />}
+			{isOpenModal &&
+				(theme === defaultTheme ? (
+					<PointAddCheckModal onClickOpenModal={onClickOpenModal} isOpenModal={isOpenModal} />
+				) : (
+					<Dark_PointAddCheckModal onClickOpenModal={onClickOpenModal} isOpenModal={isOpenModal} />
+				))}
 			<Backdrop
 				onClick={(e: React.MouseEvent) => {
 					e.preventDefault();
@@ -48,6 +56,7 @@ function AddPointModal({ onClickToggleModal }: ModalDefaultType) {
 const ModalContainer = styled.div`
 	width: 100%;
 	height: 100%;
+	overflow-y: hidden;
 `;
 const DialogBox = styled.dialog`
 	width: 700px;
@@ -59,7 +68,8 @@ const DialogBox = styled.dialog`
 	flex-direction: column;
 	justify-content: center;
 	align-items: center;
-	background-color: ${({ theme }) => theme.lightColor?.yellow.background};
+	background-color: ${({ theme }) =>
+		theme === defaultTheme ? theme.lightColor?.yellow.background : darkTheme.textColor.black};
 	border: none;
 	border-radius: 10px;
 	box-shadow: 0 0 30px rgba(30, 30, 30, 0.185);
@@ -71,7 +81,7 @@ const DialogBox = styled.dialog`
 	}
 `;
 
-const PointInput = styled.div`
+export const PointInput = styled.div`
 	font-size: ${({ theme }) => theme.fontSize.base};
 	margin-top: 10px;
 	input {
@@ -100,15 +110,15 @@ const PointInput = styled.div`
 		margin: 0;
 	}
 `;
-const CloseBtn = styled.button`
+export const CloseBtn = styled.button`
 	margin-top: 10px;
 	margin-left: 10px;
 	border-radius: 10px;
-	background-color: ${({ theme }) => theme.lightColor?.yellow.main};
+	background-color: ${({ theme }) => (theme === defaultTheme ? theme.textColor.lightgray : darkTheme.darkColor?.sub)};
 	width: 110px;
-	height: 45px;
-	font-size: ${({ theme }) => theme.fontSize['2xl']};
-	color: ${({ theme }) => theme.textColor.black};
+	height: 35px;
+	font-size: ${({ theme }) => theme.fontSize['xl']};
+	color: ${({ theme }) => (theme === defaultTheme ? theme.textColor.black : darkTheme.textColor.white)};
 `;
 const BtnContainer = styled.div`
 	display: flex;
@@ -120,6 +130,7 @@ const Backdrop = styled.div`
 	width: 1194px;
 	height: 834px;
 	position: fixed;
+	overflow-y: hidden;
 	top: 0;
 	left: 50%;
 	transform: translate(-50%, 0); /* 추가 */
