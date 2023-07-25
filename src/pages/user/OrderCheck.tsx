@@ -2,14 +2,18 @@ import React, { useCallback, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import AddPointModal from '../../components/AddPointModal';
+import UsePointUser from '../../components/UsePointUser';
 
 function OrderCheck() {
 	const navigate = useNavigate();
-	const [isOpenModal, setModalOpen] = useState<boolean>(false);
-
-	const onClickToggleModal = useCallback(() => {
-		setModalOpen(!isOpenModal);
-	}, [isOpenModal]);
+	const [isOpenAddPointModal, setAddPointModalOpen] = useState<boolean>(false);
+	const [isOpenUsePointUserModal, setUsePointUserModalOpen] = useState<boolean>(false);
+	const onClickToggleAddPointModal = useCallback(() => {
+		setAddPointModalOpen(!isOpenAddPointModal);
+	}, [isOpenAddPointModal]);
+	const onClickToggleUsePointUserModal = useCallback(() => {
+		setUsePointUserModalOpen(!isOpenUsePointUserModal);
+	}, [isOpenUsePointUserModal]);
 
 	return (
 		<Layout>
@@ -55,11 +59,14 @@ function OrderCheck() {
 
 					<Payment>
 						<div className="point">
-							<button className="add-point" onClick={onClickToggleModal}>
+							<button className="add-point" onClick={onClickToggleAddPointModal}>
 								포인트 적립
 							</button>
-							<button className="use-point">포인트 사용</button>
-							{isOpenModal && <AddPointModal onClickToggleModal={onClickToggleModal} />}
+							<button className="use-point" onClick={onClickToggleUsePointUserModal}>
+								포인트 사용
+							</button>
+							{isOpenAddPointModal && <AddPointModal onClickToggleModal={onClickToggleAddPointModal} />}
+							{isOpenUsePointUserModal && <UsePointUser onClickToggleModal={onClickToggleUsePointUserModal} />}
 						</div>
 						<button className="payment">
 							결제하기

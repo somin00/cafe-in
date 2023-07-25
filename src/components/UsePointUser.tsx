@@ -1,26 +1,21 @@
 import React, { useCallback, useState } from 'react';
-import { styled } from 'styled-components';
 import { ModalDefaultType } from '../state/ModalOpen';
-import PointAddCheckModal from './PointAddCheckModal';
+import { styled } from 'styled-components';
+import CheckPointUsedIt from './CheckPointUsedIt';
 
-function AddPointModal({ onClickToggleModal }: ModalDefaultType) {
+function UsePointUser({ onClickToggleModal }: ModalDefaultType) {
+	const [isOpenModal, setModalOpen] = useState<boolean>(false);
 	const handleCloseBtnClick = (e: React.MouseEvent) => {
 		e.stopPropagation();
 		onClickToggleModal();
 	};
-	const [isOpenModal, setModalOpen] = useState<boolean>(false);
 	const onClickOpenModal = useCallback(() => {
 		setModalOpen(true);
-		setTimeout(() => {
-			setModalOpen(!setModalOpen);
-			onClickToggleModal();
-		}, 2000); // 15 seconds
 	}, [onClickToggleModal]);
-
 	return (
 		<ModalContainer onClick={onClickToggleModal}>
 			<DialogBox onClick={(e) => e.stopPropagation()}>
-				<p> 이용약관과 개인 정보 취급 방침에 동의하시면 적립 버튼을 눌러주세요 </p>
+				<p>핸드폰 번호 뒷자리 4자리를 입력해주세요 </p>
 				<PointInput>
 					<label htmlFor="phone-number" hidden />
 					<input type="number" id="phone-number" name="phonnumber" placeholder="숫자만 입력해주세요"></input>
@@ -30,10 +25,10 @@ function AddPointModal({ onClickToggleModal }: ModalDefaultType) {
 				</PointInput>
 				<BtnContainer>
 					<CloseBtn onClick={handleCloseBtnClick}>취소</CloseBtn>
-					<CloseBtn onClick={onClickOpenModal}>적립</CloseBtn>
+					<CloseBtn onClick={onClickOpenModal}>확인</CloseBtn>
 				</BtnContainer>
 			</DialogBox>
-			{isOpenModal && <PointAddCheckModal onClickOpenModal={onClickOpenModal} isOpenModal={isOpenModal} />}
+			{isOpenModal && <CheckPointUsedIt onClickOpenModal={onClickToggleModal} isOpenModal={isOpenModal} />}
 			<Backdrop
 				onClick={(e: React.MouseEvent) => {
 					e.preventDefault();
@@ -45,37 +40,38 @@ function AddPointModal({ onClickToggleModal }: ModalDefaultType) {
 		</ModalContainer>
 	);
 }
-const ModalContainer = styled.div`
+export const ModalContainer = styled.div`
 	width: 100%;
 	height: 100%;
 `;
 const DialogBox = styled.dialog`
-	width: 700px;
+	width: 500px;
 	height: 500px;
 	position: absolute;
-	top: 150px;
-	left: 280px;
+	bottom: 0;
+	left: 350px;
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
 	align-items: center;
-	background-color: ${({ theme }) => theme.lightColor?.yellow.background};
+	background-color: ${({ theme }) => theme.textColor.white};
 	border: none;
 	border-radius: 10px;
 	box-shadow: 0 0 30px rgba(30, 30, 30, 0.185);
 	box-sizing: border-box;
 	z-index: 10000;
 	p {
-		font-size: ${({ theme }) => theme.fontSize.sm};
-		color: ${({ theme }) => theme.textColor.lightgray};
+		font-size: ${({ theme }) => theme.fontSize.xl};
+		font-weight: ${({ theme }) => theme.fontWeight.semibold};
+		color: ${({ theme }) => theme.textColor.black};
 	}
 `;
 
-const PointInput = styled.div`
+export const PointInput = styled.div`
 	font-size: ${({ theme }) => theme.fontSize.base};
-	margin-top: 10px;
+	margin-top: 50px;
 	input {
-		background-color: ${({ theme }) => theme.textColor.white};
+		background-color: ${({ theme }) => theme.textColor.lightgray};
 		border: 1px solid ${({ theme }) => theme.textColor.lightbrown};
 		position: relative;
 		width: 390px;
@@ -86,8 +82,9 @@ const PointInput = styled.div`
 		position: absolute;
 		margin-top: 6px;
 		padding: 7px;
-		right: 160px;
-		background-color: ${({ theme }) => theme.textColor.white};
+		right: 60px;
+		background-color: ${({ theme }) => theme.textColor.lightgray};
+
 		border-radius: 10px;
 	}
 	input:focus {
@@ -100,14 +97,14 @@ const PointInput = styled.div`
 		margin: 0;
 	}
 `;
-const CloseBtn = styled.button`
-	margin-top: 10px;
-	margin-left: 10px;
+export const CloseBtn = styled.button`
+	margin-top: 50px;
+	margin-left: 20px;
 	border-radius: 10px;
-	background-color: ${({ theme }) => theme.lightColor?.yellow.main};
+	background-color: ${({ theme }) => theme.textColor.lightgray};
 	width: 110px;
-	height: 45px;
-	font-size: ${({ theme }) => theme.fontSize['2xl']};
+	height: 35px;
+	font-size: ${({ theme }) => theme.fontSize.xl};
 	color: ${({ theme }) => theme.textColor.black};
 `;
 const BtnContainer = styled.div`
@@ -122,8 +119,8 @@ const Backdrop = styled.div`
 	position: fixed;
 	top: 0;
 	left: 50%;
-	transform: translate(-50%, 0); /* 추가 */
+	transform: translate(-50%, 0);
 	z-index: 9999;
 	background-color: rgba(0, 0, 0, 0.2);
 `;
-export default AddPointModal;
+export default UsePointUser;
