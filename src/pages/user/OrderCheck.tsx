@@ -1,9 +1,16 @@
-import React from 'react';
+import React, { useCallback, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
+import AddPointModal from '../../components/AddPointModal';
 
 function OrderCheck() {
 	const navigate = useNavigate();
+	const [isOpenModal, setModalOpen] = useState<boolean>(false);
+
+	const onClickToggleModal = useCallback(() => {
+		setModalOpen(!isOpenModal);
+	}, [isOpenModal]);
+
 	return (
 		<Layout>
 			<Header>
@@ -48,8 +55,11 @@ function OrderCheck() {
 
 					<Payment>
 						<div className="point">
-							<button className="add-point">포인트 적립</button>
+							<button className="add-point" onClick={onClickToggleModal}>
+								포인트 적립
+							</button>
 							<button className="use-point">포인트 사용</button>
+							{isOpenModal && <AddPointModal onClickToggleModal={onClickToggleModal} />}
 						</div>
 						<button className="payment">
 							결제하기
@@ -64,6 +74,8 @@ function OrderCheck() {
 const Layout = styled.div`
 	width: 1194px;
 	height: 834px;
+	overflow-y: hidden;
+	position: relative;
 `;
 const Header = styled.div`
 	display: flex;
@@ -122,8 +134,10 @@ const OrderMenuItem = styled.li`
 	border-radius: 10px;
 	div,
 	p {
+		display: flex;
+		justify-content: center;
 		flex: 1;
-		text-align: center;
+		align-items: center;
 	}
 
 	.products-name {

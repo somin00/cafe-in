@@ -2,10 +2,8 @@ import React, { useState } from 'react';
 import { useRecoilState } from 'recoil';
 import { styled } from 'styled-components';
 import { selectedOptionsState, Option } from '../state/OptinalState';
+import { ModalDefaultType } from '../state/ModalOpen';
 
-interface ModalDefaultType {
-	onClickToggleModal: () => void;
-}
 function OptionMenu({ onClickToggleModal }: ModalDefaultType) {
 	const [selectedOptions, setSelectedOptions] = useRecoilState<Option[]>(selectedOptionsState);
 	const [activeOptions, setActiveOptions] = useState<string[]>([]);
