@@ -1,6 +1,7 @@
 import React, { useCallback, useState } from 'react';
 import { styled } from 'styled-components';
 import OptionMenu from './OptionMenu';
+import { darkTheme, defaultTheme } from '../style/theme';
 
 function MenuItem() {
 	const [isOpenModal, setModalOpen] = useState<boolean>(false);
@@ -38,7 +39,8 @@ const Layout = styled.div`
 `;
 
 const ItemContainer = styled.div`
-	background-color: ${({ theme }) => theme.textColor?.white};
+	background-color: ${({ theme }) =>
+		theme === defaultTheme ? defaultTheme.textColor.white : darkTheme.textColor.lightgray};
 	border: 1px solid ${({ theme }) => theme.textColor?.lightbrown};
 	border-radius: 15px;
 	padding: 13px 16px;

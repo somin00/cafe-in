@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { styled } from 'styled-components';
+import { defaultTheme, darkTheme } from '../style/theme';
 
 function SeletedItemContainer() {
 	const navigate = useNavigate();
@@ -76,8 +77,10 @@ function SeletedItemContainer() {
 	);
 }
 const Background = styled.div`
-	background-color: ${({ theme }) => theme.textColor.white};
+	background-color: ${({ theme }) =>
+		theme === defaultTheme ? defaultTheme.textColor.white : darkTheme.textColor.black};
 	padding: 10px;
+	height: fit-content;
 `;
 const Layout = styled.div`
 	width: 381px;
@@ -89,7 +92,8 @@ const MenuSeletedContainer = styled.ul`
 	display: flex;
 	flex-direction: column;
 	height: 440px;
-	background-color: ${({ theme }) => theme.lightColor?.yellow.background};
+	background-color: ${({ theme }) =>
+		theme === defaultTheme ? defaultTheme.lightColor?.yellow.background : darkTheme.textColor.black};
 	border-radius: 10px;
 	overflow-y: auto;
 
@@ -123,10 +127,12 @@ const SeletedItem = styled.li`
 			color: ${({ theme }) => theme.textColor?.white};
 		}
 		.plus {
-			background-color: ${({ theme }) => theme.lightColor?.yellow.main};
+			background-color: ${({ theme }) =>
+				theme === defaultTheme ? defaultTheme.lightColor?.yellow.main : darkTheme.darkColor?.sub};
 		}
 		.minus {
-			background-color: ${({ theme }) => theme.textColor?.lightgray};
+			background-color: ${({ theme }) =>
+				theme === defaultTheme ? defaultTheme.textColor.lightgray : darkTheme.textColor.darkgray};
 		}
 	}
 	.price {
@@ -137,8 +143,10 @@ const SeletedItem = styled.li`
 			margin-left: 10px;
 			width: 25px;
 			height: 25px;
-			border: 2px solid ${({ theme }) => theme.lightColor?.yellow.sub};
-			color: ${({ theme }) => theme.lightColor?.yellow.sub};
+			border: 2px solid
+				${({ theme }) => (theme === defaultTheme ? defaultTheme.lightColor?.yellow.sub : darkTheme.darkColor?.point)};
+			color: ${({ theme }) =>
+				theme === defaultTheme ? defaultTheme.lightColor?.yellow.sub : darkTheme.darkColor?.point};
 			border-radius: 5px;
 		}
 	}
@@ -149,10 +157,11 @@ const PayContainer = styled.div`
 
 const TotalPrice = styled.div`
 	margin-top: 20px;
-	height: 100px;
+	height: 110px;
 	padding: 20px 10px 10px 10px;
 	color: ${({ theme }) => theme.lightColor?.yellow.point};
-	background-color: ${({ theme }) => theme.textColor.lightbrown};
+	background-color: ${({ theme }) => (theme === defaultTheme ? theme.textColor.lightbrown : darkTheme.textColor.black)};
+	border-top: ${({ theme }) => (theme === darkTheme ? '1px solid  darkTheme.textColor.lightgray' : 'none')};
 	font-size: ${({ theme }) => theme.fontSize['2xl']};
 	font-weight: ${({ theme }) => theme.fontWeight.bold};
 	.total-price {
@@ -175,6 +184,7 @@ const AllDeleteBtn = styled.button`
 	font-size: ${({ theme }) => theme.fontSize?.['3xl']};
 	font-weight: ${({ theme }) => theme.fontWeight.semibold};
 	img {
+		margin-top: 3px;
 		padding-right: 10px;
 	}
 `;
@@ -188,6 +198,7 @@ const OrderBtn = styled.button`
 	font-size: ${({ theme }) => theme.fontSize?.['3xl']};
 	font-weight: ${({ theme }) => theme.fontWeight.semibold};
 	color: ${({ theme }) => theme.textColor.black};
-	background-color: ${({ theme }) => theme.lightColor?.yellow.sub};
+	background-color: ${({ theme }) =>
+		theme === defaultTheme ? theme.lightColor?.yellow.sub : darkTheme.darkColor?.point};
 `;
 export default SeletedItemContainer;

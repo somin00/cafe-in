@@ -3,6 +3,7 @@ import MenuItem from '../../components/MenuItem';
 import SeletedItemContainer from '../../components/SeletedItemContainer';
 import { styled } from 'styled-components';
 import MenuListHeader from '../../components/MenuListHeader';
+import { darkTheme, defaultTheme } from '../../style/theme';
 
 function MenuList() {
 	return (
@@ -17,7 +18,8 @@ function MenuList() {
 }
 
 const Layout = styled.div`
-	background-color: ${({ theme }) => theme.textColor.lightgray};
+	background-color: ${({ theme }) =>
+		theme === defaultTheme ? defaultTheme.textColor.lightgray : darkTheme.textColor.black};
 	width: 1194px;
 	height: 834px;
 `;

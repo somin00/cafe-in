@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
+import { darkTheme, defaultTheme } from '../style/theme';
 
 function MenuListHeader() {
 	const [activeBtn, setActiveBtn] = useState<string | null>(null);
@@ -35,7 +36,8 @@ function MenuListHeader() {
 //prettier-ignore
 const TabButton = styled.button<{ isActive: boolean }>`
 	background-color: ${({ isActive }) => (isActive ? 'ghostwhite' : 'transparent')};
-  color: ${({ isActive }) => (isActive ? 'darkorange' : 'black')};  font-size: ${({theme})=>theme.fontSize['2xl']};
+  color: ${({ isActive, theme }) => isActive ? theme.lightColor?.yellow.main : theme.darkColor?.sub};
+	font-size: ${({theme})=>theme.fontSize['2xl']};
   font-weight: ${({theme})=>theme.fontWeight.semibold};
   padding: 10px 30px;
   width: fit-content;
@@ -52,7 +54,8 @@ const Layout = styled.ul`
 	height: 83px;
 	padding: 0 30px;
 	border-bottom: 1px solid ${({ theme }) => theme.textColor.lightgray};
-	background-color: ${({ theme }) => theme.textColor.white};
+	background-color: ${({ theme }) =>
+		theme === defaultTheme ? defaultTheme.textColor.white : darkTheme.textColor.black};
 `;
 
 export default MenuListHeader;
