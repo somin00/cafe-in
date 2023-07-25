@@ -8,10 +8,13 @@ function AddPointModal({ onClickToggleModal }: ModalDefaultType) {
 		onClickToggleModal();
 	};
 	const [isOpenModal, setModalOpen] = useState<boolean>(false);
-
 	const onClickOpenModal = useCallback(() => {
-		setModalOpen(!isOpenModal);
-	}, [isOpenModal]);
+		setModalOpen(true);
+		setTimeout(() => {
+			setModalOpen(!setModalOpen);
+			onClickToggleModal();
+		}, 5000); // 15 seconds
+	}, [onClickToggleModal]);
 
 	return (
 		<ModalContainer onClick={onClickToggleModal}>
@@ -27,9 +30,9 @@ function AddPointModal({ onClickToggleModal }: ModalDefaultType) {
 				<BtnContainer>
 					<CloseBtn onClick={handleCloseBtnClick}>취소</CloseBtn>
 					<CloseBtn onClick={onClickOpenModal}>적립</CloseBtn>
-					{isOpenModal && <PointAddCheckModal onClickOpenModal={onClickOpenModal} />}
 				</BtnContainer>
 			</DialogBox>
+			{isOpenModal && <PointAddCheckModal onClickOpenModal={onClickOpenModal} isOpenModal={isOpenModal} />}
 			<Backdrop
 				onClick={(e: React.MouseEvent) => {
 					e.preventDefault();

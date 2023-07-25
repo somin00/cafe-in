@@ -1,29 +1,23 @@
 import React from 'react';
 import { styled } from 'styled-components';
 import { ModalandModalType } from '../state/ModalOpen';
+interface PointAddCheckModalProps extends ModalandModalType {
+	isOpenModal: boolean;
+}
 
-function PointAddCheckModal({ onClickOpenModal }: ModalandModalType) {
-	const handleCloseBtnClick = (e: React.MouseEvent) => {
-		e.stopPropagation();
-		onClickOpenModal();
-	};
-	return (
+function PointAddCheckModal({ isOpenModal, onClickOpenModal }: PointAddCheckModalProps) {
+	return isOpenModal ? (
 		<ModalContainer onClick={onClickOpenModal}>
 			<DialogBox onClick={(e) => e.stopPropagation()}>
-				<p> 이용약관과 개인 정보 취급 방침에 동의하시면 적립 버튼을 눌러주세요 </p>
-
-				<CloseBtn onClick={handleCloseBtnClick}>취소</CloseBtn>
+				<img className="phone-light" src="/assets/user/phonehuman_light.svg" alt="폰" width={226} />
+				<div className="ment">
+					<p> 0 0 0 0 님, 환영합니다 !</p>
+					<p>포인트를 적립하여 혜택을 받아보세요 ! </p>
+				</div>
+				<img className="rocket-light" src="/assets/user/rocket_light.svg" alt="로켓" width={332} />
 			</DialogBox>
-			<Backdrop
-				onClick={(e: React.MouseEvent) => {
-					e.preventDefault();
-					if (onClickOpenModal) {
-						onClickOpenModal();
-					}
-				}}
-			/>
 		</ModalContainer>
-	);
+	) : null;
 }
 const ModalContainer = styled.div`
 	width: 100%;
@@ -39,35 +33,41 @@ const DialogBox = styled.dialog`
 	flex-direction: column;
 	justify-content: center;
 	align-items: center;
-	background-color: ${({ theme }) => theme.lightColor?.yellow.background};
+	background-image: url('/assets/user/point_background_light.svg');
 	border: none;
 	border-radius: 10px;
-	box-shadow: 0 0 30px rgba(30, 30, 30, 0.185);
 	box-sizing: border-box;
 	z-index: 10000;
-	p {
-		font-size: ${({ theme }) => theme.fontSize.sm};
-		color: ${({ theme }) => theme.textColor.lightgray};
+	.ment {
+		background-color: ${({ theme }) => theme.lightColor?.yellow.background};
+		width: 450px;
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
+		padding: 80px 20px;
+		border-radius: 10px;
+		box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
+
+		p: first-child {
+			font-size: ${({ theme }) => theme.fontSize['5xl']};
+		}
+		p: last-child {
+			padding-top: 30px;
+			font-size: ${({ theme }) => theme.fontSize.base};
+			color: ${({ theme }) => theme.textColor.darkgray};
+		}
+	}
+	.phone-light {
+		position: absolute;
+		bottom: 40px;
+		left: 0;
+	}
+	.rocket-light {
+		position: absolute;
+		top: 60px;
+		right: 0;
 	}
 `;
-const CloseBtn = styled.button`
-	margin-top: 10px;
-	margin-left: 10px;
-	border-radius: 10px;
-	background-color: ${({ theme }) => theme.lightColor?.yellow.main};
-	width: 110px;
-	height: 45px;
-	font-size: ${({ theme }) => theme.fontSize['2xl']};
-	color: ${({ theme }) => theme.textColor.black};
-`;
-const Backdrop = styled.div`
-	width: 1194px;
-	height: 834px;
-	position: fixed;
-	top: 0;
-	left: 50%;
-	transform: translate(-50%, 0); /* 추가 */
-	z-index: 9999;
-	background-color: rgba(0, 0, 0, 0.2);
-`;
+
 export default PointAddCheckModal;
