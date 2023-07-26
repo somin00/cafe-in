@@ -9,7 +9,9 @@ function WaitingHeader() {
 				onClick={() => {
 					navigate(-1);
 				}}
-			></IconWrapper>
+			>
+				<img alt="뒤로가기 버튼" />
+			</IconWrapper>
 			<HeaderTitle>대기 관리</HeaderTitle>
 		</WaitingHeaderWrapper>
 	);
