@@ -106,6 +106,8 @@ const InputList = styled.ul`
 		height: 66px;
 		border: none;
 		border-radius: 10px;
+		padding-left: 8px;
+		font-size: ${({ theme }) => theme.fontSize['2xl']};
 	}
 `;
 

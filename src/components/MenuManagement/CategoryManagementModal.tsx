@@ -52,6 +52,8 @@ const AddContainer = styled.div`
 		border: none;
 		border-radius: 10px;
 		margin-right: 17px;
+		padding-left: 8px;
+		font-size: ${({ theme }) => theme.fontSize['2xl']};
 	}
 
 	button {
