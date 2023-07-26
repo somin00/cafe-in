@@ -25,7 +25,13 @@ function Waiting() {
 					<InputBox type="tel" placeholder="전화 번호를 입력해주세요." required />
 				</InputBoxWrapper>
 				<ApplicationButtnoWrapper>
-					<ApplicationBtn>취소</ApplicationBtn>
+					<ApplicationBtn
+						onClick={() => {
+							navigate(-1);
+						}}
+					>
+						취소
+					</ApplicationBtn>
 					<ApplicationBtn onClick={() => navigate('/waitingcheck')}>신청</ApplicationBtn>
 				</ApplicationButtnoWrapper>
 			</ApplicationBox>
