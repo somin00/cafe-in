@@ -1,12 +1,15 @@
 import React from 'react';
 import { styled } from 'styled-components';
-
+import { useNavigate } from 'react-router-dom';
 function WaitingHeader() {
+	const navigate = useNavigate();
 	return (
 		<WaitingHeaderWrapper>
-			<IconWrapper>
-				<img alt="뒤로가기 버튼" />
-			</IconWrapper>
+			<IconWrapper
+				onClick={() => {
+					navigate(-1);
+				}}
+			></IconWrapper>
 			<HeaderTitle>대기 관리</HeaderTitle>
 		</WaitingHeaderWrapper>
 	);
