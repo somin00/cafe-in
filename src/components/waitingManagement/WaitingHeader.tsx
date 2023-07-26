@@ -5,13 +5,13 @@ function WaitingHeader() {
 	const navigate = useNavigate();
 	return (
 		<WaitingHeaderWrapper>
-			<button
+			<IconWrapper
 				onClick={() => {
 					navigate(-1);
 				}}
 			>
-				<img src={process.env.PUBLIC_URL + '/assets/admin/back_light.svg'} alt="뒤로가기 버튼" />
-			</button>
+				<img alt="뒤로가기 버튼" />
+			</IconWrapper>
 			<HeaderTitle>대기 관리</HeaderTitle>
 		</WaitingHeaderWrapper>
 	);
@@ -30,6 +30,13 @@ const WaitingHeaderWrapper = styled.div`
 	font-size: ${({ theme }) => theme.fontSize['4xl']};
 	font-weight: ${({ theme }) => theme.fontWeight.semibold};
 	background-color: ${({ theme }) => theme.textColor.white};
+`;
+
+const IconWrapper = styled.button`
+	img {
+		content: ${({ theme }) =>
+			theme.lightColor ? 'url(/assets/admin/back_light.svg)' : ' url(/assets/admin/back_dark.svg)'};
+	}
 `;
 
 const HeaderTitle = styled.h1`
