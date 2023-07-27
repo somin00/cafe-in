@@ -17,6 +17,10 @@ export const GlobalStyles = createGlobalStyle`
     padding: 0;
     font-family: Pretendard;
     min-width: 320px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #eeeeee;
   }
 
   a {
