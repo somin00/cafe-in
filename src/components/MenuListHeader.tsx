@@ -34,18 +34,17 @@ function MenuListHeader() {
 	);
 }
 //prettier-ignore
-const TabButton = styled.button<{ isActive: boolean }>`
+const TabButton = styled.button.attrs(props => ({ ...props, isActive: undefined }))<{ isActive: boolean }>`
 	background-color: ${({ isActive }) => (isActive ? 'ghostwhite' : 'transparent')};
-  color: ${({ isActive, theme }) => isActive ? theme.lightColor?.yellow.main : theme.darkColor?.sub};
-	font-size: ${({theme})=>theme.fontSize['2xl']};
-  font-weight: ${({theme})=>theme.fontWeight.semibold};
-  padding: 10px 30px;
-  width: fit-content;
+	color: ${({ isActive }) => (isActive ? 'darkorange' : 'black')};
+	font-size: ${({ theme }) => theme.fontSize['2xl']};
+	font-weight: ${({ theme }) => theme.fontWeight.semibold};
+	padding: 10px 30px;
+	width: fit-content;
 	border: none;
-  border-radius: 10px;
+	border-radius: 10px;
 	cursor: pointer;
 `;
-
 const Layout = styled.ul`
 	display: flex;
 	justify-content: space-between;
