@@ -13,16 +13,16 @@ function MenuListHeader() {
 					<img src="/assets/logo.png" alt="cafe-in" width={90} />
 				</h1>
 			</li>
-			<TabButton isActive={activeBtn === '커피'} onClick={() => setActiveBtn('커피')}>
+			<TabButton $isActive={activeBtn === '커피'} onClick={() => setActiveBtn('커피')}>
 				커피
 			</TabButton>
-			<TabButton isActive={activeBtn === '음료'} onClick={() => setActiveBtn('음료')}>
+			<TabButton $isActive={activeBtn === '음료'} onClick={() => setActiveBtn('음료')}>
 				음료
 			</TabButton>
-			<TabButton isActive={activeBtn === '티'} onClick={() => setActiveBtn('티')}>
+			<TabButton $isActive={activeBtn === '티'} onClick={() => setActiveBtn('티')}>
 				티
 			</TabButton>
-			<TabButton isActive={activeBtn === '디저트'} onClick={() => setActiveBtn('디저트')}>
+			<TabButton $isActive={activeBtn === '디저트'} onClick={() => setActiveBtn('디저트')}>
 				디저트
 			</TabButton>
 			<li>
@@ -34,9 +34,8 @@ function MenuListHeader() {
 	);
 }
 //prettier-ignore
-const TabButton = styled.button<{ isActive: boolean }>`
-	background-color: ${({ isActive }) => (isActive ? 'ghostwhite' : 'transparent')};
-	color: ${({ isActive }) => (isActive ? 'darkorange' : 'black')};
+const TabButton = styled.button<{ $isActive: boolean }>`
+	background-color: transparent;
 	font-size: ${({ theme }) => theme.fontSize['2xl']};
 	font-weight: ${({ theme }) => theme.fontWeight.semibold};
 	padding: 10px 30px;
@@ -44,6 +43,8 @@ const TabButton = styled.button<{ isActive: boolean }>`
 	border: none;
 	border-radius: 10px;
 	cursor: pointer;
+background-color: ${props => (props.$isActive ? props.theme.textColor.lightgray : "transparent")};
+	color: ${props => (props.$isActive ? (props.theme === defaultTheme ? props.theme.lightColor?.yellow.sub : darkTheme.darkColor?.sub) : "inherit")};
 `;
 const Layout = styled.ul`
 	display: flex;
