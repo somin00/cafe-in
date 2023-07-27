@@ -29,7 +29,15 @@ const WaitingHeaderWrapper = styled.div`
 	align-items: center;
 	font-size: ${({ theme }) => theme.fontSize['4xl']};
 	font-weight: ${({ theme }) => theme.fontWeight.semibold};
-	background-color: ${({ theme }) => theme.textColor.white};
+	background-color: ${({ theme }) => (theme.lightColor ? theme.textColor.white : theme.darkColor?.background)};
+	color: ${({ theme }) => (theme.lightColor ? theme.textColor.black : theme.textColor.white)};
+`;
+
+const IconWrapper = styled.button`
+	img {
+		content: ${({ theme }) =>
+			theme.lightColor ? 'url(/assets/admin/back_light.svg)' : ' url(/assets/admin/back_dark.svg)'};
+	}
 `;
 
 const IconWrapper = styled.button`

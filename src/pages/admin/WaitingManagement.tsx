@@ -14,11 +14,11 @@ const WaitingManagement = () => {
 			<WaitingTableWrapper>
 				<TableMenu>
 					<ListWrapper>
-						<WaitingList>
-							<img src={process.env.PUBLIC_URL + '/assets/admin/check-able_light.svg'} alt="선택된 체크 버튼" />
+						<WaitingList role="button" tabIndex={0} aria-label="대기 중 명단 선택하기">
+							<img alt="선택된 체크 버튼" />
 							대기 중 명단
 						</WaitingList>
-						<WaitedList>
+						<WaitedList role="button" tabIndex={0} aria-label="대기 완료 명단 선택하기">
 							<img
 								src={process.env.PUBLIC_URL + '/assets/admin/check-disable_light.svg'}
 								alt="선택되지 않은 체크 버튼"
@@ -61,14 +61,14 @@ export default WaitingManagement;
 const WaitingManagementWrapper = styled.div`
 	width: 1194px;
 	height: 834px;
-	background-color: ${({ theme }) => theme.textColor.white};
+	background-color: ${({ theme }) => (theme.lightColor ? theme.textColor.white : theme.darkColor?.background)};
 	user-select: none;
 `;
 
 const WaitingTableWrapper = styled.div`
 	width: 1046px;
 	height: 697px;
-	background-color: #fff;
+	background-color: ${({ theme }) => (theme.lightColor ? theme.textColor.white : theme.darkColor?.background)};
 	margin-left: 74px;
 	margin-right: 74px;
 	margin-top: 9px;
@@ -96,8 +96,11 @@ const WaitingList = styled.p`
 	display: flex;
 	justify-content: center;
 	align-items: center;
+	color: ${({ theme }) => (theme.lightColor ? theme.textColor.black : theme.textColor.white)};
 	img {
 		margin-right: 10px;
+		content: ${({ theme }) =>
+			theme.lightColor ? 'url(/assets/admin/check-able_light.svg)' : ' url(/assets/admin/check-able_dark.svg)'};
 	}
 `;
 
@@ -121,7 +124,7 @@ const WaitingBtnWrapper = styled.div`
 const WaitingAbleBtn = styled.button`
 	width: 137px;
 	height: 54px;
-	background-color: ${({ theme }) => theme.lightColor?.yellow.point};
+	background-color: ${({ theme }) => (theme.lightColor ? theme.lightColor?.yellow.point : theme.textColor.darkgray)};
 	color: ${({ theme }) => theme.textColor.white};
 	border-radius: 10px;
 	margin-right: 8px;
@@ -131,8 +134,9 @@ const WaitingDisableBtn = styled.button`
 	width: 137px;
 	height: 54px;
 	border-radius: 10px;
-	border: 2px solid ${({ theme }) => theme.lightColor?.yellow.point};
-	color: ${({ theme }) => theme.lightColor?.yellow.point};
+	border: ${({ theme }) =>
+		theme.lightColor ? `2px solid ${theme.lightColor?.yellow.point}` : `2px solid ${theme.textColor.darkgray}`};
+	color: ${({ theme }) => (theme.lightColor ? theme.lightColor?.yellow.point : theme.textColor.darkgray)};
 `;
 
 const TableBox = styled.div`
@@ -140,7 +144,9 @@ const TableBox = styled.div`
 	height: 625px;
 	margin-bottom: 48px;
 	padding-top: 20px;
-	background-color: ${({ theme }) => theme.lightColor?.yellow.background};
+	background-color: ${({ theme }) =>
+		theme.lightColor ? theme.lightColor?.yellow.background : theme.darkColor?.background};
+	border: ${({ theme }) => (theme.lightColor ? 'none' : `1px solid ${theme.textColor.white}`)};
 `;
 
 // eslint-disable-next-line prettier/prettier
@@ -159,10 +165,10 @@ const TableHeader = styled.tr`
 	margin: 0 32px 15px 32px;
 	padding-left: 32px;
 	padding-right: 40px;
-	background-color: ${({ theme }) => theme.lightColor?.yellow.main};
-
+	background-color: ${({ theme }) => (theme.lightColor ? theme.lightColor.yellow.main : theme.textColor.white)};
+	border: ${({ theme }) => (theme.lightColor ? 'none' : '1px solid white')};
 	span {
-		color: ${({ theme }) => theme.textColor.darkbrown};
+		color: ${({ theme }) => (theme.lightColor ? theme.textColor.darkbrown : theme.darkColor?.sub)};
 	}
 `;
 
