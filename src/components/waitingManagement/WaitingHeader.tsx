@@ -40,13 +40,6 @@ const IconWrapper = styled.button`
 	}
 `;
 
-const IconWrapper = styled.button`
-	img {
-		content: ${({ theme }) =>
-			theme.lightColor ? 'url(/assets/admin/back_light.svg)' : ' url(/assets/admin/back_dark.svg)'};
-	}
-`;
-
 const HeaderTitle = styled.h1`
 	width: 1101px;
 	padding-right: 25px;
