@@ -1,17 +1,41 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useSetRecoilState } from 'recoil';
 import { styled } from 'styled-components';
+import { selectedModeState } from '../state/Mode';
 
 function Home() {
 	const navigate = useNavigate();
+	const setMode = useSetRecoilState(selectedModeState);
 
 	return (
 		<div>
 			<h1>Home</h1>
 			<div className="button">
-				<Button onClick={() => navigate('/menu')}>메뉴 주문 클릭 🎈 </Button>
-				<Button onClick={() => navigate('/admin/main')}>관리자 메뉴 클릭✨</Button>
-				<Button onClick={() => navigate('/waiting')}>대기 신청 클릭 💙</Button>
+				<Button
+					onClick={() => {
+						setMode('user');
+						navigate('/menu');
+					}}
+				>
+					메뉴 주문 클릭 🎈{' '}
+				</Button>
+				<Button
+					onClick={() => {
+						setMode('admin');
+						navigate('/admin/main');
+					}}
+				>
+					관리자 메뉴 클릭✨
+				</Button>
+				<Button
+					onClick={() => {
+						setMode('admin');
+						navigate('/waiting');
+					}}
+				>
+					대기 신청 클릭 💙
+				</Button>
 			</div>
 		</div>
 	);
