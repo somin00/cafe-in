@@ -1,16 +1,29 @@
 import React, { useCallback, useState } from 'react';
+
+import { selector, useRecoilValueLoadable } from 'recoil';
+import { FireStoreDoc } from '../firebase/FirStoreDoc';
 import { styled } from 'styled-components';
 import OptionMenu from './OptionMenu';
 import { useRecoilValue } from 'recoil';
 import { selectedModeState } from '../state/Mode';
-
+const menuItemsState = selector({
+	key: 'menuItemsState',
+	get: async () => {
+		const menuItems = await FireStoreDoc();
+		return menuItems;
+	},
+});
 function MenuItem() {
 	const mode = useRecoilValue(selectedModeState);
 	const [isOpenModal, setModalOpen] = useState<boolean>(false);
+	const menuItemsLoadable = useRecoilValueLoadable(menuItemsState);
 
 	const onClickToggleModal = useCallback(() => {
+		if (menuItemsLoadable.state === 'hasValue') {
+			console.log(menuItemsLoadable.contents);
+		}
 		setModalOpen(!isOpenModal);
-	}, [isOpenModal]);
+	}, [menuItemsLoadable.state, menuItemsLoadable.contents]);
 
 	return (
 		<Layout>

@@ -21,6 +21,6 @@
 	"ts-node": {
 		"esm": true
 	},
-	"include": ["src", "src/components", "src/custom.d.ts"],
+	"include": ["src", "src/components", "src/custom.d.ts", "src/firebase/firebaseConfig.ts"],
 	"exclude": ["node_modules"]
 }
