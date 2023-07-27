@@ -8,6 +8,7 @@ import AdminLogin from './pages/admin/AdminLogin';
 import AdminMenu from './pages/admin/AdminMenu';
 import WaitingManagement from './pages/admin/WaitingManagement';
 import Waiting from './pages/user/Waiting';
+import WaitingCheck from './pages/user/WaitingCheck';
 import MenuManagement from './pages/admin/MenuManagement';
 import OrderCheck from './pages/user/OrderCheck';
 import NotFound from './pages/NotFound';
