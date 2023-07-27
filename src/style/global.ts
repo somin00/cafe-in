@@ -21,6 +21,7 @@ export const GlobalStyles = createGlobalStyle`
     justify-content: center;
     align-items: center;
     background-color: #eeeeee;
+
   }
 
   a {

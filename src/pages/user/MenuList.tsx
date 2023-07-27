@@ -1,11 +1,32 @@
 import React from 'react';
+import MenuItem from '../../components/MenuItem';
+import SeletedItemContainer from '../../components/SeletedItemContainer';
+import { styled } from 'styled-components';
+import MenuListHeader from '../../components/MenuListHeader';
+import { darkTheme, defaultTheme } from '../../style/theme';
 
 function MenuList() {
 	return (
-		<div>
-			<h1>메뉴 주문</h1>
-		</div>
+		<Layout>
+			<MenuListHeader />
+			<Main>
+				<MenuItem />
+				<SeletedItemContainer />
+			</Main>
+		</Layout>
 	);
 }
+
+const Layout = styled.div`
+	background-color: ${({ theme }) =>
+		theme === defaultTheme ? defaultTheme.textColor.lightgray : darkTheme.textColor.black};
+	width: 1194px;
+	height: 834px;
+`;
+const Main = styled.div`
+	position: relative;
+	display: flex;
+	justify-content: space-between;
+`;
 
 export default MenuList;
