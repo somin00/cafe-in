@@ -6,6 +6,7 @@ import AdminLogin from './pages/admin/AdminLogin';
 import AdminMenu from './pages/admin/AdminMenu';
 import WaitingManagement from './pages/admin/WaitingManagement';
 import Waiting from './pages/user/Waiting';
+import WaitingCheck from './pages/user/WaitingCheck';
 import MenuManagement from './pages/admin/MenuManagement';
 import OrderCheck from './pages/user/OrderCheck';
 import NotFound from './pages/NotFound';
@@ -25,6 +26,7 @@ function App() {
 					<Route path="/menu" element={<MenuList />} />
 					<Route path="/order" element={<OrderCheck />} />
 					<Route path="/waiting" element={<Waiting />} />
+					<Route path="/waitingcheck" element={<WaitingCheck />} />
 					<Route path="/admin/login" element={<AdminLogin />} />
 					<Route path="/admin/main" element={<AdminMenu />} />
 					<Route path="/admin/menu" element={<MenuManagement />} />

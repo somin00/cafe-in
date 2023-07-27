@@ -1,11 +1,155 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
+import { styled } from 'styled-components';
 
 function Waiting() {
+	const navigate = useNavigate();
 	return (
-		<div>
-			<h1>대기 신청 페이지</h1>
-		</div>
+		<WaitingWrapper>
+			<WaitingHeaderText>
+				649 팀이 <p> 대기중이에요</p>
+			</WaitingHeaderText>
+			<ApplicationBox>
+				<ApplicationHeaderText>대기를 원하시면 번호를 입력해주세요.</ApplicationHeaderText>
+				<NumCheckBox>
+					<MinusBtn>
+						<img alt="1 빼기 버튼" aria-label="1 빼기" />
+					</MinusBtn>
+					1
+					<PlusBtn>
+						<img alt="1 더하기 버튼" aria-label="1 더하기" />
+					</PlusBtn>
+				</NumCheckBox>
+				<InputBoxWrapper>
+					<InputBox type="text" placeholder="이름을 입력해주세요." required />
+					<InputBox type="tel" placeholder="전화 번호를 입력해주세요." required />
+				</InputBoxWrapper>
+				<ApplicationButtnoWrapper>
+					<ApplicationBtn
+						onClick={() => {
+							navigate(-1);
+						}}
+					>
+						취소
+					</ApplicationBtn>
+					<ApplicationBtn onClick={() => navigate('/waitingcheck')}>신청</ApplicationBtn>
+				</ApplicationButtnoWrapper>
+			</ApplicationBox>
+		</WaitingWrapper>
 	);
 }
 
 export default Waiting;
+
+const WaitingWrapper = styled.div`
+	width: 1194px;
+	height: 834px;
+	background-color: ${({ theme }) =>
+		theme.lightColor ? theme.lightColor?.yellow.background : theme.darkColor?.background};
+	user-select: none;
+	display: flex;
+	align-items: center;
+	flex-flow: column nowrap;
+`;
+
+const WaitingHeaderText = styled.h1`
+	width: 208px;
+	height: 96px;
+	margin-top: 56px;
+	margin-bottom: 26px;
+	display: flex;
+	flex-flow: column nowrap;
+	justify-content: center;
+	align-items: center;
+	font-weight: ${({ theme }) => theme.fontWeight.semibold};
+	font-size: ${({ theme }) => theme.fontSize['5xl']};
+	color: ${({ theme }) => (theme.lightColor ? theme.textColor.black : theme.textColor.white)};
+
+	p {
+		margin-top: 5px;
+	}
+`;
+
+const ApplicationBox = styled.div`
+	width: 628px;
+	height: 582px;
+	border-radius: 10px;
+	border: 1px solid ${({ theme }) => theme.textColor.lightgray};
+	background-color: ${({ theme }) => (theme.lightColor ? theme.textColor.white : theme.darkColor?.background)};
+	display: flex;
+	flex-flow: column nowrap;
+	align-items: center;
+	justify-content: space-around;
+`;
+
+const ApplicationHeaderText = styled.h2`
+	width: 420px;
+	height: 32px;
+	margin-top: 20px;
+	font-size: ${({ theme }) => theme.fontSize['3xl']};
+	color: ${({ theme }) => (theme.lightColor ? theme.textColor.black : theme.textColor.white)};
+`;
+
+const NumCheckBox = styled.div`
+	width: 327px;
+	height: 96px;
+	font-size: ${({ theme }) => theme.fontSize['6xl']};
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding-left: 16px;
+	padding-right: 16px;
+	color: ${({ theme }) => (theme.lightColor ? theme.textColor.black : theme.textColor.white)};
+`;
+
+const MinusBtn = styled.button`
+	img {
+		content: ${({ theme }) =>
+			theme.lightColor ? 'url(/assets/user/minusIcon_disable.svg)' : 'url(/assets/user/minusIcon_disable.svg)'};
+	}
+`;
+
+const PlusBtn = styled.button`
+	img {
+		content: ${({ theme }) =>
+			theme.lightColor ? 'url(/assets/user/plusIcon_light.svg)' : 'url(/assets/user/plusIcon_dark.svg)'};
+	}
+`;
+
+const InputBoxWrapper = styled.div`
+	width: 400px;
+`;
+const InputBox = styled.input`
+	width: 400px;
+	height: 70px;
+	border-radius: 10px;
+	background-color: ${({ theme }) => theme.textColor.lightbrown};
+	margin-bottom: 26px;
+	font-size: ${({ theme }) => theme.fontSize['2xl']};
+	border: none;
+	padding-left: 15px;
+
+	::placeholder {
+		color: ${({ theme }) => theme.textColor.darkgray};
+		font-size: ${({ theme }) => theme.fontSize['2xl']};
+	}
+`;
+
+const ApplicationButtnoWrapper = styled.div`
+	width: 359px;
+	height: 64px;
+	display: flex;
+	justify-content: space-between;
+	margin-bottom: 20px;
+`;
+
+const ApplicationBtn = styled.button`
+	width: 168px;
+	height: 64px;
+	border-radius: 10px;
+	color: ${({ theme }) => theme.textColor.white};
+
+	background-color: ${({ theme }) => (theme.lightColor ? theme.textColor.darkbrown : theme.textColor.darkgray)};
+	font-size: ${({ theme }) => theme.fontSize['2xl']};
+	font-weight: ${({ theme }) => theme.fontWeight.semibold};
+`;
