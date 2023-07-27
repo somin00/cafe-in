@@ -1,21 +1,52 @@
 import React from 'react';
 import { styled } from 'styled-components';
 
-function WaitingItem() {
-	return (
-		<WaitingItemWrapper>
-			<td width={'130px'}>111번</td>
-			<td width={'110px'}>홍길동동</td>
-			<td width={'120px'}>21명</td>
-			<td width={'250px'}>010-1234-5678</td>
-			<WatingBtnWrapper width={'300px'}>
-				<ShortBtn>알림</ShortBtn>
-				<ShortBtn>취소</ShortBtn>
-				<LongBtn>착석 완료</LongBtn>
-			</WatingBtnWrapper>
-		</WaitingItemWrapper>
-	);
-}
+type WaitingListData = {
+	id?: string;
+	no: number;
+	name: string;
+	tel: string;
+	status: string;
+	date: number;
+	personNum: number;
+};
+
+type WaitingItemProps = {
+	waitingList: WaitingListData[];
+};
+
+const WaitingItem = (props: WaitingItemProps) => {
+	const { waitingList } = props;
+	const waitingInfo = waitingList.filter((value) => value.status === 'waiting');
+
+	const formatTel = (tel: string) => {
+		const cleanNumber = tel.replace(/\D/g, '');
+		const firstPart = cleanNumber.slice(0, 3);
+		const secondPart = cleanNumber.slice(3, 7);
+		const thirdPart = cleanNumber.slice(7);
+		return `${firstPart}-${secondPart}-${thirdPart}`;
+	};
+
+	const showWaitingList = () => {
+		return waitingInfo
+			.sort((a, b) => a.no - b.no)
+			.map((value) => (
+				<WaitingItemWrapper key={value.id}>
+					<td width={'130px'}>{value.no}번</td>
+					<td width={'110px'}>{value.name}</td>
+					<td width={'120px'}>{value.personNum}명</td>
+					<td width={'250px'}>{formatTel(value.tel)}</td>
+					<WatingBtnWrapper width={'300px'}>
+						<ShortBtn>알림</ShortBtn>
+						<ShortBtn>취소</ShortBtn>
+						<LongBtn>착석 완료</LongBtn>
+					</WatingBtnWrapper>
+				</WaitingItemWrapper>
+			));
+	};
+
+	return <>{showWaitingList()}</>;
+};
 
 export default WaitingItem;
 

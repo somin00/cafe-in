@@ -1,13 +1,48 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { styled } from 'styled-components';
 import WaitingHeader from '../../components/waitingManagement/WaitingHeader';
 import WaitingItem from '../../components/waitingManagement/WaitingItem';
+import { db } from '../../firebase/firebaseConfig';
+import { collection, getDocs } from 'firebase/firestore';
 
 interface ThProps {
 	width?: string;
 }
 
+type WaitingListData = {
+	id?: string;
+	name: string;
+	tel: string;
+	status: string;
+	date: number;
+	personNum: number;
+	no: number;
+};
+
 const WaitingManagement = () => {
+	const [waitingList, setWaitingList] = useState<WaitingListData[]>([]);
+
+	useEffect(() => {
+		const waitingCollectionRef = collection(db, 'waitingList');
+		const getWaitingList = async () => {
+			try {
+				const data = await getDocs(waitingCollectionRef);
+				setWaitingList(
+					data.docs.map((doc) => ({
+						id: doc.id,
+						...(doc.data() as WaitingListData),
+					})),
+				);
+			} catch (error) {
+				console.error('Error fetching waitingList : ', error);
+			}
+		};
+		getWaitingList();
+	}, []);
+
+	const waitingInfo = waitingList.filter((value) => value.status === 'waiting');
+	const waitingNum = waitingInfo.length;
+
 	return (
 		<WaitingManagementWrapper>
 			<WaitingHeader />
@@ -40,14 +75,12 @@ const WaitingManagement = () => {
 								<ThCell width="125px">인원</ThCell>
 								<ThCell width="250px">전화번호</ThCell>
 								<ThCell width="300px">
-									현재 대기 <span>649</span>팀
+									현재 대기 <span>{waitingNum}</span>팀
 								</ThCell>
 							</TableHeader>
 						</thead>
 						<WaitingItemList>
-							<WaitingItem />
-							<WaitingItem />
-							<WaitingItem />
+							<WaitingItem waitingList={waitingList} />
 						</WaitingItemList>
 					</table>
 				</TableBox>
