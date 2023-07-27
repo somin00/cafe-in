@@ -13,19 +13,37 @@ function MenuItem() {
 	}, [isOpenModal]);
 
 	return (
-		<MenuItemWrapper onClick={onClickToggleModal}>
-			{mode === 'user' && isOpenModal && <OptionMenu onClickToggleModal={onClickToggleModal}></OptionMenu>}
-			<button>
-				<img src="/assets/user/IceCoffee.svg" alt="Ice Coffee" />
-				<p className="menu-name"> 아메리카노 [Iced]</p>
-				<p className="menu-price">4,500원</p>
-			</button>
-		</MenuItemWrapper>
+		<Layout>
+			<MenuItemWrapper onClick={onClickToggleModal}>
+				{mode === 'user' && isOpenModal && <OptionMenu onClickToggleModal={onClickToggleModal}></OptionMenu>}
+				<button>
+					<img src="/assets/user/IceCoffee.svg" alt="Ice Coffee" />
+					<p className="menu-name"> 아메리카노 [Iced]</p>
+					<p className="menu-price">4,500원</p>
+				</button>
+			</MenuItemWrapper>
+		</Layout>
 	);
 }
 
 export default MenuItem;
 
+const Layout = styled.div`
+	display: grid;
+	grid-template-columns: 1fr 1fr 1fr;
+	gap: 8px;
+	height: 830px;
+	margin: 30px 0;
+	overflow-y: auto;
+	overflow-x: hidden;
+	margin-right: 10px;
+	padding-left: 10px;
+	&::-webkit-scrollbar {
+		display: none;
+	}
+	/* Firefox */
+	scrollbar-width: none;
+`;
 const MenuItemWrapper = styled.li`
 	background-color: ${({ theme }) => theme.textColor.white};
 	border: 1px solid ${({ theme }) => theme.textColor.lightgray};
