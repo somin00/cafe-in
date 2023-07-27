@@ -34,7 +34,7 @@ function MenuListHeader() {
 	);
 }
 //prettier-ignore
-const TabButton = styled.button.attrs(props => ({ ...props, isActive: undefined }))<{ isActive: boolean }>`
+const TabButton = styled.button<{ isActive: boolean }>`
 	background-color: ${({ isActive }) => (isActive ? 'ghostwhite' : 'transparent')};
 	color: ${({ isActive }) => (isActive ? 'darkorange' : 'black')};
 	font-size: ${({ theme }) => theme.fontSize['2xl']};
