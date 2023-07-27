@@ -15,13 +15,13 @@ function MenuItem() {
 	return (
 		<Layout>
 			<MenuItemWrapper onClick={onClickToggleModal}>
-				{mode === 'user' && isOpenModal && <OptionMenu onClickToggleModal={onClickToggleModal}></OptionMenu>}
 				<button>
 					<img src="/assets/user/IceCoffee.svg" alt="Ice Coffee" />
 					<p className="menu-name"> 아메리카노 [Iced]</p>
 					<p className="menu-price">4,500원</p>
 				</button>
 			</MenuItemWrapper>
+			{mode === 'user' && isOpenModal && <OptionMenu onClickToggleModal={onClickToggleModal}></OptionMenu>}
 		</Layout>
 	);
 }
