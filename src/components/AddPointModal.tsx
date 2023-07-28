@@ -1,6 +1,6 @@
 import React, { useCallback, useState } from 'react';
 import { styled, useTheme } from 'styled-components';
-import { ModalDefaultType } from '../state/ModalOpen';
+import { ModalDefaultType } from '../types/ModalOpenTypes';
 import PointAddCheckModal from './PointAddCheckModal';
 import { darkTheme, defaultTheme } from '../style/theme';
 import Dark_PointAddCheckModal from './darkThemeModal/Dark_PointAddCheckModal';

@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from 'react';
-import { ModalDefaultType } from '../state/ModalOpen';
+import { ModalDefaultType } from '../types/ModalOpenTypes';
 import { styled } from 'styled-components';
 import CheckPointUsedIt from './CheckPointUsedIt';
 import { darkTheme, defaultTheme } from '../style/theme';
