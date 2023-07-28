@@ -1,29 +1,21 @@
 import React, { useState } from 'react';
-import { useRecoilState } from 'recoil';
+import { useRecoilState, useRecoilValue } from 'recoil';
 import { styled } from 'styled-components';
 import { selectedOptionsState, Option } from '../state/OptinalState';
 import { ModalDefaultType } from '../types/ModalOpenTypes';
-
+import { optionsState } from '../firebase/FirStoreDoc';
 function OptionMenu({ onClickToggleModal }: ModalDefaultType) {
 	const [selectedOptions, setSelectedOptions] = useRecoilState<Option[]>(selectedOptionsState);
 	const [activeOptions, setActiveOptions] = useState<string[]>([]);
-	const options: Option[] = [
-		{ category: '음료선택', name: 'HOT', price: 0 },
-		{ category: '음료선택', name: 'ICE', price: 0 },
-		{ category: '추가선택', name: '샷추가', price: 500 },
-		{ category: '추가선택', name: '시럽추가', price: 500 },
-		{ category: '농도선택', name: '연하게', price: 0 },
-		{ category: '농도선택', name: '진하게', price: 0 },
-		{ category: '농도선택', name: '얼음 많이', price: 0 },
-		{ category: '농도선택', name: '얼음적게', price: 0 },
-	];
-	const categories = options.reduce((result: Record<string, Option[]>, option) => {
-		if (!result[option.category]) {
-			result[option.category] = [];
-		}
-		result[option.category].push(option);
-		return result;
-	}, {});
+	const optionsData = useRecoilValue(optionsState);
+
+	const categories = Object.entries(optionsData).reduce(
+		(result, [category, options]) => {
+			result[category] = options;
+			return result;
+		},
+		{} as Record<string, Option[]>,
+	);
 	const handleOptionClick = (e: React.MouseEvent, option: Option) => {
 		e.preventDefault();
 

@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { styled } from 'styled-components';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
-import { modalItemId, modalState, modalTypeState, modalUpdateState } from '../../state/ModalState';
+import { modalItemId, modalState, modalTypeState, modalUpdateState } from '../../state/modalState';
 import { WaitingDataType } from '../../types/waitingDataType';
 import { db } from '../../firebase/firebaseConfig';
 import { updateDoc, doc } from 'firebase/firestore';
