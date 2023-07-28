@@ -32,12 +32,9 @@ function CategoryManagementModal({ onClickToggleModal }: ModalDefaultType) {
 				<ul>
 					<CategoryItem />
 				</ul>
-				<ButtonContainer>
-					<button type="button">완료</button>
-					<button type="button" onClick={onClickToggleModal}>
-						취소
-					</button>
-				</ButtonContainer>
+				<CloseButton type="button" onClick={onClickToggleModal}>
+					닫기
+				</CloseButton>
 			</CategoryModalContent>
 		</CategoryManagementWrapper>
 	);
@@ -107,19 +104,13 @@ const AddContainer = styled.div`
 	}
 `;
 
-const ButtonContainer = styled.div`
-	padding-left: 33px;
-
-	button {
-		width: 146px;
-		height: 57px;
-		background-color: ${({ theme }) => (theme.lightColor ? theme.lightColor?.yellow.main : theme.darkColor?.main)};
-		color: ${({ theme }) => theme.textColor.white};
-		border-radius: 10px;
-		font-size: ${({ theme }) => theme.fontSize['3xl']};
-		font-weight: ${({ theme }) => theme.fontWeight.regular};
-	}
-	button:first-child {
-		margin-right: 24px;
-	}
+const CloseButton = styled.button`
+	margin-left: 115px;
+	width: 146px;
+	height: 57px;
+	background-color: ${({ theme }) => (theme.lightColor ? theme.lightColor?.yellow.main : theme.darkColor?.main)};
+	color: ${({ theme }) => theme.textColor.white};
+	border-radius: 10px;
+	font-size: ${({ theme }) => theme.fontSize['3xl']};
+	font-weight: ${({ theme }) => theme.fontWeight.regular};
 `;
