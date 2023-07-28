@@ -6,7 +6,7 @@ export interface Option {
 	price: number;
 }
 
-export const selectedOptionsState = atom<Record<string, Option[]>>({
+export const selectedOptionsState = atom<Option[]>({
 	key: 'selectedOptionsState',
-	default: {},
+	default: [],
 });
