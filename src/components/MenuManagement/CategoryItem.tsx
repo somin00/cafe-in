@@ -1,13 +1,21 @@
 import React from 'react';
 import styled from 'styled-components';
+import { useRecoilState } from 'recoil';
+import { categoryListState } from '../../state/CategoryList';
 
 function CategoryItem() {
+	const [categoryList] = useRecoilState(categoryListState);
+
 	return (
-		<CategoryItemWrapper>
-			<span>커피</span>
-			<AddCategoryButton type="button">수정</AddCategoryButton>
-			<button type="button">삭제</button>
-		</CategoryItemWrapper>
+		<>
+			{categoryList.map(({ id, category }) => (
+				<CategoryItemWrapper key={id}>
+					<span>{category}</span>
+					<AddCategoryButton type="button">수정</AddCategoryButton>
+					<button type="button">삭제</button>
+				</CategoryItemWrapper>
+			))}
+		</>
 	);
 }
 
