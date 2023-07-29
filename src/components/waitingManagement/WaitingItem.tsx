@@ -13,10 +13,11 @@ type waitingInfoData = {
 
 type WaitingItemProps = {
 	waitingInfo: waitingInfoData[];
+	waitingDataStatus: string;
 };
 
 const WaitingItem = (props: WaitingItemProps) => {
-	const { waitingInfo } = props;
+	const { waitingInfo, waitingDataStatus } = props;
 
 	const formatTel = (tel: string) => {
 		const cleanNumber = tel.replace(/\D/g, '');
@@ -36,9 +37,15 @@ const WaitingItem = (props: WaitingItemProps) => {
 					<td width={'120px'}>{value.personNum}명</td>
 					<td width={'250px'}>{formatTel(value.tel)}</td>
 					<WatingBtnWrapper width={'300px'}>
-						<ShortBtn>알림</ShortBtn>
-						<ShortBtn>취소</ShortBtn>
-						<LongBtn>착석 완료</LongBtn>
+						{waitingDataStatus === 'waiting' ? (
+							<>
+								<ShortBtn>알림</ShortBtn>
+								<ShortBtn>취소</ShortBtn>
+								<LongBtn>착석 완료</LongBtn>
+							</>
+						) : (
+							<span>{value.status === 'seated' ? '착석 완료' : '취소'}</span>
+						)}
 					</WatingBtnWrapper>
 				</WaitingItemWrapper>
 			));
@@ -73,9 +80,10 @@ const WaitingItemWrapper = styled.tr`
 const WatingBtnWrapper = styled.td`
 	width: 300px;
 	height: 48px;
-	color: ${({ theme }) => theme.textColor.white};
+	color: ${({ theme }) => theme.textColor.black};
 	display: flex;
 	justify-content: center;
+	align-items: center;
 `;
 
 const ShortBtn = styled.button`

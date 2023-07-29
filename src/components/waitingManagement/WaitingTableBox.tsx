@@ -88,7 +88,7 @@ const WaitingTableBox = (props: waitingDataProps) => {
 					</TableHeader>
 				</thead>
 				<WaitingItemList>
-					<WaitingItem waitingInfo={waitingInfo} />
+					<WaitingItem waitingInfo={waitingInfo} waitingDataStatus={waitingDataStatus} />
 				</WaitingItemList>
 			</table>
 		</TableBox>
