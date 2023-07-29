@@ -1,11 +1,25 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import { darkTheme, defaultTheme } from '../../style/theme';
+import { useRecoilState } from 'recoil';
+import { selectedCategoryState } from '../../state/Category';
+import { getFirestore, getDocs, collection } from 'firebase/firestore';
 
 function MenuListHeader() {
-	const [activeBtn, setActiveBtn] = useState<string | null>(null);
+	const [activeBtn, setActiveBtn] = useRecoilState(selectedCategoryState);
+	const [categories, setCategories] = useState<string[]>([]);
 	const navigate = useNavigate();
+
+	useEffect(() => {
+		const loadCategories = async () => {
+			const db = getFirestore();
+			const querySnapshot = await getDocs(collection(db, 'categoryList'));
+			const loadedCategories = querySnapshot.docs.map((doc) => doc.data().category);
+			setCategories(loadedCategories);
+		};
+		loadCategories();
+	}, []);
 	return (
 		<Layout>
 			<li>
@@ -13,18 +27,11 @@ function MenuListHeader() {
 					<img src="/assets/logo.png" alt="cafe-in" width={90} />
 				</h1>
 			</li>
-			<TabButton $isActive={activeBtn === '커피'} onClick={() => setActiveBtn('커피')}>
-				커피
-			</TabButton>
-			<TabButton $isActive={activeBtn === '음료'} onClick={() => setActiveBtn('음료')}>
-				음료
-			</TabButton>
-			<TabButton $isActive={activeBtn === '티'} onClick={() => setActiveBtn('티')}>
-				티
-			</TabButton>
-			<TabButton $isActive={activeBtn === '디저트'} onClick={() => setActiveBtn('디저트')}>
-				디저트
-			</TabButton>
+			{categories.map((category) => (
+				<TabButton key={category} $isActive={activeBtn === category} onClick={() => setActiveBtn(category)}>
+					{category}
+				</TabButton>
+			))}
 			<li>
 				<button>
 					<img src="/assets/user/home_light.svg" alt="Home" width={30} onClick={() => navigate('/')} />
