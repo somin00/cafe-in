@@ -1,13 +1,94 @@
-import React from 'react';
+import React, { ChangeEvent, useCallback, useState } from 'react';
 import styled from 'styled-components';
+import { useRecoilState } from 'recoil';
+import { categoryListState } from '../../state/CategoryList';
+import { db } from '../../firebase/firebaseConfig';
+import { deleteDoc, collection, getDocs, query, where, updateDoc } from 'firebase/firestore';
 
 function CategoryItem() {
+	const categoryListRef = collection(db, 'categoryList');
+	const [categoryList] = useRecoilState(categoryListState);
+	const [editedCategoryName, setEditedCategoryName] = useState<string>('');
+	const [selectedId, setSelectedId] = useState<number>(0);
+
+	const handleDeleteCategory = useCallback(
+		async (id: number) => {
+			const data = await getDocs(query(categoryListRef, where('id', '==', id)));
+			if (data.docs.length !== 0) {
+				await deleteDoc(data.docs[0].ref);
+			}
+		},
+		[categoryListRef],
+	);
+
+	const handleEditCategoryName = useCallback((e: ChangeEvent<HTMLInputElement>) => {
+		setEditedCategoryName(e.target.value);
+	}, []);
+
+	const handleClickEditButton = useCallback((id: number) => {
+		setEditedCategoryName('');
+		setSelectedId(id);
+	}, []);
+
+	const handleStoreEdit = useCallback(
+		async (id: number) => {
+			if (!editedCategoryName.trim()) {
+				setSelectedId(0);
+				return;
+			}
+			const data = await getDocs(query(categoryListRef, where('id', '==', id)));
+			if (data.docs.length !== 0) {
+				await updateDoc(data.docs[0].ref, {
+					category: editedCategoryName,
+				});
+			}
+			setSelectedId(0);
+		},
+		[categoryListRef, editedCategoryName],
+	);
+
+	const handleDeleteEdit = useCallback(() => {
+		setSelectedId(0);
+	}, []);
+
 	return (
-		<CategoryItemWrapper>
-			<span>커피</span>
-			<AddCategoryButton type="button">수정</AddCategoryButton>
-			<button type="button">삭제</button>
-		</CategoryItemWrapper>
+		<>
+			{categoryList.map(({ id, category }) => (
+				<CategoryItemWrapper key={id} data-id={id}>
+					{id === selectedId ? (
+						<>
+							<input type="text" placeholder={category} value={editedCategoryName} onChange={handleEditCategoryName} />
+							<EditCategoryButton
+								type="button"
+								onClick={() => {
+									handleStoreEdit(id);
+								}}
+							>
+								저장
+							</EditCategoryButton>
+							<button type="button" onClick={handleDeleteEdit}>
+								취소
+							</button>
+						</>
+					) : (
+						<>
+							<span>{category}</span>
+							<EditCategoryButton type="button" onClick={() => handleClickEditButton(id)}>
+								수정
+							</EditCategoryButton>
+							<button
+								type="button"
+								onClick={() => {
+									handleDeleteCategory(id);
+								}}
+							>
+								삭제
+							</button>
+						</>
+					)}
+				</CategoryItemWrapper>
+			))}
+		</>
 	);
 }
 
@@ -16,10 +97,11 @@ export default CategoryItem;
 const CategoryItemWrapper = styled.li`
 	display: flex;
 
-	span {
+	span,
+	input {
 		display: flex;
-		justify-content: center;
 		align-items: center;
+		justify-content: flex-start;
 		width: 191px;
 		height: 57px;
 		background-color: ${({ theme }) => theme.textColor.white};
@@ -27,13 +109,14 @@ const CategoryItemWrapper = styled.li`
 		font-size: ${({ theme }) => theme.fontSize['3xl']};
 		font-weight: ${({ theme }) => theme.fontWeight.semibold};
 		border-radius: 10px;
+		padding-left: 10px;
+		border: none;
 	}
 
 	button {
 		width: 83px;
 		height: 57px;
-		/* 색상 코드 추가되면 수정 */
-		background-color: ${({ theme }) => (theme.lightColor ? theme.lightColor?.yellow.main : '#068FFF')};
+		background-color: ${({ theme }) => (theme.lightColor ? theme.lightColor?.yellow.main : theme.darkColor?.main)};
 		color: ${({ theme }) => theme.textColor.white};
 		border-radius: 10px;
 		font-size: ${({ theme }) => theme.fontSize['2xl']};
@@ -41,6 +124,6 @@ const CategoryItemWrapper = styled.li`
 	}
 `;
 
-const AddCategoryButton = styled.button`
+const EditCategoryButton = styled.button`
 	margin-right: 3px;
 `;
