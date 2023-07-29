@@ -1,30 +1,39 @@
-import React, { useState } from 'react';
-import { useRecoilState, useRecoilValue } from 'recoil';
+import React, { useEffect, useState } from 'react';
+import { useRecoilState } from 'recoil';
 import { styled } from 'styled-components';
-import { selectedOptionsState, Option } from '../state/OptinalState';
-import { ModalDefaultType } from '../state/ModalOpen';
-import { optionsState } from '../firebase/FirStoreDoc';
+import { Option } from '../state/OptinalState';
+import { ModalDefaultType } from '../types/ModalOpen';
+import { selectedOptionsState } from '../firebase/FirStoreDoc';
+import { collection, getDocs } from '@firebase/firestore';
+import { db } from '../firebase/firebaseConfig';
+import { DocumentData } from 'firebase/firestore';
 function OptionMenu({ onClickToggleModal }: ModalDefaultType) {
 	const [selectedOptions, setSelectedOptions] = useRecoilState<Option[]>(selectedOptionsState);
 	const [activeOptions, setActiveOptions] = useState<string[]>([]);
-	const optionsData = useRecoilValue(optionsState);
+	const [options, setOptions] = useState<Option[]>([]);
 
-	const categories = Object.entries(optionsData).reduce(
-		(result, [category, options]) => {
-			result[category] = options;
-			return result;
-		},
-		{} as Record<string, Option[]>,
-	);
+	useEffect(() => {
+		const fetchOptions = async () => {
+			const optionsCollection = collection(db, 'options');
+			const optionsSnapshot = await getDocs(optionsCollection);
+			setOptions(optionsSnapshot.docs.map((doc: DocumentData) => doc.data()));
+		};
+
+		fetchOptions();
+	}, []);
+
+	const categories = options.reduce((result: Record<string, Option[]>, option) => {
+		if (!result[option.category]) {
+			result[option.category] = [];
+		}
+		result[option.category].push(option);
+		return result;
+	}, {});
 	const handleOptionClick = (e: React.MouseEvent, option: Option) => {
 		e.preventDefault();
-
-		// 카테고리별로 선택되어 있는 옵션 개수를 확인
 		const selectedInCategory = selectedOptions.filter((selectedOption) => selectedOption.category === option.category);
-		// 음료선택 카테고리의 선택 제한 로직
 		if (option.category === '음료선택') {
 			if (selectedInCategory.length >= 1) {
-				// 선택된 옵션을 취소하고 새로운 옵션을 선택
 				setSelectedOptions((oldSelectedOptions) =>
 					oldSelectedOptions.filter((selectedOption) => selectedOption.category !== option.category).concat(option),
 				);
@@ -52,6 +61,7 @@ function OptionMenu({ onClickToggleModal }: ModalDefaultType) {
 		e.stopPropagation();
 		onClickToggleModal();
 	};
+
 	return (
 		<ModalContainer onClick={onClickToggleModal}>
 			<DialogBox onClick={(e) => e.stopPropagation()}>
@@ -61,7 +71,7 @@ function OptionMenu({ onClickToggleModal }: ModalDefaultType) {
 						<CheckMenuContainer key={category}>
 							<p className="category">{category}</p>
 							<div>
-								{(options as Option[]).map((option: Option) => (
+								{options.map((option: Option) => (
 									<CheckOption
 										key={option.name}
 										onClick={(e) => handleOptionClick(e, option)}
@@ -171,3 +181,6 @@ const Backdrop = styled.div`
 	background-color: rgba(0, 0, 0, 0.2);
 `;
 export default OptionMenu;
+function useFetchOptions() {
+	throw new Error('Function not implemented.');
+}

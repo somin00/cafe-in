@@ -1,6 +1,6 @@
 import React from 'react';
 import { styled } from 'styled-components';
-import { ModalandModalType } from '../state/ModalOpen';
+import { ModalandModalType } from '../types/ModalOpen';
 interface PointAddCheckModalProps extends ModalandModalType {
 	isOpenModal: boolean;
 }

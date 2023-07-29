@@ -1,5 +1,5 @@
 import React from 'react';
-import { ModalandModalType } from '../state/ModalOpen';
+import { ModalandModalType } from '../types/ModalOpen';
 import { styled, useTheme } from 'styled-components';
 import { ModalContainer } from './UsePointUser';
 import { CloseBtn, PointInput } from './AddPointModal';
