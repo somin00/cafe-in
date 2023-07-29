@@ -1,7 +1,7 @@
 import React, { ChangeEvent, useCallback, useState } from 'react';
 import { styled } from 'styled-components';
 import CategoryItem from './CategoryItem';
-import { ModalDefaultType } from '../../state/ModalOpen';
+import { ModalDefaultType } from '../../types/ModalOpenTypes';
 import { db } from '../../firebase/firebaseConfig';
 import { addDoc, collection } from 'firebase/firestore';
 function CategoryManagementModal({ onClickToggleModal }: ModalDefaultType) {
