@@ -12,7 +12,7 @@ function UsePointUser({ onClickToggleModal }: ModalDefaultType) {
 	};
 	const onClickOpenModal = useCallback(() => {
 		setModalOpen(true);
-	}, [onClickToggleModal]);
+	}, []);
 	return (
 		<ModalContainer onClick={onClickToggleModal}>
 			<DialogBox onClick={(e) => e.stopPropagation()}>

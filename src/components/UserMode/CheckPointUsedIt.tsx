@@ -1,10 +1,11 @@
 import React from 'react';
-import { ModalandModalType } from '../types/ModalOpen';
+import { ModalAndModalType } from '../../types/ModalOpen';
 import { styled, useTheme } from 'styled-components';
 import { ModalContainer } from './UsePointUser';
 import { CloseBtn, PointInput } from './AddPointModal';
-import { darkTheme, defaultTheme } from '../style/theme';
-interface CheckPointUsedIt extends ModalandModalType {
+import { darkTheme, defaultTheme } from '../../style/theme';
+interface CheckPointUsedIt extends ModalAndModalType {
+	onClickOpenModal: () => void;
 	isOpenModal: boolean;
 }
 function CheckPointUsedIt({ isOpenModal, onClickOpenModal }: CheckPointUsedIt) {

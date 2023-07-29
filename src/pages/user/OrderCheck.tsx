@@ -1,7 +1,7 @@
 import React, { useCallback, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled, { useTheme } from 'styled-components';
-import AddPointModal from '../../components/AddPointModal';
+import AddPointModal from '../../components/UserMode/AddPointModal';
 import UsePointUser from '../../components/UsePointUser';
 import { darkTheme, defaultTheme } from '../../style/theme';
 

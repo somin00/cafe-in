@@ -33,7 +33,6 @@ const WaitingModalWrapper = styled.div`
 		margin-top: 80px;
 	}
 `;
-
 const ModalBtnWrapper = styled.div`
 	width: 289px;
 	height: 65px;

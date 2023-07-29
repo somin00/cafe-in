@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { useRecoilState } from 'recoil';
 import { styled } from 'styled-components';
-import { Option } from '../state/OptinalState';
-import { ModalDefaultType } from '../types/ModalOpen';
-import { selectedOptionsState } from '../firebase/FirStoreDoc';
-import { db } from '../firebase/firebaseConfig';
+import { Option } from '../../state/OptinalState';
+import { ModalDefaultType } from '../../types/ModalOpen';
+import { selectedOptionsState } from '../../firebase/FirStoreDoc';
+import { db } from '../../firebase/firebaseConfig';
 import { collection, getDocs } from 'firebase/firestore';
 
 function OptionMenu({ onClickToggleModal }: ModalDefaultType) {
@@ -16,9 +16,18 @@ function OptionMenu({ onClickToggleModal }: ModalDefaultType) {
 		const fetchOptions = async () => {
 			const optionsCollection = collection(db, 'options');
 			const optionsSnapshot = await getDocs(optionsCollection);
-			// Suppose the first document contains the options object
+
 			if (optionsSnapshot.docs.length > 0) {
-				setOptions(optionsSnapshot.docs[0].data() as { [key: string]: Option[] });
+				const fetchedOptions = optionsSnapshot.docs[0].data() as { [key: string]: Option[] };
+
+				const customOrder = ['음료선택', '추가선택', '농도선택'];
+				const orderedOptions: { [key: string]: Option[] } = {};
+				customOrder.forEach((key) => {
+					if (key in fetchedOptions) {
+						orderedOptions[key] = fetchedOptions[key];
+					}
+				});
+				setOptions(orderedOptions);
 			}
 		};
 
