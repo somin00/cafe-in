@@ -1,25 +1,45 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import OptionMenu from './OptionMenu';
 import { useRecoilValue } from 'recoil';
 import { selectedModeState } from '../../state/Mode';
+import { Item } from '../../state/Category';
+import { collection, getDocs, query, where } from 'firebase/firestore';
+import { db } from '../../firebase/firebaseConfig';
 
 function MenuItem() {
 	const mode = useRecoilValue(selectedModeState);
 	const [isOpenModal, setModalOpen] = useState<boolean>(false);
+	const [items, setItems] = useState<Item[]>([]);
 
 	const onClickToggleModal = useCallback(() => {
 		setModalOpen(!isOpenModal);
 	}, [isOpenModal]);
+
+	useEffect(() => {
+		const fetchItems = async () => {
+			try {
+				const itemCollection = collection(db, 'menuItem');
+				const querySnapshot = await getDocs(itemCollection);
+				const loadedItems = querySnapshot.docs.map((doc) => doc.data() as Item);
+				setItems(loadedItems);
+			} catch (err) {
+				console.error(err);
+			}
+		};
+		fetchItems();
+	}, []);
 	return (
 		<>
-			<MenuItemWrapper onClick={onClickToggleModal}>
-				<button>
-					<img src="/assets/user/IceCoffee.svg" alt="Ice Coffee" />
-					<p className="menu-name"> 아메리카노 [Iced]</p>
-					<p className="menu-price">4,500원</p>
-				</button>
-			</MenuItemWrapper>
+			{items.map((item, index) => (
+				<MenuItemWrapper key={index} onClick={onClickToggleModal}>
+					<button>
+						<img src={item.img} alt={item.name} />
+						<p className="menu-name">{item.name}</p>
+						<p className="menu-price">{item.price}</p>
+					</button>
+				</MenuItemWrapper>
+			))}
 			{mode === 'user' || (isOpenModal && <OptionMenu onClickToggleModal={onClickToggleModal}></OptionMenu>)}
 		</>
 	);

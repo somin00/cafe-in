@@ -4,7 +4,8 @@ import { useNavigate } from 'react-router-dom';
 import { darkTheme, defaultTheme } from '../../style/theme';
 import { useRecoilState } from 'recoil';
 import { selectedCategoryState } from '../../state/Category';
-import { getFirestore, getDocs, collection } from 'firebase/firestore';
+import { db } from '../../firebase/firebaseConfig';
+import { getDocs, collection } from 'firebase/firestore';
 
 function MenuListHeader() {
 	const [activeBtn, setActiveBtn] = useRecoilState(selectedCategoryState);
@@ -13,7 +14,6 @@ function MenuListHeader() {
 
 	useEffect(() => {
 		const loadCategories = async () => {
-			const db = getFirestore();
 			const querySnapshot = await getDocs(collection(db, 'categoryList'));
 			const loadedCategories = querySnapshot.docs.map((doc) => doc.data().category);
 			setCategories(loadedCategories);
