@@ -10,6 +10,7 @@ function MenuItem() {
 
 	const onClickToggleModal = useCallback(() => {
 		setModalOpen(!isOpenModal);
+		console.log('isOpenModal	', isOpenModal);
 	}, [isOpenModal]);
 
 	return (

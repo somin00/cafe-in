@@ -14,10 +14,10 @@ function AddPointModal({ onClickToggleModal }: ModalDefaultType) {
 	const [isOpenModal, setModalOpen] = useState<boolean>(false);
 	const onClickOpenModal = useCallback(() => {
 		setModalOpen(true);
-		// setTimeout(() => {
-		// 	setModalOpen(!setModalOpen);
-		// 	onClickToggleModal();
-		// }, 2000); // 15 seconds
+		setTimeout(() => {
+			setModalOpen(!setModalOpen);
+			onClickToggleModal();
+		}, 2000); // 15 seconds
 	}, [onClickToggleModal]);
 
 	return (
