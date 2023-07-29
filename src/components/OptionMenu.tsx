@@ -4,31 +4,27 @@ import { styled } from 'styled-components';
 import { Option } from '../state/OptinalState';
 import { ModalDefaultType } from '../types/ModalOpen';
 import { selectedOptionsState } from '../firebase/FirStoreDoc';
-import { collection, getDocs } from '@firebase/firestore';
 import { db } from '../firebase/firebaseConfig';
-import { DocumentData } from 'firebase/firestore';
+import { collection, getDocs } from 'firebase/firestore';
+
 function OptionMenu({ onClickToggleModal }: ModalDefaultType) {
 	const [selectedOptions, setSelectedOptions] = useRecoilState<Option[]>(selectedOptionsState);
 	const [activeOptions, setActiveOptions] = useState<string[]>([]);
-	const [options, setOptions] = useState<Option[]>([]);
+	const [options, setOptions] = useState<{ [key: string]: Option[] }>({});
 
 	useEffect(() => {
 		const fetchOptions = async () => {
 			const optionsCollection = collection(db, 'options');
 			const optionsSnapshot = await getDocs(optionsCollection);
-			setOptions(optionsSnapshot.docs.map((doc: DocumentData) => doc.data()));
+			// Suppose the first document contains the options object
+			if (optionsSnapshot.docs.length > 0) {
+				setOptions(optionsSnapshot.docs[0].data() as { [key: string]: Option[] });
+			}
 		};
 
 		fetchOptions();
 	}, []);
 
-	const categories = options.reduce((result: Record<string, Option[]>, option) => {
-		if (!result[option.category]) {
-			result[option.category] = [];
-		}
-		result[option.category].push(option);
-		return result;
-	}, {});
 	const handleOptionClick = (e: React.MouseEvent, option: Option) => {
 		e.preventDefault();
 		const selectedInCategory = selectedOptions.filter((selectedOption) => selectedOption.category === option.category);
@@ -67,8 +63,8 @@ function OptionMenu({ onClickToggleModal }: ModalDefaultType) {
 			<DialogBox onClick={(e) => e.stopPropagation()}>
 				<h1>원하는 옵션을 선택해주세요</h1>
 				<Layout>
-					{Object.entries(categories).map(([category, options]) => (
-						<CheckMenuContainer key={category}>
+					{Object.entries(options).map(([category, options]) => (
+						<CheckMenuContainer key={category} onClick={() => handleOptionClick}>
 							<p className="category">{category}</p>
 							<div>
 								{options.map((option: Option) => (

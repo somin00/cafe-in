@@ -1,11 +1,11 @@
 import React, { useCallback, useState } from 'react';
-import { styled } from 'styled-components';
+import styled from 'styled-components';
 import OptionMenu from './OptionMenu';
-import { useRecoilValue } from 'recoil';
-import { selectedModeState } from '../state/Mode';
+// import { useRecoilValue } from 'recoil';
+// import { selectedModeState } from '../state/Mode';
 
 function MenuItem() {
-	const mode = useRecoilValue(selectedModeState);
+	// const mode = useRecoilValue(selectedModeState);
 	const [isOpenModal, setModalOpen] = useState<boolean>(false);
 
 	const onClickToggleModal = useCallback(() => {
@@ -22,7 +22,7 @@ function MenuItem() {
 					<p className="menu-price">4,500원</p>
 				</button>
 			</MenuItemWrapper>
-			{mode === 'user' && isOpenModal && <OptionMenu onClickToggleModal={onClickToggleModal}></OptionMenu>}
+			{<OptionMenu onClickToggleModal={onClickToggleModal}></OptionMenu>}
 		</Layout>
 	);
 }
