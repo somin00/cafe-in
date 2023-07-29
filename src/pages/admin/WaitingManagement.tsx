@@ -1,43 +1,56 @@
-import React, { useEffect, useState } from 'react';
-import { styled } from 'styled-components';
-import { Routes, Route, NavLink, Link } from 'react-router-dom';
+import React, { useState } from 'react';
+import { styled, useTheme } from 'styled-components';
+import { Routes, Route, NavLink } from 'react-router-dom';
 import WaitingHeader from '../../components/waitingManagement/WaitingHeader';
-
-import { db } from '../../firebase/firebaseConfig';
-import { collection, getDocs } from 'firebase/firestore';
-
 import WaitingTableBox from '../../components/waitingManagement/WaitingTableBox';
 
-// import WaitingItem from '../../components/waitingManagement/WaitingItem';
-
-interface ThProps {
-	width?: string;
-}
-
-type WaitingListData = {
-	id?: string;
-	name: string;
-	tel: string;
-	status: string;
-	date: number;
-	personNum: number;
-	no: number;
-};
-
 const WaitingManagement = () => {
+	const [isWaiting, setisWaiting] = useState<boolean>(true);
+
+	const theme = useTheme();
+
 	return (
 		<WaitingManagementWrapper>
 			<WaitingHeader />
 			<WaitingTableWrapper>
 				<TableMenu>
 					<ListWrapper>
-						<WaitingList to="/admin/waiting" role="button" tabIndex={0} aria-label="대기 중 명단 선택하기">
-							<img alt="선택된 체크 버튼" />
+						<WaitingList
+							to="/admin/waiting"
+							role="button"
+							tabIndex={0}
+							aria-label="대기 중 명단 선택하기"
+							onClick={() => {
+								setisWaiting(true);
+							}}
+						>
+							<img
+								alt="선택된 체크 버튼"
+								src={
+									isWaiting
+										? process.env.PUBLIC_URL +
+										  (theme.lightColor ? '/assets/admin/check-able_light.svg' : '/assets/admin/check-able_dark.svg')
+										: process.env.PUBLIC_URL + '/assets/admin/check-disable_light.svg'
+								}
+							/>
 							대기 중 명단
 						</WaitingList>
-						<WaitedList to="/admin/waiting/waitedlist" role="button" tabIndex={0} aria-label="대기 완료 명단 선택하기">
+						<WaitedList
+							to="/admin/waiting/waitedlist"
+							role="button"
+							tabIndex={0}
+							aria-label="대기 완료 명단 선택하기"
+							onClick={() => {
+								setisWaiting(false);
+							}}
+						>
 							<img
-								src={process.env.PUBLIC_URL + '/assets/admin/check-disable_light.svg'}
+								src={
+									isWaiting
+										? process.env.PUBLIC_URL + '/assets/admin/check-disable_light.svg'
+										: process.env.PUBLIC_URL +
+										  (theme.lightColor ? '/assets/admin/check-able_light.svg' : '/assets/admin/check-able_dark.svg')
+								}
 								alt="선택되지 않은 체크 버튼"
 							/>
 							대기 완료 명단
@@ -100,8 +113,6 @@ const WaitingList = styled(NavLink)`
 	color: ${({ theme }) => (theme.lightColor ? theme.textColor.black : theme.textColor.white)};
 	img {
 		margin-right: 10px;
-		content: ${({ theme }) =>
-			theme.lightColor ? 'url(/assets/admin/check-able_light.svg)' : ' url(/assets/admin/check-able_dark.svg)'};
 	}
 `;
 
@@ -109,7 +120,7 @@ const WaitedList = styled(NavLink)`
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	color: ${({ theme }) => theme.textColor.darkgray};
+	color: ${({ theme }) => (theme.lightColor ? theme.textColor.black : theme.textColor.white)};
 	img {
 		margin-right: 10px;
 	}
