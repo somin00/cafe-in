@@ -77,11 +77,11 @@ const WaitingTableBox = (props: waitingDataProps) => {
 						<ThCell width="300px">
 							{waitingDataStatus === 'waiting' ? (
 								<span>
-									현재 대기 <span>{todayWaitingNum}</span>팀
+									현재 대기 <span className="totalNum">{todayWaitingNum}</span>팀
 								</span>
 							) : (
 								<span>
-									전체 대기 팀 <span>{todayWaitingNum}</span>팀
+									전체 대기 팀 <span className="totalNum">{todayWaitingNum}</span>팀
 								</span>
 							)}
 						</ThCell>
@@ -125,7 +125,8 @@ const TableHeader = styled.tr`
 	padding-right: 40px;
 	background-color: ${({ theme }) => (theme.lightColor ? theme.lightColor.yellow.main : theme.textColor.white)};
 	border: ${({ theme }) => (theme.lightColor ? 'none' : '1px solid white')};
-	span {
+
+	span > .totalNum {
 		color: ${({ theme }) => (theme.lightColor ? theme.textColor.darkbrown : theme.darkColor?.sub)};
 	}
 `;
