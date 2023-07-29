@@ -1,8 +1,9 @@
 import React from 'react';
 import { styled } from 'styled-components';
-import { ModalandModalType } from '../../types/ModalOpenTypes';
+import { ModalAndModalType } from '../../types/ModalOpenTypes';
 import { darkTheme } from '../../style/theme';
-interface Dark_PointAddCheckModal extends ModalandModalType {
+interface Dark_PointAddCheckModal extends ModalAndModalType {
+	onClickOpenModal: () => void;
 	isOpenModal: boolean;
 }
 

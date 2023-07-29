@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
-import { darkTheme, defaultTheme } from '../style/theme';
+import { darkTheme, defaultTheme } from '../../style/theme';
 
 function MenuListHeader() {
 	const [activeBtn, setActiveBtn] = useState<string | null>(null);
