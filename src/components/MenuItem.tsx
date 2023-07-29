@@ -13,7 +13,7 @@ function MenuItem() {
 	}, [isOpenModal]);
 
 	return (
-		<Layout>
+		<>
 			<MenuItemWrapper onClick={onClickToggleModal}>
 				<button>
 					<img src="/assets/user/IceCoffee.svg" alt="Ice Coffee" />
@@ -22,28 +22,12 @@ function MenuItem() {
 				</button>
 			</MenuItemWrapper>
 			{mode === 'user' && isOpenModal && <OptionMenu onClickToggleModal={onClickToggleModal}></OptionMenu>}
-		</Layout>
+		</>
 	);
 }
 
 export default MenuItem;
 
-const Layout = styled.div`
-	display: grid;
-	grid-template-columns: 1fr 1fr 1fr;
-	gap: 8px;
-	height: 830px;
-	margin: 30px 0;
-	overflow-y: auto;
-	overflow-x: hidden;
-	margin-right: 10px;
-	padding-left: 10px;
-	&::-webkit-scrollbar {
-		display: none;
-	}
-	/* Firefox */
-	scrollbar-width: none;
-`;
 const MenuItemWrapper = styled.li`
 	background-color: ${({ theme }) => theme.textColor.white};
 	border: 1px solid ${({ theme }) => theme.textColor.lightgray};
