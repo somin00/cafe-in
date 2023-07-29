@@ -1,5 +1,5 @@
 import { collection, getDocs } from 'firebase/firestore';
-import { atom, selector } from 'recoil';
+import { atom } from 'recoil';
 import { db } from './firebaseConfig';
 import { Option } from '../state/OptinalState';
 
@@ -10,20 +10,7 @@ export const FireStoreDoc = async () => {
 
 	return menuItems;
 };
-export const optionsState = selector({
-	key: 'optionsState',
-	get: async () => {
-		const optionsRef = collection(db, 'options');
-		const optionsSnapshot = await getDocs(optionsRef);
-		if (!optionsSnapshot.docs.length) {
-			throw new Error('옵션에 데이터 없쪄 ');
-		}
-		const firstDoc = optionsSnapshot.docs[0];
-		const optionsData = firstDoc.data() as Record<string, Option[]>;
 
-		return optionsData;
-	},
-});
 export const selectedOptionsState = atom<Option[]>({
 	key: 'selectedOptionsState',
 	default: [],
