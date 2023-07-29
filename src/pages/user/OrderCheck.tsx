@@ -2,7 +2,7 @@ import React, { useCallback, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled, { useTheme } from 'styled-components';
 import AddPointModal from '../../components/UserMode/AddPointModal';
-import UsePointUser from '../../components/UsePointUser';
+import UsePointUser from '../../components/UserMode/UsePointUser';
 import { darkTheme, defaultTheme } from '../../style/theme';
 
 function OrderCheck() {

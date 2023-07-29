@@ -1,8 +1,8 @@
 import React, { useCallback, useState } from 'react';
-import { ModalDefaultType } from '../types/ModalOpen';
+import { ModalDefaultType } from '../../types/ModalOpen';
 import { styled } from 'styled-components';
 import CheckPointUsedIt from './CheckPointUsedIt';
-import { darkTheme, defaultTheme } from '../style/theme';
+import { darkTheme, defaultTheme } from '../../style/theme';
 
 function UsePointUser({ onClickToggleModal }: ModalDefaultType) {
 	const [isOpenModal, setModalOpen] = useState<boolean>(false);

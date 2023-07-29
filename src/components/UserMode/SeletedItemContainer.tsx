@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { styled } from 'styled-components';
-import { defaultTheme, darkTheme } from '../style/theme';
+import { defaultTheme, darkTheme } from '../../style/theme';
 
 function SeletedItemContainer() {
 	const navigate = useNavigate();

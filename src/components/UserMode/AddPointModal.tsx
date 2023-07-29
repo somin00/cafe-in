@@ -1,7 +1,7 @@
 import React, { useCallback, useState } from 'react';
 import { styled, useTheme } from 'styled-components';
 import { ModalDefaultType } from '../../types/ModalOpen';
-import PointAddCheckModal from './PointAddCheckModal';
+import PointAddCheckModal from '../UserMode/PointAddCheckModal';
 import { darkTheme, defaultTheme } from '../../style/theme';
 import Dark_PointAddCheckModal from '../darkThemeModal/Dark_PointAddCheckModal';
 
