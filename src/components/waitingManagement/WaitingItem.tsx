@@ -1,7 +1,7 @@
 import React from 'react';
 import { styled } from 'styled-components';
 
-type WaitingListData = {
+type waitingInfoData = {
 	id?: string;
 	no: number;
 	name: string;
@@ -12,12 +12,11 @@ type WaitingListData = {
 };
 
 type WaitingItemProps = {
-	waitingList: WaitingListData[];
+	waitingInfo: waitingInfoData[];
 };
 
 const WaitingItem = (props: WaitingItemProps) => {
-	const { waitingList } = props;
-	const waitingInfo = waitingList.filter((value) => value.status === 'waiting');
+	const { waitingInfo } = props;
 
 	const formatTel = (tel: string) => {
 		const cleanNumber = tel.replace(/\D/g, '');
