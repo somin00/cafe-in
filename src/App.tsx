@@ -32,6 +32,7 @@ function App() {
 						<Route path="/waitingcheck" element={<WaitingCheck />} />
 						<Route path="/admin/login" element={<AdminLogin />} />
 						<Route path="/admin/main" element={<AdminMenu />} />
+						<Route path="/admin" element={<Navigate replace to="/admin/main" />} />
 						<Route path="/admin/menu" element={<MenuManagement />} />
 						<Route path="/admin/waiting/*" element={<WaitingManagement />} />
 					</Routes>
