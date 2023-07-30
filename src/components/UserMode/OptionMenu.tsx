@@ -64,7 +64,6 @@ function OptionMenu({ onClickToggleModal }: ModalDefaultType) {
 
 	const handleCloseBtnClick = (e: React.MouseEvent) => {
 		e.stopPropagation();
-
 		onClickToggleModal();
 	};
 

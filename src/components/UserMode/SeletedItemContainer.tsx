@@ -1,35 +1,52 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { styled } from 'styled-components';
 import { defaultTheme, darkTheme } from '../../style/theme';
 import { useRecoilValue } from 'recoil';
-import { selectedOptionsState } from '../../firebase/FirStoreDoc';
+import { fetchSelectedItems, selectedOptionsState } from '../../firebase/FirStoreDoc';
+import { db } from '../../firebase/firebaseConfig';
+import { seletedItem } from '../../state/OptinalState';
+import { Firestore, collection, getDocs } from 'firebase/firestore';
 
 function SeletedItemContainer() {
 	const selectedOptions = useRecoilValue(selectedOptionsState);
 	const navigate = useNavigate();
-	const [selectedItems, setSelectedItems] = useState([
-		{ name: '아메리카노', count: 1, price: 4500 },
-		{ name: '캬라멜마끼아또', count: 1, price: 5500 },
-		{ name: '카페라떼', count: 1, price: 5000 },
-	]);
+	const [selectedItems, setSelectedItems] = useState<seletedItem[]>([]);
+	const fetchSelectedItems = async (db: Firestore) => {
+		const selectedItemsCol = collection(db, 'seletedItem');
+		const selectedItemsSnapshot = await getDocs(selectedItemsCol);
+		const selectedItems: seletedItem[] = selectedItemsSnapshot.docs.map(
+			(doc) => ({ ...doc.data(), id: doc.id }) as seletedItem,
+		);
+		return selectedItems;
+	};
+	useEffect(() => {
+		const fetchData = async () => {
+			const data = await fetchSelectedItems(db);
+			setSelectedItems(data);
+		};
+
+		fetchData();
+	}, []);
 	const handleItemDelete = (itemName: string) => {
-		setSelectedItems((prevItems) => prevItems.filter((item) => item.name !== itemName));
+		setSelectedItems((prevItems) => prevItems.filter((item) => item.menu !== itemName));
 	};
 
 	const handleIncreaseCount = (itemName: string) => {
 		setSelectedItems((prevItems) =>
-			prevItems.map((item) => (item.name === itemName ? { ...item, count: item.count + 1 } : item)),
+			prevItems.map((item) => (item.menu === itemName ? { ...item, count: item.quantity + 1 } : item)),
 		);
 	};
 
 	const handleDecreaseCount = (itemName: string) => {
 		setSelectedItems((prevItems) =>
-			prevItems.map((item) => (item.name === itemName && item.count > 1 ? { ...item, count: item.count - 1 } : item)),
+			prevItems.map((item) =>
+				item.menu === itemName && item.quantity > 1 ? { ...item, count: item.quantity - 1 } : item,
+			),
 		);
 	};
 
-	const totalPrice = selectedItems.reduce((acc, item) => acc + item.price * item.count, 0);
+	const totalPrice = selectedItems.reduce((acc, item) => acc + item.totalPrice * item.quantity, 0);
 
 	const handleDeleteAll = () => {
 		setSelectedItems([]);
@@ -40,23 +57,23 @@ function SeletedItemContainer() {
 			<Layout>
 				<MenuSeletedContainer>
 					{selectedItems.map((item) => (
-						<SeletedItem key={item.name}>
-							<p>{item.name}</p>
+						<SeletedItem key={item.menu}>
+							<p>{item.menu}</p>
 							<div className="counter">
 								<button
-									className={item.count > 1 ? 'minus active' : 'minus'}
-									onClick={() => handleDecreaseCount(item.name)}
+									className={item.quantity > 1 ? 'minus active' : 'minus'}
+									onClick={() => handleDecreaseCount(item.menu)}
 								>
 									-
 								</button>
-								<p>x{item.count}</p>
-								<button className="plus" onClick={() => handleIncreaseCount(item.name)}>
+								<p>x{item.quantity}</p>
+								<button className="plus" onClick={() => handleIncreaseCount(item.menu)}>
 									+
 								</button>
 							</div>
 							<div className="price">
-								<p>{(item.price * item.count).toLocaleString()}원</p>
-								<button className="delete" onClick={() => handleItemDelete(item.name)}>
+								<p>{(item.totalPrice * item.quantity).toLocaleString()}원</p>
+								<button className="delete" onClick={() => handleItemDelete(item.menu)}>
 									x
 								</button>
 							</div>

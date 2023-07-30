@@ -16,3 +16,8 @@ export interface Category {
 	id: string;
 	category: string;
 }
+
+export const selectedItemsState = atom({
+	key: 'selectedItemsState',
+	default: [],
+});
