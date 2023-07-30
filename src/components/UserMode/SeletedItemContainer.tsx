@@ -2,8 +2,11 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { styled } from 'styled-components';
 import { defaultTheme, darkTheme } from '../../style/theme';
+import { useRecoilValue } from 'recoil';
+import { selectedOptionsState } from '../../firebase/FirStoreDoc';
 
 function SeletedItemContainer() {
+	const selectedOptions = useRecoilValue(selectedOptionsState);
 	const navigate = useNavigate();
 	const [selectedItems, setSelectedItems] = useState([
 		{ name: '아메리카노', count: 1, price: 4500 },
@@ -30,6 +33,7 @@ function SeletedItemContainer() {
 
 	const handleDeleteAll = () => {
 		setSelectedItems([]);
+		console.log('선택된 옵션들: ', selectedOptions);
 	};
 	return (
 		<Background>
@@ -57,7 +61,9 @@ function SeletedItemContainer() {
 								</button>
 							</div>
 							<div className="options-seleted">
-								<p>안녕하세요</p>
+								{selectedOptions.map((option, index) => (
+									<p key={index}>{option.name}</p>
+								))}
 							</div>
 						</SeletedItem>
 					))}
