@@ -41,6 +41,9 @@ function OrderCheck() {
 		};
 		getOrderList();
 	}, []);
+
+	const totalOrderAmount = orderList.reduce((acc, order) => acc + order.totalPrice * order.quantity, 0);
+
 	return (
 		<Layout>
 			<Header>
@@ -77,7 +80,7 @@ function OrderCheck() {
 					<TotalPrice>
 						<div>
 							<h2>주문금액</h2>
-							<p>2131223123원</p>
+							<p>{totalOrderAmount.toLocaleString()}원</p>
 						</div>
 						<div>
 							<h2>포인트 사용</h2>
