@@ -4,7 +4,7 @@ import { useRecoilState, useRecoilValue } from 'recoil';
 import { modalItemId, modalState, modalTypeState, modalUpdateState } from '../../state/modalState';
 
 import { db } from '../../firebase/firebaseConfig';
-import { addDoc, deleteDoc, updateDoc, doc, collection, getDocs } from 'firebase/firestore';
+import { updateDoc, doc } from 'firebase/firestore';
 
 type waitingInfoData = {
 	id?: string;
@@ -21,19 +21,6 @@ type WaitingItemProps = {
 	waitingDataStatus: string;
 };
 
-// Update status
-
-const updateStatus = async (id: string, type: string) => {
-	const statusDoc = doc(db, 'waitingList', id);
-	try {
-		const res = await updateDoc(statusDoc, { status: type });
-	} catch (e) {
-		console.log(e);
-	}
-};
-
-// updateStatus('v8zG9vX85D9b7WeL96nN', 'seated');
-
 const WaitingItem = (props: WaitingItemProps) => {
 	const { waitingInfo, waitingDataStatus } = props;
 	const [isOpenModal, setIsOpenModal] = useRecoilState<boolean>(modalState);
@@ -42,6 +29,17 @@ const WaitingItem = (props: WaitingItemProps) => {
 	const modalUpdate = useRecoilValue<boolean>(modalUpdateState);
 
 	// 모달창에서 예를 클릭했을 때 업데이트 (취소, 착석완료만)
+
+	// Update status
+	const updateStatus = async (id: string, type: string) => {
+		const statusDoc = doc(db, 'waitingList', id);
+		try {
+			await updateDoc(statusDoc, { status: type });
+		} catch (e) {
+			console.log(e);
+		}
+	};
+
 	if (itemId && modalUpdate && modalType !== 'notification') {
 		updateStatus(itemId, modalType);
 	}
