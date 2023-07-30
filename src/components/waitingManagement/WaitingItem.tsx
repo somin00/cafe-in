@@ -2,22 +2,13 @@ import React from 'react';
 import { styled } from 'styled-components';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import { modalItemId, modalState, modalTypeState, modalUpdateState } from '../../state/modalState';
+import { WaitingDataType } from '../../types/waitingDataType';
 
 import { db } from '../../firebase/firebaseConfig';
 import { updateDoc, doc } from 'firebase/firestore';
 
-type waitingInfoData = {
-	id?: string;
-	no: number;
-	name: string;
-	tel: string;
-	status: string;
-	date: number;
-	personNum: number;
-};
-
 type WaitingItemProps = {
-	waitingInfo: waitingInfoData[];
+	waitingInfo: WaitingDataType[];
 	waitingDataStatus: string;
 };
 

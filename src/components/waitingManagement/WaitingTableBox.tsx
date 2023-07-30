@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { styled } from 'styled-components';
 import WaitingItem from './WaitingItem';
+import { WaitingDataType } from '../../types/waitingDataType';
 
 import { db } from '../../firebase/firebaseConfig';
 import { collection, getDocs } from 'firebase/firestore';
@@ -13,19 +14,9 @@ type waitingDataProps = {
 	waitingDataStatus: string;
 };
 
-type WaitingListData = {
-	id?: string;
-	name: string;
-	tel: string;
-	status: string;
-	date: number;
-	personNum: number;
-	no: number;
-};
-
 const WaitingTableBox = (props: waitingDataProps) => {
 	const { waitingDataStatus } = props;
-	const [waitingList, setWaitingList] = useState<WaitingListData[]>([]);
+	const [waitingList, setWaitingList] = useState<WaitingDataType[]>([]);
 
 	useEffect(() => {
 		const waitingCollectionRef = collection(db, 'waitingList');
@@ -35,7 +26,7 @@ const WaitingTableBox = (props: waitingDataProps) => {
 				setWaitingList(
 					data.docs.map((doc) => ({
 						id: doc.id,
-						...(doc.data() as WaitingListData),
+						...(doc.data() as WaitingDataType),
 					})),
 				);
 			} catch (error) {
@@ -55,7 +46,7 @@ const WaitingTableBox = (props: waitingDataProps) => {
 			new Date(value.date).getFullYear() === today.getFullYear(),
 	);
 
-	let waitingInfo: WaitingListData[] = [];
+	let waitingInfo: WaitingDataType[] = [];
 
 	if (waitingDataStatus === 'waiting') {
 		waitingInfo = todayWaiting.filter((value) => value.status === 'waiting');
