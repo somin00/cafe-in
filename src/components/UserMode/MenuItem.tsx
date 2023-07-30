@@ -3,12 +3,13 @@ import styled from 'styled-components';
 import OptionMenu from './OptionMenu';
 import { useRecoilValue } from 'recoil';
 import { selectedModeState } from '../../state/Mode';
-import { Item } from '../../state/Category';
+import { Item, selectedCategoryState } from '../../state/Category';
 import { collection, getDocs, query, where } from 'firebase/firestore';
 import { db } from '../../firebase/firebaseConfig';
 
 function MenuItem() {
 	const mode = useRecoilValue(selectedModeState);
+	const selectedCategory = useRecoilValue(selectedCategoryState);
 	const [isOpenModal, setModalOpen] = useState<boolean>(false);
 	const [items, setItems] = useState<Item[]>([]);
 
@@ -20,7 +21,13 @@ function MenuItem() {
 		const fetchItems = async () => {
 			try {
 				const itemCollection = collection(db, 'menuItem');
-				const querySnapshot = await getDocs(itemCollection);
+				let itemsQuery;
+				if (selectedCategory) {
+					itemsQuery = query(itemCollection, where('category', '==', selectedCategory));
+				} else {
+					itemsQuery = itemCollection;
+				}
+				const querySnapshot = await getDocs(itemsQuery);
 				const loadedItems = querySnapshot.docs.map((doc) => doc.data() as Item);
 				setItems(loadedItems);
 			} catch (err) {
@@ -28,7 +35,7 @@ function MenuItem() {
 			}
 		};
 		fetchItems();
-	}, []);
+	}, [selectedCategory]);
 	return (
 		<>
 			{items.map((item, index) => (

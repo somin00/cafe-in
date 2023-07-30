@@ -64,6 +64,8 @@ function OptionMenu({ onClickToggleModal }: ModalDefaultType) {
 
 	const handleCloseBtnClick = (e: React.MouseEvent) => {
 		e.stopPropagation();
+		console.log('선택된 옵션들: ', selectedOptions);
+
 		onClickToggleModal();
 	};
 
@@ -186,6 +188,3 @@ const Backdrop = styled.div`
 	background-color: rgba(0, 0, 0, 0.2);
 `;
 export default OptionMenu;
-function useFetchOptions() {
-	throw new Error('Function not implemented.');
-}

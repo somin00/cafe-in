@@ -56,6 +56,9 @@ function SeletedItemContainer() {
 									x
 								</button>
 							</div>
+							<div className="options-seleted">
+								<p>안녕하세요</p>
+							</div>
 						</SeletedItem>
 					))}
 				</MenuSeletedContainer>
