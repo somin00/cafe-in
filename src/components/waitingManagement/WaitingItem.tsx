@@ -1,6 +1,6 @@
 import React from 'react';
 import { styled } from 'styled-components';
-import { useRecoilState, useRecoilValue } from 'recoil';
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import { modalItemId, modalState, modalTypeState, modalUpdateState } from '../../state/modalState';
 
 import { db } from '../../firebase/firebaseConfig';
@@ -23,7 +23,7 @@ type WaitingItemProps = {
 
 const WaitingItem = (props: WaitingItemProps) => {
 	const { waitingInfo, waitingDataStatus } = props;
-	const [isOpenModal, setIsOpenModal] = useRecoilState<boolean>(modalState);
+	const setIsOpenModal = useSetRecoilState<boolean>(modalState);
 	const [modalType, setModalType] = useRecoilState<string>(modalTypeState);
 	const [itemId, setItemId] = useRecoilState<string | undefined>(modalItemId);
 	const modalUpdate = useRecoilValue<boolean>(modalUpdateState);

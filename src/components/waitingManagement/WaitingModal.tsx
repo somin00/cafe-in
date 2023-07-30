@@ -1,7 +1,7 @@
 import React from 'react';
 import { styled } from 'styled-components';
-import { useRecoilState } from 'recoil';
-import { modalItemId, modalState, modalTypeState, modalUpdateState } from '../../state/modalState';
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
+import { modalState, modalTypeState, modalUpdateState } from '../../state/modalState';
 
 type modalProps = {
 	closeModal?: () => void;
@@ -10,9 +10,9 @@ type modalProps = {
 function WaitingModal({ closeModal }: modalProps) {
 	const [isOpenModal, setIsOpenModal] = useRecoilState<boolean>(modalState);
 
-	const [modalType, setModalType] = useRecoilState<string>(modalTypeState);
+	const modalType = useRecoilValue<string>(modalTypeState);
 
-	const [modalUpdate, setModalUpdate] = useRecoilState<boolean>(modalUpdateState);
+	const setModalUpdate = useSetRecoilState<boolean>(modalUpdateState);
 
 	return (
 		<>
