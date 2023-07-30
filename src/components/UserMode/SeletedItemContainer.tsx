@@ -65,10 +65,10 @@ function SeletedItemContainer() {
 				category: item.category,
 				data: new Date(),
 				name: item.name,
-				options: item.options ? item.options.join(',') : '없음',
+				options: item.options,
 				progress: '완료주문',
 				quantity: item.quantity,
-				totalPrice: item.totalPrice,
+				totalPrice: item.price * item.quantity,
 			};
 
 			await addDoc(collection(db, 'orderList'), newOrder);
