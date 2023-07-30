@@ -1,7 +1,10 @@
 import React from 'react';
 import { styled } from 'styled-components';
-import { useRecoilState } from 'recoil';
-import { modalState, modalTypeState } from '../../state/modalState';
+import { useRecoilState, useRecoilValue } from 'recoil';
+import { modalItemId, modalState, modalTypeState, modalUpdateState } from '../../state/modalState';
+
+import { db } from '../../firebase/firebaseConfig';
+import { addDoc, deleteDoc, updateDoc, doc, collection, getDocs } from 'firebase/firestore';
 
 type waitingInfoData = {
 	id?: string;
@@ -18,12 +21,30 @@ type WaitingItemProps = {
 	waitingDataStatus: string;
 };
 
+// Update status
+
+const updateStatus = async (id: string, type: string) => {
+	const statusDoc = doc(db, 'waitingList', id);
+	try {
+		const res = await updateDoc(statusDoc, { status: type });
+	} catch (e) {
+		console.log(e);
+	}
+};
+
+// updateStatus('v8zG9vX85D9b7WeL96nN', 'seated');
+
 const WaitingItem = (props: WaitingItemProps) => {
 	const { waitingInfo, waitingDataStatus } = props;
-
 	const [isOpenModal, setIsOpenModal] = useRecoilState<boolean>(modalState);
-
 	const [modalType, setModalType] = useRecoilState<string>(modalTypeState);
+	const [itemId, setItemId] = useRecoilState<string | undefined>(modalItemId);
+	const modalUpdate = useRecoilValue<boolean>(modalUpdateState);
+
+	// 모달창에서 예를 클릭했을 때 업데이트 (취소, 착석완료만)
+	if (itemId && modalUpdate && modalType !== 'notification') {
+		updateStatus(itemId, modalType);
+	}
 
 	const formatTel = (tel: string) => {
 		const cleanNumber = tel.replace(/\D/g, '');
@@ -49,6 +70,7 @@ const WaitingItem = (props: WaitingItemProps) => {
 									onClick={() => {
 										setIsOpenModal(true);
 										setModalType('notification');
+										setItemId(value.id);
 									}}
 								>
 									알림
@@ -57,6 +79,7 @@ const WaitingItem = (props: WaitingItemProps) => {
 									onClick={() => {
 										setIsOpenModal(true);
 										setModalType('cancel');
+										setItemId(value.id);
 									}}
 								>
 									취소
@@ -65,6 +88,7 @@ const WaitingItem = (props: WaitingItemProps) => {
 									onClick={() => {
 										setIsOpenModal(true);
 										setModalType('seated');
+										setItemId(value.id);
 									}}
 								>
 									착석 완료

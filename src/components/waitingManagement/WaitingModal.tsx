@@ -1,7 +1,7 @@
 import React from 'react';
 import { styled } from 'styled-components';
 import { useRecoilState } from 'recoil';
-import { modalState, modalTypeState } from '../../state/modalState';
+import { modalItemId, modalState, modalTypeState, modalUpdateState } from '../../state/modalState';
 
 type modalProps = {
 	closeModal?: () => void;
@@ -11,6 +11,8 @@ function WaitingModal({ closeModal }: modalProps) {
 	const [isOpenModal, setIsOpenModal] = useRecoilState<boolean>(modalState);
 
 	const [modalType, setModalType] = useRecoilState<string>(modalTypeState);
+
+	const [modalUpdate, setModalUpdate] = useRecoilState<boolean>(modalUpdateState);
 
 	return (
 		<>
@@ -24,8 +26,22 @@ function WaitingModal({ closeModal }: modalProps) {
 					<h1>착석 완료를 선택하시겠습니까?</h1>
 				)}
 				<ModalBtnWrapper>
-					<ModalBtn onClick={() => setIsOpenModal(false)}>예</ModalBtn>
-					<ModalBtn onClick={() => setIsOpenModal(false)}>아니오</ModalBtn>
+					<ModalBtn
+						onClick={() => {
+							setIsOpenModal(false);
+							setModalUpdate(true);
+						}}
+					>
+						예
+					</ModalBtn>
+					<ModalBtn
+						onClick={() => {
+							setIsOpenModal(false);
+							setModalUpdate(false);
+						}}
+					>
+						아니오
+					</ModalBtn>
 				</ModalBtnWrapper>
 			</WaitingModalWrapper>
 		</>

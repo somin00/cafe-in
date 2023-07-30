@@ -7,5 +7,15 @@ export const modalState = atom<boolean>({
 
 export const modalTypeState = atom<string>({
 	key: 'modalTypeState',
-	default: 'notification',
+	default: '',
+});
+
+export const modalItemId = atom<string | undefined>({
+	key: 'modalItemId',
+	default: '',
+});
+
+export const modalUpdateState = atom<boolean>({
+	key: 'modalUpdate',
+	default: false,
 });
