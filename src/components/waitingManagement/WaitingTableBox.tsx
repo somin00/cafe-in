@@ -5,6 +5,7 @@ import { WaitingDataType } from '../../types/waitingDataType';
 
 import { db } from '../../firebase/firebaseConfig';
 import { collection, getDocs } from 'firebase/firestore';
+import { filterTodayWaiting } from '../../utils/filter';
 
 interface ThProps {
 	width?: string;
@@ -36,23 +37,9 @@ const WaitingTableBox = (props: waitingDataProps) => {
 		getWaitingList();
 	}, []);
 
-	//* 당일 날짜의 대기만 출력
-	const today = new Date();
-	today.setHours(0, 0, 0, 0); // 시간, 분, 초, 밀리초를 0으로 설정하여 날짜만 비교하도록 함
-	const todayWaiting = waitingList.filter(
-		(value) =>
-			new Date(value.date).getDate() === today.getDate() &&
-			new Date(value.date).getMonth() === today.getMonth() &&
-			new Date(value.date).getFullYear() === today.getFullYear(),
-	);
+	//* 당일 날짜 + 선택한 status(waitingDataStatus)에 따라 해당 status의 data만 저장해서 리턴하는 함수
 
-	let waitingInfo: WaitingDataType[] = [];
-
-	if (waitingDataStatus === 'waiting') {
-		waitingInfo = todayWaiting.filter((value) => value.status === 'waiting');
-	} else if (waitingDataStatus === 'waited') {
-		waitingInfo = todayWaiting.filter((value) => value.status === 'seated' || value.status === 'cancel');
-	}
+	const waitingInfo = filterTodayWaiting(waitingList, waitingDataStatus);
 
 	const todayWaitingNum = waitingInfo.length;
 
