@@ -64,7 +64,6 @@ function OptionMenu({ onClickToggleModal }: ModalDefaultType) {
 
 	const handleCloseBtnClick = (e: React.MouseEvent) => {
 		e.stopPropagation();
-		console.log('선택된 옵션들: ', selectedOptions);
 
 		onClickToggleModal();
 	};
