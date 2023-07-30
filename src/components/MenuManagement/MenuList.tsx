@@ -1,13 +1,14 @@
 import React from 'react';
 import styled from 'styled-components';
 import MenuItem from '../MenuItem';
+import { MenuType } from '../../types/menuMangementType';
 
-function MenuList() {
-	return (
-		<MenuListWrapper>
-			<MenuItem />
-		</MenuListWrapper>
-	);
+interface ListPropType {
+	list: MenuType[] | null;
+}
+
+function MenuList({ list }: ListPropType) {
+	return <MenuListWrapper>{list?.map((item) => <MenuItem key={item.id} menu={item} />)}</MenuListWrapper>;
 }
 
 export default MenuList;

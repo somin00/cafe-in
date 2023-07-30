@@ -5,10 +5,11 @@ import CategoryList from '../../components/MenuManagement/CategoryList';
 import MenuList from '../../components/MenuManagement/MenuList';
 import { db } from '../../firebase/firebaseConfig';
 import { collection, onSnapshot, orderBy, query } from 'firebase/firestore';
-import { useSetRecoilState } from 'recoil';
-import { categoryListState } from '../../state/CategoryList';
+import { useRecoilValue, useSetRecoilState } from 'recoil';
+import { categoryListState, selectedCategoryState } from '../../state/CategoryList';
 import { CategoryType, MenuType } from '../../types/menuMangementType';
 function MenuManagement() {
+	const selectedCategory = useRecoilValue(selectedCategoryState);
 	const setCategoryList = useSetRecoilState(categoryListState);
 	const [menuList, setMenuList] = useState<MenuType[] | null>([]);
 
@@ -29,7 +30,7 @@ function MenuManagement() {
 			return unsub;
 		};
 		fetchCategory();
-	}, [onSnapshot]);
+	}, [setCategoryList]);
 
 	useEffect(() => {
 		const fetchMenu = async () => {
@@ -48,12 +49,13 @@ function MenuManagement() {
 						imageName,
 					});
 				});
-				setMenuList(list);
+				const filteredList = list.filter((item) => item.category === selectedCategory);
+				setMenuList(filteredList);
 			});
 			return unsub;
 		};
 		fetchMenu();
-	}, [onSnapshot]);
+	}, [selectedCategory]);
 
 	return (
 		<MenuManagementWrapper>

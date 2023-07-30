@@ -1,16 +1,20 @@
 import React, { ChangeEvent, useRef, useState } from 'react';
 import styled from 'styled-components';
 import { ModalInputPropType } from '../../types/menuMangementType';
+import { useRecoilValue } from 'recoil';
+import { categoryListState } from '../../state/CategoryList';
 
 function ModalInput({ menuInfo, setMenuState, setFile }: ModalInputPropType) {
 	// props 전달 내용이 있다면 수정 모달
 
 	const [imgSrc, setImgSrc]: any = useState('');
 
+	const categoryList = useRecoilValue(categoryListState);
+
 	const instockRef = useRef<HTMLButtonElement>(null);
 	const soldoutRef = useRef<HTMLButtonElement>(null);
 
-	const handleChangeInput = (e: ChangeEvent<HTMLInputElement>) => {
+	const handleChangeInput = (e: ChangeEvent<HTMLInputElement> | ChangeEvent<HTMLSelectElement>) => {
 		const { name, value } = e.target;
 		setMenuState({
 			...menuInfo,
@@ -40,10 +44,9 @@ function ModalInput({ menuInfo, setMenuState, setFile }: ModalInputPropType) {
 		const files = e.target.files as FileList;
 		if (!files) return;
 		const file = files[0];
-		const date = Date.now();
-		const fileName = `${date}${file.name}`;
+		const fileName = `${Date.now()}${file.name}`;
 		setFile(file);
-		setMenuState({ ...menuInfo, id: date, imageName: fileName });
+		setMenuState({ ...menuInfo, imageName: fileName });
 
 		const reader = new FileReader();
 		reader.readAsDataURL(file);
@@ -93,7 +96,13 @@ function ModalInput({ menuInfo, setMenuState, setFile }: ModalInputPropType) {
 					</li>
 					<li>
 						<label htmlFor="category">카테고리</label>
-						<input type="text" name="category" id="category" value={menuInfo.category} onChange={handleChangeInput} />
+						<select name="category" id="category" value={menuInfo.category} onChange={handleChangeInput}>
+							{categoryList.map((category) => (
+								<option key={category.id} value={category.category}>
+									{category.category}
+								</option>
+							))}
+						</select>
 					</li>
 					<li>
 						<InventoryButton type="button" ref={instockRef} className="is-selected" onClick={handleClickInStockButton}>
@@ -201,6 +210,15 @@ const InputList = styled.ul`
 	}
 
 	input {
+		width: 291px;
+		height: 66px;
+		border: none;
+		border-radius: 10px;
+		padding-left: 8px;
+		font-size: ${({ theme }) => theme.fontSize['2xl']};
+	}
+
+	select {
 		width: 291px;
 		height: 66px;
 		border: none;
