@@ -1,16 +1,26 @@
 import React, { useState } from 'react';
 import { styled, useTheme } from 'styled-components';
 import { Routes, Route, NavLink } from 'react-router-dom';
+import { useRecoilState } from 'recoil';
+import { modalState } from '../../state/modalState';
+
 import WaitingHeader from '../../components/waitingManagement/WaitingHeader';
 import WaitingTableBox from '../../components/waitingManagement/WaitingTableBox';
+import WaitingModal from '../../components/waitingManagement/WaitingModal';
 
 const WaitingManagement = () => {
 	const [isWaiting, setisWaiting] = useState<boolean>(true);
+	const [isOpenModal, setIsOpenModal] = useRecoilState<boolean>(modalState);
+
+	const closeModal = () => {
+		setIsOpenModal(false);
+	};
 
 	const theme = useTheme();
 
 	return (
 		<WaitingManagementWrapper>
+			{isOpenModal && <WaitingModal closeModal={closeModal} />}
 			<WaitingHeader />
 			<WaitingTableWrapper>
 				<TableMenu>
@@ -77,6 +87,7 @@ const WaitingManagementWrapper = styled.div`
 	height: 834px;
 	background-color: ${({ theme }) => (theme.lightColor ? theme.textColor.white : theme.darkColor?.background)};
 	user-select: none;
+	position: relative;
 `;
 
 const WaitingTableWrapper = styled.div`

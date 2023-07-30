@@ -1,5 +1,7 @@
 import React from 'react';
 import { styled } from 'styled-components';
+import { useRecoilState } from 'recoil';
+import { modalState, modalTypeState } from '../../state/modalState';
 
 type waitingInfoData = {
 	id?: string;
@@ -18,6 +20,10 @@ type WaitingItemProps = {
 
 const WaitingItem = (props: WaitingItemProps) => {
 	const { waitingInfo, waitingDataStatus } = props;
+
+	const [isOpenModal, setIsOpenModal] = useRecoilState<boolean>(modalState);
+
+	const [modalType, setModalType] = useRecoilState<string>(modalTypeState);
 
 	const formatTel = (tel: string) => {
 		const cleanNumber = tel.replace(/\D/g, '');
@@ -39,9 +45,30 @@ const WaitingItem = (props: WaitingItemProps) => {
 					<WatingBtnWrapper width={'300px'}>
 						{waitingDataStatus === 'waiting' ? (
 							<>
-								<ShortBtn>알림</ShortBtn>
-								<ShortBtn>취소</ShortBtn>
-								<LongBtn>착석 완료</LongBtn>
+								<ShortBtn
+									onClick={() => {
+										setIsOpenModal(true);
+										setModalType('notification');
+									}}
+								>
+									알림
+								</ShortBtn>
+								<ShortBtn
+									onClick={() => {
+										setIsOpenModal(true);
+										setModalType('cancel');
+									}}
+								>
+									취소
+								</ShortBtn>
+								<LongBtn
+									onClick={() => {
+										setIsOpenModal(true);
+										setModalType('seated');
+									}}
+								>
+									착석 완료
+								</LongBtn>
 							</>
 						) : (
 							<span>{value.status === 'seated' ? '착석 완료' : '취소'}</span>
