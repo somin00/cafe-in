@@ -2,9 +2,17 @@ export interface Option {
 	category: string;
 	name: string;
 	price: number;
+	options: string;
 }
 
 export interface seletedItem {
+	id: string;
+	name: string;
+	options: string[];
+	quantity: number;
+	totalPrice: number;
+}
+export interface orderList {
 	id: string;
 	menu: string;
 	options: string;
