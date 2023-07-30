@@ -119,7 +119,6 @@ const WaitingItemWrapper = styled.tr`
 	margin: 0 auto;
 	margin-bottom: 12px;
 	font-size: ${({ theme }) => theme.fontSize['2xl']};
-
 	td {
 		display: flex;
 		justify-content: center;
@@ -130,6 +129,7 @@ const WatingBtnWrapper = styled.td`
 	width: 300px;
 	height: 48px;
 	color: ${({ theme }) => (theme.lightColor ? theme.textColor.black : theme.textColor.white)};
+	font-weight: ${({ theme }) => theme.fontWeight.semibold};
 	display: flex;
 	justify-content: center;
 	align-items: center;
