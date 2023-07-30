@@ -6,6 +6,7 @@ export interface Option {
 }
 
 export interface seletedItem {
+	category: string;
 	id: string;
 	name: string;
 	options: string[];

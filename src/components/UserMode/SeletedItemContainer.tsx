@@ -6,23 +6,12 @@ import { useRecoilValue } from 'recoil';
 import { selectedOptionsState } from '../../firebase/FirStoreDoc';
 import { db } from '../../firebase/firebaseConfig';
 import { seletedItem } from '../../state/OptinalState';
-import {
-	Firestore,
-	collection,
-	doc,
-	getDoc,
-	getDocs,
-	updateDoc,
-	deleteDoc,
-	addDoc,
-	setDoc,
-	serverTimestamp,
-} from 'firebase/firestore';
+import { Firestore, collection, doc, getDoc, getDocs, updateDoc, deleteDoc, addDoc } from 'firebase/firestore';
 
 function SeletedItemContainer() {
 	const selectedOptions = useRecoilValue(selectedOptionsState);
 	const navigate = useNavigate();
-	const newOrderList = doc(collection(db, 'orderList'));
+
 	const [selectedItems, setSelectedItems] = useState<seletedItem[]>([]);
 
 	const fetchSelectedItems = async (db: Firestore) => {
@@ -71,11 +60,19 @@ function SeletedItemContainer() {
 
 	const handleAddOrderMoveTo = async () => {
 		navigate('/order');
-		const dataToStore = {
-			items: selectedItems,
-			timestamp: new Date(),
-		};
-		await setDoc(newOrderList, dataToStore);
+		selectedItems.forEach(async (item) => {
+			const newOrder = {
+				category: item.category,
+				data: new Date(),
+				name: item.name,
+				options: item.options ? item.options.join(',') : '없음',
+				progress: '완료주문',
+				quantity: item.quantity,
+				totalPrice: item.totalPrice,
+			};
+
+			await addDoc(collection(db, 'orderList'), newOrder);
+		});
 	};
 	return (
 		<Background>
