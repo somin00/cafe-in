@@ -1,8 +1,9 @@
 import { atom } from 'recoil';
 
 export interface Item {
+	id: number;
 	name: string;
-	price: string;
+	price: number;
 	img: string;
 	category: string;
 }
@@ -17,7 +18,10 @@ export interface Category {
 	category: string;
 }
 
-export const selectedItemsState = atom({
-	key: 'selectedItemsState',
-	default: [],
-});
+export interface MenuItem {
+	id: number;
+	name: string;
+	price: number;
+	img: string;
+	category: string;
+}

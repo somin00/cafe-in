@@ -3,21 +3,35 @@ import { useNavigate } from 'react-router-dom';
 import { styled } from 'styled-components';
 import { defaultTheme, darkTheme } from '../../style/theme';
 import { useRecoilValue } from 'recoil';
-import { fetchSelectedItems, selectedOptionsState } from '../../firebase/FirStoreDoc';
+import { selectedOptionsState } from '../../firebase/FirStoreDoc';
 import { db } from '../../firebase/firebaseConfig';
 import { seletedItem } from '../../state/OptinalState';
-import { Firestore, collection, getDocs } from 'firebase/firestore';
+import {
+	Firestore,
+	collection,
+	doc,
+	getDoc,
+	getDocs,
+	updateDoc,
+	deleteDoc,
+	addDoc,
+	setDoc,
+	serverTimestamp,
+} from 'firebase/firestore';
 
 function SeletedItemContainer() {
 	const selectedOptions = useRecoilValue(selectedOptionsState);
 	const navigate = useNavigate();
+	const newOrderList = doc(collection(db, 'orderList'));
 	const [selectedItems, setSelectedItems] = useState<seletedItem[]>([]);
+
 	const fetchSelectedItems = async (db: Firestore) => {
 		const selectedItemsCol = collection(db, 'seletedItem');
 		const selectedItemsSnapshot = await getDocs(selectedItemsCol);
 		const selectedItems: seletedItem[] = selectedItemsSnapshot.docs.map(
 			(doc) => ({ ...doc.data(), id: doc.id }) as seletedItem,
 		);
+
 		return selectedItems;
 	};
 	useEffect(() => {
@@ -29,19 +43,22 @@ function SeletedItemContainer() {
 		fetchData();
 	}, []);
 	const handleItemDelete = (itemName: string) => {
-		setSelectedItems((prevItems) => prevItems.filter((item) => item.menu !== itemName));
+		deleteDoc(doc(db, 'seletedItem', itemName));
 	};
 
-	const handleIncreaseCount = (itemName: string) => {
-		setSelectedItems((prevItems) =>
-			prevItems.map((item) => (item.menu === itemName ? { ...item, count: item.quantity + 1 } : item)),
-		);
+	const handleIncreaseCount = async (itemId: string) => {
+		const selectedItemRef = doc(db, 'seletedItem', itemId);
+		const selectedItemSnap = await getDoc(selectedItemRef);
+		if (selectedItemSnap.exists()) {
+			const selectedItem = selectedItemSnap.data() as seletedItem;
+			await updateDoc(selectedItemRef, { quantity: selectedItem.quantity + 1 });
+		}
 	};
 
 	const handleDecreaseCount = (itemName: string) => {
 		setSelectedItems((prevItems) =>
 			prevItems.map((item) =>
-				item.menu === itemName && item.quantity > 1 ? { ...item, count: item.quantity - 1 } : item,
+				item.name === itemName && item.quantity > 1 ? { ...item, count: item.quantity - 1 } : item,
 			),
 		);
 	};
@@ -50,30 +67,38 @@ function SeletedItemContainer() {
 
 	const handleDeleteAll = () => {
 		setSelectedItems([]);
-		console.log('선택된 옵션들: ', selectedOptions);
+	};
+
+	const handleAddOrderMoveTo = async () => {
+		navigate('/order');
+		const dataToStore = {
+			items: selectedItems,
+			timestamp: new Date(),
+		};
+		await setDoc(newOrderList, dataToStore);
 	};
 	return (
 		<Background>
 			<Layout>
 				<MenuSeletedContainer>
 					{selectedItems.map((item) => (
-						<SeletedItem key={item.menu}>
-							<p>{item.menu}</p>
+						<SeletedItem key={item.id}>
+							<p>{item.name}</p>
 							<div className="counter">
 								<button
 									className={item.quantity > 1 ? 'minus active' : 'minus'}
-									onClick={() => handleDecreaseCount(item.menu)}
+									onClick={() => handleDecreaseCount(item.name)}
 								>
 									-
 								</button>
 								<p>x{item.quantity}</p>
-								<button className="plus" onClick={() => handleIncreaseCount(item.menu)}>
+								<button className="plus" onClick={() => handleIncreaseCount(item.id)}>
 									+
 								</button>
 							</div>
 							<div className="price">
 								<p>{(item.totalPrice * item.quantity).toLocaleString()}원</p>
-								<button className="delete" onClick={() => handleItemDelete(item.menu)}>
+								<button className="delete" onClick={() => handleItemDelete(item.id)}>
 									x
 								</button>
 							</div>
@@ -94,7 +119,7 @@ function SeletedItemContainer() {
 						<img src="/assets/user/AllDeleteBtn.svg" alt="전체삭제" />
 						<p>전체삭제</p>
 					</AllDeleteBtn>
-					<OrderBtn onClick={() => navigate('/order')}>
+					<OrderBtn onClick={handleAddOrderMoveTo}>
 						<p>주문하기</p>
 					</OrderBtn>
 				</PayContainer>

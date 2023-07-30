@@ -1,17 +1,17 @@
 import React, { useEffect, useState } from 'react';
-import { useRecoilState } from 'recoil';
+import { useRecoilState, useRecoilValue } from 'recoil';
 import { styled } from 'styled-components';
 import { Option } from '../../state/OptinalState';
 import { ModalDefaultType } from '../../types/ModalOpenTypes';
-import { selectedOptionsState } from '../../firebase/FirStoreDoc';
+import { menuItemState, selectedOptionsState } from '../../firebase/FirStoreDoc';
 import { db } from '../../firebase/firebaseConfig';
-import { collection, getDocs } from 'firebase/firestore';
+import { addDoc, collection, getDocs } from 'firebase/firestore';
 
 function OptionMenu({ onClickToggleModal }: ModalDefaultType) {
 	const [selectedOptions, setSelectedOptions] = useRecoilState<Option[]>(selectedOptionsState);
 	const [activeOptions, setActiveOptions] = useState<string[]>([]);
 	const [options, setOptions] = useState<{ [key: string]: Option[] }>({});
-
+	const menuItem = useRecoilValue(menuItemState);
 	useEffect(() => {
 		const fetchOptions = async () => {
 			const optionsCollection = collection(db, 'options');
@@ -64,6 +64,19 @@ function OptionMenu({ onClickToggleModal }: ModalDefaultType) {
 
 	const handleCloseBtnClick = (e: React.MouseEvent) => {
 		e.stopPropagation();
+
+		const itemToBeAdded = {
+			id: menuItem.id,
+			category: menuItem.category,
+			name: menuItem.name,
+			quantity: 1,
+			totalPrice: menuItem.price,
+			options: selectedOptions.map((i) => i.name).join(', '),
+		};
+
+		const itemsCollection = collection(db, 'seletedItem');
+		addDoc(itemsCollection, itemToBeAdded);
+
 		onClickToggleModal();
 	};
 
