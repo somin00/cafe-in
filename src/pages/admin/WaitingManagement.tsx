@@ -9,7 +9,7 @@ import WaitingTableBox from '../../components/waitingManagement/WaitingTableBox'
 import WaitingModal from '../../components/waitingManagement/WaitingModal';
 
 type DataStatusProps = {
-	isWaiting: boolean;
+	$isWaiting: boolean;
 };
 
 const WaitingManagement = () => {
@@ -46,7 +46,7 @@ const WaitingManagement = () => {
 							role="button"
 							tabIndex={0}
 							aria-label="대기 중 명단 선택하기"
-							isWaiting={isWaiting}
+							$isWaiting={isWaiting}
 							onClick={() => {
 								handleIsWaitingChange(true);
 							}}
@@ -67,7 +67,7 @@ const WaitingManagement = () => {
 							role="button"
 							tabIndex={0}
 							aria-label="대기 완료 명단 선택하기"
-							isWaiting={isWaiting}
+							$isWaiting={isWaiting}
 							onClick={() => {
 								handleIsWaitingChange(false);
 							}}
@@ -139,8 +139,8 @@ const WaitingList = styled(NavLink)<DataStatusProps>`
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	color: ${({ theme, isWaiting }) =>
-		isWaiting ? (theme.lightColor ? theme.textColor.black : theme.textColor.white) : theme.textColor.darkgray};
+	color: ${({ theme, $isWaiting }) =>
+		$isWaiting ? (theme.lightColor ? theme.textColor.black : theme.textColor.white) : theme.textColor.darkgray};
 
 	img {
 		margin-right: 10px;
@@ -151,8 +151,8 @@ const WaitedList = styled(NavLink)<DataStatusProps>`
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	color: ${({ theme, isWaiting }) =>
-		isWaiting ? theme.textColor.darkgray : theme.lightColor ? theme.textColor.black : theme.textColor.white};
+	color: ${({ theme, $isWaiting }) =>
+		$isWaiting ? theme.textColor.darkgray : theme.lightColor ? theme.textColor.black : theme.textColor.white};
 	img {
 		margin-right: 10px;
 	}
