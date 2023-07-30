@@ -107,7 +107,7 @@ const WaitingItemWrapper = styled.tr`
 const WatingBtnWrapper = styled.td`
 	width: 300px;
 	height: 48px;
-	color: ${({ theme }) => theme.textColor.black};
+	color: ${({ theme }) => (theme.lightColor ? theme.textColor.black : theme.textColor.white)};
 	display: flex;
 	justify-content: center;
 	align-items: center;
