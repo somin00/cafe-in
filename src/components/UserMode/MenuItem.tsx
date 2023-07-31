@@ -3,9 +3,10 @@ import styled from 'styled-components';
 import OptionMenu from './OptionMenu';
 import { useRecoilValue } from 'recoil';
 import { selectedModeState } from '../../state/Mode';
-import { Item, selectedCategoryState } from '../../state/Category';
+import { Item } from '../../state/Category';
 import { collection, getDocs, query, where } from 'firebase/firestore';
 import { db } from '../../firebase/firebaseConfig';
+import { selectedCategoryState } from '../../state/CategoryList';
 
 function MenuItem() {
 	const mode = useRecoilValue(selectedModeState);
@@ -28,7 +29,13 @@ function MenuItem() {
 					itemsQuery = itemCollection;
 				}
 				const querySnapshot = await getDocs(itemsQuery);
-				const loadedItems = querySnapshot.docs.map((doc) => doc.data() as Item);
+				const loadedItems = querySnapshot.docs.map((doc) => {
+					const data = doc.data();
+					return {
+						...data,
+						price: Number(data.price),
+					} as Item;
+				});
 				setItems(loadedItems);
 			} catch (err) {
 				console.error(err);
@@ -38,8 +45,8 @@ function MenuItem() {
 	}, [selectedCategory]);
 	return (
 		<>
-			{items.map((item, index) => (
-				<MenuItemWrapper key={index} onClick={onClickToggleModal}>
+			{items.map((item) => (
+				<MenuItemWrapper key={item.id} onClick={onClickToggleModal}>
 					<button>
 						<img src={item.imageUrl} alt={item.imageName} />
 						<p className="menu-name">{item.name}</p>

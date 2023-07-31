@@ -8,5 +8,5 @@ export const categoryListState = atom<CategoryType[]>({
 
 export const selectedCategoryState = atom<string>({
 	key: 'selectedCategoryState',
-	default: '커피',
+	default: '',
 });

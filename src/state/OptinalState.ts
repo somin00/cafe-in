@@ -6,7 +6,7 @@ export interface Option {
 }
 
 export interface selectedItem {
-	price: number;
+	price: string;
 	category: string;
 	id: string;
 	name: string;
@@ -15,7 +15,7 @@ export interface selectedItem {
 	totalPrice: number;
 }
 export interface orderList {
-	id: string;
+	id: number;
 	menu: string;
 	options: string;
 	progress: string;

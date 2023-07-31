@@ -2,14 +2,15 @@ import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import { darkTheme, defaultTheme } from '../../style/theme';
-import { useRecoilState } from 'recoil';
-import { Category, selectedCategoryState } from '../../state/Category';
+import { Category } from '../../state/Category';
 import { db } from '../../firebase/firebaseConfig';
 import { getDocs, collection } from 'firebase/firestore';
+import { useSetRecoilState } from 'recoil';
+import { selectedCategoryState } from '../../state/CategoryList';
 
 function MenuListHeader() {
-	const [activeBtn, setActiveBtn] = useState<string>('');
-	const [selectedCategory, setSelectedCategory] = useRecoilState(selectedCategoryState);
+	const setCategory = useSetRecoilState(selectedCategoryState);
+	const [activeBtn] = useState<string>('');
 	const [categories, setCategories] = useState<Category[]>([]);
 	const navigate = useNavigate();
 
@@ -24,6 +25,9 @@ function MenuListHeader() {
 		};
 		loadCategories();
 	}, []);
+	const onCategoryClick = (category: string) => {
+		setCategory(category);
+	};
 	return (
 		<Layout>
 			<li>
@@ -35,7 +39,7 @@ function MenuListHeader() {
 				<TabButton
 					key={category.id}
 					$isActive={activeBtn === category.category}
-					onClick={() => setActiveBtn(category.category)}
+					onClick={() => onCategoryClick(category.category)}
 				>
 					{category.category}
 				</TabButton>

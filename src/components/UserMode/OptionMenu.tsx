@@ -10,6 +10,7 @@ import { addDoc, collection, getDocs } from 'firebase/firestore';
 function OptionMenu({ onClickToggleModal }: ModalDefaultType) {
 	const [selectedOptions, setSelectedOptions] = useRecoilState<Option[]>(selectedOptionsState);
 	const [activeOptions, setActiveOptions] = useState<string[]>([]);
+
 	const [options, setOptions] = useState<{ [key: string]: Option[] }>({});
 	const menuItem = useRecoilValue(menuItemState);
 	useEffect(() => {
@@ -66,6 +67,7 @@ function OptionMenu({ onClickToggleModal }: ModalDefaultType) {
 		e.stopPropagation();
 
 		const itemToBeAdded = {
+			date: new Date(),
 			id: menuItem.id,
 			category: menuItem.category,
 			name: menuItem.name,

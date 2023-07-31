@@ -12,13 +12,15 @@ export const selectedItemsState = atom<selectedItem[]>({
 	default: [],
 });
 
-//현재 메뉴 아이템
 export const menuItemState = atom({
 	key: 'menuItemState',
 	default: {
 		id: 0,
 		name: '',
-		price: 0,
+		price: '',
+		imageName: '',
+		imageUrl: '',
 		category: '',
+		soldOut: false,
 	},
 });
