@@ -1,5 +1,5 @@
 import { atom } from 'recoil';
-import { CategoryType } from '../types/categoryTypes';
+import { CategoryType } from '../types/menuMangementType';
 
 export const categoryListState = atom<CategoryType[]>({
 	key: 'categoryListState',

@@ -10,7 +10,9 @@ function MenuList() {
 		<Layout>
 			<MenuListHeader />
 			<Main>
-				<MenuItem />
+				<MenuListLayout>
+					<MenuItem />
+				</MenuListLayout>
 				<SeletedItemContainer />
 			</Main>
 		</Layout>
@@ -27,6 +29,23 @@ const Main = styled.div`
 	position: relative;
 	display: flex;
 	justify-content: space-between;
+`;
+
+const MenuListLayout = styled.ul`
+	display: grid;
+	grid-template-columns: 1fr 1fr 1fr;
+	gap: 8px;
+	height: 830px;
+	margin: 30px 0;
+	overflow-y: auto;
+	overflow-x: hidden;
+	margin-right: 10px;
+	padding-left: 10px;
+	&::-webkit-scrollbar {
+		display: none;
+	}
+	/* Firefox */
+	scrollbar-width: none;
 `;
 
 export default MenuList;
