@@ -3,8 +3,10 @@ import styled from 'styled-components';
 import CategoryManagementModal from './CategoryManagementModal';
 import ModalPortal from '../ModalPortal';
 import AddMenuModal from './AddMenuModal';
+import { useNavigate } from 'react-router-dom';
 
 function Header() {
+	const navigate = useNavigate();
 	const [isCategoryModalOpen, setIsCategoryModalOpen] = useState<boolean>(false);
 	const [isAddMenuModalOpen, setIsAddMenuModalOpen] = useState<boolean>(false);
 
@@ -19,7 +21,11 @@ function Header() {
 	return (
 		<>
 			<HeadWrapper>
-				<ImageContainer>
+				<ImageContainer
+					onClick={() => {
+						navigate(-1);
+					}}
+				>
 					<img alt="뒤로가기" />
 				</ImageContainer>
 				<h1>메뉴관리</h1>
