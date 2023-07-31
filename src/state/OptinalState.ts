@@ -7,7 +7,11 @@ export interface Option {
 }
 
 export interface selectedItem {
+<<<<<<< HEAD
 	price: string;
+=======
+	price: number;
+>>>>>>> c08ba48d68d30c994c0b606f18f127e324718c4f
 	category: string;
 	id: string;
 	name: string;
@@ -16,7 +20,11 @@ export interface selectedItem {
 	totalPrice: number;
 }
 export interface orderList {
+<<<<<<< HEAD
 	id: number;
+=======
+	id: string;
+>>>>>>> c08ba48d68d30c994c0b606f18f127e324718c4f
 	menu: string;
 	options: string;
 	progress: string;

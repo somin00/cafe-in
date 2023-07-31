@@ -6,18 +6,7 @@ import { useRecoilValue } from 'recoil';
 import { selectedOptionsState } from '../../firebase/FirStoreDoc';
 import { db } from '../../firebase/firebaseConfig';
 import { selectedItem } from '../../state/OptinalState';
-import {
-	Firestore,
-	collection,
-	doc,
-	getDoc,
-	getDocs,
-	updateDoc,
-	deleteDoc,
-	addDoc,
-	onSnapshot,
-	increment,
-} from 'firebase/firestore';
+import { collection, doc, updateDoc, deleteDoc, addDoc, onSnapshot, increment } from 'firebase/firestore';
 
 function SeletedItemContainer() {
 	const selectedOptions = useRecoilValue(selectedOptionsState);
@@ -113,6 +102,11 @@ function SeletedItemContainer() {
 							<div className="options-selected">
 								{selectedOptions.map((option) => (
 									<p key={option.id}>{option.name}</p>
+								))}
+							</div>
+							<div className="options-seleted">
+								{selectedOptions.map((option, index) => (
+									<p key={index}>{option.name}</p>
 								))}
 							</div>
 						</SeletedItem>

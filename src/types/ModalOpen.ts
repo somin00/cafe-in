@@ -1,6 +1,6 @@
 export interface ModalDefaultType {
 	onClickToggleModal: () => void;
 }
-export interface ModalandModalType {
+export interface ModalAndModalType {
 	onClickOpenModal: () => void;
 }

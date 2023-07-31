@@ -63,7 +63,7 @@ const TabButton = styled.button<{ $isActive: boolean }>`
 	border: none;
 	border-radius: 10px;
 	cursor: pointer;
-background-color: ${props => (props.$isActive ? props.theme.textColor.lightgray : "transparent")};
+	background-color: ${props => (props.$isActive ? props.theme.textColor.lightgray : "transparent")};
 	color: ${props => (props.$isActive ? (props.theme === defaultTheme ? props.theme.lightColor?.yellow.sub : darkTheme.darkColor?.sub) : "inherit")};
 `;
 const Layout = styled.ul`
