@@ -228,6 +228,7 @@ const WaitingDisable = styled.div`
 	display: flex;
 	justify-content: center;
 	align-items: center;
+	color: ${({ theme }) => (theme.lightColor ? theme.textColor.black : theme.textColor.white)};
 	font-weight: ${({ theme }) => theme.fontWeight.semibold};
 	font-size: ${({ theme }) => theme.fontSize['3xl']};
 `;
