@@ -7,5 +7,5 @@ export const isWaitingState = atom<boolean>({
 
 export const isWaitingAvailableState = atom<boolean>({
 	key: 'isWaitingAvailable',
-	default: true,
+	default: false,
 });

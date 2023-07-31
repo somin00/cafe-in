@@ -1,41 +1,60 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useRecoilState } from 'recoil';
 import { styled } from 'styled-components';
+import { isWaitingAvailableState } from '../../state/WaitingState';
 
 function Waiting() {
 	const navigate = useNavigate();
 
+	const [isWaitingAvailable, setIsWaitingAvailable] = useRecoilState<boolean>(isWaitingAvailableState);
+
 	return (
 		<WaitingWrapper>
-			<WaitingHeaderText>
-				649 팀이 <p> 대기중이에요</p>
-			</WaitingHeaderText>
-			<ApplicationBox>
-				<ApplicationHeaderText>대기를 원하시면 번호를 입력해주세요.</ApplicationHeaderText>
-				<NumCheckBox>
-					<MinusBtn>
-						<img alt="1 빼기 버튼" aria-label="1 빼기" />
-					</MinusBtn>
-					1
-					<PlusBtn>
-						<img alt="1 더하기 버튼" aria-label="1 더하기" />
-					</PlusBtn>
-				</NumCheckBox>
-				<InputBoxWrapper>
-					<InputBox type="text" placeholder="이름을 입력해주세요." required />
-					<InputBox type="tel" placeholder="전화 번호를 입력해주세요." required />
-				</InputBoxWrapper>
-				<ApplicationButtnoWrapper>
-					<ApplicationBtn
+			{isWaitingAvailable ? (
+				<>
+					<WaitingHeaderText>
+						649 팀이 <p> 대기중이에요</p>
+					</WaitingHeaderText>
+					<ApplicationBox>
+						<ApplicationHeaderText>대기를 원하시면 번호를 입력해주세요.</ApplicationHeaderText>
+						<NumCheckBox>
+							<MinusBtn>
+								<img alt="1 빼기 버튼" aria-label="1 빼기" />
+							</MinusBtn>
+							1
+							<PlusBtn>
+								<img alt="1 더하기 버튼" aria-label="1 더하기" />
+							</PlusBtn>
+						</NumCheckBox>
+						<InputBoxWrapper>
+							<InputBox type="text" placeholder="이름을 입력해주세요." required />
+							<InputBox type="tel" placeholder="전화 번호를 입력해주세요." required />
+						</InputBoxWrapper>
+						<ApplicationButtnoWrapper>
+							<ApplicationBtn
+								onClick={() => {
+									navigate(-1);
+								}}
+							>
+								취소
+							</ApplicationBtn>
+							<ApplicationBtn onClick={() => navigate('/waitingcheck')}>신청</ApplicationBtn>
+						</ApplicationButtnoWrapper>
+					</ApplicationBox>
+				</>
+			) : (
+				<WaitingDisableMessage>
+					대기가 마감되었습니다.
+					<BackHomeBtn
 						onClick={() => {
-							navigate(-1);
+							navigate('/home');
 						}}
 					>
-						취소
-					</ApplicationBtn>
-					<ApplicationBtn onClick={() => navigate('/waitingcheck')}>신청</ApplicationBtn>
-				</ApplicationButtnoWrapper>
-			</ApplicationBox>
+						홈화면으로 돌아가기
+					</BackHomeBtn>
+				</WaitingDisableMessage>
+			)}
 		</WaitingWrapper>
 	);
 }
@@ -153,4 +172,27 @@ const ApplicationBtn = styled.button`
 	background-color: ${({ theme }) => (theme.lightColor ? theme.textColor.darkbrown : theme.textColor.darkgray)};
 	font-size: ${({ theme }) => theme.fontSize['2xl']};
 	font-weight: ${({ theme }) => theme.fontWeight.semibold};
+`;
+
+const WaitingDisableMessage = styled.div`
+	width: 100%;
+	height: 100%;
+	display: flex;
+	flex-flow: column nowrap;
+	justify-content: center;
+	align-items: center;
+	font-size: ${({ theme }) => theme.fontSize['5xl']};
+	font-weight: ${({ theme }) => theme.fontWeight.semibold};
+	color: ${({ theme }) => (theme.lightColor ? theme.textColor.black : theme.textColor.white)};
+`;
+
+const BackHomeBtn = styled.button`
+	width: 225px;
+	height: 75px;
+	border-radius: 10px;
+	background-color: ${({ theme }) => (theme.lightColor ? theme.lightColor?.yellow.main : theme.darkColor?.main)};
+	color: ${({ theme }) => (theme.lightColor ? theme.textColor.black : theme.textColor.white)};
+	font-size: ${({ theme }) => theme.fontSize['2xl']};
+	font-weight: ${({ theme }) => theme.fontWeight.semibold};
+	margin-top: 50px;
 `;
