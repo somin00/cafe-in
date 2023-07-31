@@ -100,6 +100,7 @@ const AddContainer = styled.div`
 
 		&:disabled {
 			cursor: not-allowed;
+			background-color: ${({ theme }) => theme.textColor.darkgray};
 		}
 	}
 `;

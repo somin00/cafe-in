@@ -131,5 +131,6 @@ const Button = styled.button`
 
 	&:disabled {
 		cursor: not-allowed;
+		background-color: ${({ theme }) => theme.textColor.darkgray};
 	}
 `;
