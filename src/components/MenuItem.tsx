@@ -12,6 +12,10 @@ function MenuItem({ menu }: ItemPropType) {
 	const mode = useRecoilValue(selectedModeState);
 	const [isOpenModal, setModalOpen] = useState<boolean>(false);
 
+	const priceTemplate = (price: string) => {
+		return price.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+	};
+
 	const onClickToggleModal = useCallback(() => {
 		setModalOpen(!isOpenModal);
 	}, [isOpenModal]);
@@ -22,7 +26,7 @@ function MenuItem({ menu }: ItemPropType) {
 				<button>
 					{menu.imageUrl ? <img src={menu.imageUrl} alt={`${menu.name}이미지`} /> : <div>이미지 없음</div>}
 					<p className="menu-name"> {menu.name}</p>
-					<p className="menu-price">{menu.price}</p>
+					<p className="menu-price">{priceTemplate(menu.price)}원</p>
 				</button>
 			</MenuItemWrapper>
 			{mode === 'user' && isOpenModal && <OptionMenu onClickToggleModal={onClickToggleModal}></OptionMenu>}
