@@ -28,6 +28,7 @@ function MenuItem() {
 
 export default MenuItem;
 
+
 const Layout = styled.div`
 	display: grid;
 	grid-template-columns: 1fr 1fr 1fr;
@@ -44,6 +45,7 @@ const Layout = styled.div`
 	/* Firefox */
 	scrollbar-width: none;
 `;
+
 const MenuItemWrapper = styled.li`
 	background-color: ${({ theme }) => theme.textColor.white};
 	border: 1px solid ${({ theme }) => theme.textColor.lightgray};

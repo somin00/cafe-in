@@ -1,36 +1,24 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { styled } from 'styled-components';
-import { useRecoilState, useRecoilValue } from 'recoil';
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import { modalItemId, modalState, modalTypeState, modalUpdateState } from '../../state/modalState';
-
+import { WaitingDataType } from '../../types/waitingDataType';
 import { db } from '../../firebase/firebaseConfig';
 import { updateDoc, doc } from 'firebase/firestore';
 
-type waitingInfoData = {
-	id?: string;
-	no: number;
-	name: string;
-	tel: string;
-	status: string;
-	date: number;
-	personNum: number;
-};
-
 type WaitingItemProps = {
-	waitingInfo: waitingInfoData[];
+	waitingInfo: WaitingDataType[];
 	waitingDataStatus: string;
 };
 
 const WaitingItem = (props: WaitingItemProps) => {
 	const { waitingInfo, waitingDataStatus } = props;
-	const [isOpenModal, setIsOpenModal] = useRecoilState<boolean>(modalState);
+	const setIsOpenModal = useSetRecoilState<boolean>(modalState);
 	const [modalType, setModalType] = useRecoilState<string>(modalTypeState);
 	const [itemId, setItemId] = useRecoilState<string | undefined>(modalItemId);
 	const modalUpdate = useRecoilValue<boolean>(modalUpdateState);
 
 	// 모달창에서 예를 클릭했을 때 업데이트 (취소, 착석완료만)
-
-	// Update status
 	const updateStatus = async (id: string, type: string) => {
 		const statusDoc = doc(db, 'waitingList', id);
 		try {
@@ -40,9 +28,11 @@ const WaitingItem = (props: WaitingItemProps) => {
 		}
 	};
 
-	if (itemId && modalUpdate && modalType !== 'notification') {
-		updateStatus(itemId, modalType);
-	}
+	useEffect(() => {
+		if (itemId && modalUpdate && modalType !== 'notification') {
+			updateStatus(itemId, modalType);
+		}
+	}, [modalUpdate, itemId, modalType]);
 
 	const formatTel = (tel: string) => {
 		const cleanNumber = tel.replace(/\D/g, '');
@@ -119,7 +109,6 @@ const WaitingItemWrapper = styled.tr`
 	margin: 0 auto;
 	margin-bottom: 12px;
 	font-size: ${({ theme }) => theme.fontSize['2xl']};
-
 	td {
 		display: flex;
 		justify-content: center;
@@ -130,6 +119,7 @@ const WatingBtnWrapper = styled.td`
 	width: 300px;
 	height: 48px;
 	color: ${({ theme }) => (theme.lightColor ? theme.textColor.black : theme.textColor.white)};
+	font-weight: ${({ theme }) => theme.fontWeight.semibold};
 	display: flex;
 	justify-content: center;
 	align-items: center;
