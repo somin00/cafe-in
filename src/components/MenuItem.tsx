@@ -1,23 +1,17 @@
 import React, { useCallback, useState } from 'react';
-
-import { useRecoilValueLoadable } from 'recoil';
-import { menuItemState } from '../firebase/FirStoreDoc';
 import { styled } from 'styled-components';
-import OptionMenu from './UserMode/OptionMenu';
-import { useRecoilValue } from 'recoil';
+import OptionMenu from '../components/UserMode/OptionMenu';
+import { useRecoilState, useRecoilValue } from 'recoil';
 import { selectedModeState } from '../state/Mode';
+import { selectedItemsState } from '../firebase/FirStoreDoc';
 
 function MenuItem() {
 	const mode = useRecoilValue(selectedModeState);
 	const [isOpenModal, setModalOpen] = useState<boolean>(false);
-	const menuItemsLoadable = useRecoilValueLoadable(menuItemState);
-
+	const [selectedItem, setSelectedItem] = useRecoilState(selectedItemsState);
 	const onClickToggleModal = useCallback(() => {
-		if (menuItemsLoadable.state === 'hasValue') {
-			console.log(menuItemsLoadable.contents);
-		}
 		setModalOpen(!isOpenModal);
-	}, [menuItemsLoadable.state, menuItemsLoadable.contents]);
+	}, [isOpenModal]);
 
 	return (
 		<Layout>
@@ -28,7 +22,9 @@ function MenuItem() {
 					<p className="menu-price">4,500원</p>
 				</button>
 			</MenuItemWrapper>
-			{mode === 'user' && isOpenModal && <OptionMenu onClickToggleModal={onClickToggleModal}></OptionMenu>}
+			{mode === 'user' && isOpenModal && (
+				<OptionMenu onClickToggleModal={onClickToggleModal} selected={selectedItem}></OptionMenu>
+			)}
 		</Layout>
 	);
 }
@@ -37,7 +33,7 @@ export default MenuItem;
 
 const Layout = styled.div`
 	display: grid;
-	grid-template-columns: 1fr 1fr 1fr;
+	grid-template-columns: 1fr 1fr 1fr 1fr;
 	gap: 8px;
 	height: 830px;
 	margin: 30px 0;

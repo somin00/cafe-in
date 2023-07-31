@@ -21,7 +21,6 @@ const Layout = styled.div`
 	background-color: ${({ theme }) =>
 		theme === defaultTheme ? defaultTheme.textColor.lightgray : darkTheme.textColor.black};
 	width: 1194px;
-	height: 834px;
 	overflow-y: hidden;
 `;
 const Main = styled.div`

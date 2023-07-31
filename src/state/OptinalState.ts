@@ -1,4 +1,5 @@
 export interface Option {
+	id: number;
 	category: string;
 	name: string;
 	price: number;

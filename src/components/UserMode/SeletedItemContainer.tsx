@@ -89,28 +89,30 @@ function SeletedItemContainer() {
 				<MenuSeletedContainer>
 					{selectedItems.map((item) => (
 						<SeletedItem key={item.id}>
-							<p>{item.name}</p>
-							<div className="counter">
-								<button
-									className={item.quantity > 1 ? 'minus active' : 'minus'}
-									onClick={() => handleDecreaseCount(item.name)}
-								>
-									-
-								</button>
-								<p>x{item.quantity}</p>
-								<button className="plus" onClick={() => handleIncreaseCount(item.id)}>
-									+
-								</button>
+							<div className="first">
+								<p>{item.name}</p>
+								<div className="counter">
+									<button
+										className={item.quantity > 1 ? 'minus active' : 'minus'}
+										onClick={() => handleDecreaseCount(item.name)}
+									>
+										-
+									</button>
+									<p>x{item.quantity}</p>
+									<button className="plus" onClick={() => handleIncreaseCount(item.id)}>
+										+
+									</button>
+								</div>
+								<div className="price">
+									<p>{(item.totalPrice * item.quantity).toLocaleString()}원</p>
+									<button className="delete" onClick={() => handleItemDelete(item.id)}>
+										x
+									</button>
+								</div>
 							</div>
-							<div className="price">
-								<p>{(item.totalPrice * item.quantity).toLocaleString()}원</p>
-								<button className="delete" onClick={() => handleItemDelete(item.id)}>
-									x
-								</button>
-							</div>
-							<div className="options-seleted">
-								{selectedOptions.map((option, index) => (
-									<p key={index}>{option.name}</p>
+							<div className="options-selected">
+								{selectedOptions.map((option) => (
+									<p key={option.id}>{option.name}</p>
 								))}
 							</div>
 						</SeletedItem>
@@ -162,14 +164,32 @@ const MenuSeletedContainer = styled.ul`
 `;
 const SeletedItem = styled.li`
 	display: flex;
-	justify-content: space-around;
-	align-items: center;
+	width: 350px;
+	flex-direction: column;
+	align-items: flex-end;
 	margin: 20px 10px;
-	padding: 15px 0;
+	padding: 15px 10px;
 	font-weight: ${({ theme }) => theme.fontWeight?.bold};
 	border: 1px solid ${({ theme }) => theme.textColor?.lightbrown};
 	background-color: ${({ theme }) => theme.textColor?.white};
 	border-radius: 10px;
+	.first {
+		width: 100%;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+	}
+	.options-selected {
+		display: flex;
+		width: 100%;
+		justify-content: end;
+		margin-top: 10px;
+		padding-top: 6px;
+		border-top: 1px solid ${({ theme }) => theme.textColor.lightbrown};
+		font-size: ${({ theme }) => theme.fontSize.sm};
+		font-weight: ${({ theme }) => theme.fontWeight.semibold};
+		color: ${({ theme }) => theme.textColor.lightgray};
+	}
 	.counter {
 		display: flex;
 		align-items: center;
