@@ -1,8 +1,11 @@
 import React, { useCallback, useState } from 'react';
 import { styled } from 'styled-components';
-import OptionMenu from './OptionMenu';
-import { useRecoilValue } from 'recoil';
+import OptionMenu from '../components/UserMode/OptionMenu';
+import { useRecoilState, useRecoilValue } from 'recoil';
 import { selectedModeState } from '../state/Mode';
+
+import { selectedItemsState } from '../firebase/FirStoreDoc';
+
 import { MenuType } from '../types/menuMangementType';
 
 interface ItemPropType {
@@ -11,6 +14,8 @@ interface ItemPropType {
 function MenuItem({ menu }: ItemPropType) {
 	const mode = useRecoilValue(selectedModeState);
 	const [isOpenModal, setModalOpen] = useState<boolean>(false);
+
+	const [selectedItem, setSelectedItem] = useRecoilState(selectedItemsState);
 
 	const priceTemplate = (price: string) => {
 		return price.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
@@ -29,7 +34,10 @@ function MenuItem({ menu }: ItemPropType) {
 					<p className="menu-price">{priceTemplate(menu.price)}원</p>
 				</button>
 			</MenuItemWrapper>
-			{mode === 'user' && isOpenModal && <OptionMenu onClickToggleModal={onClickToggleModal}></OptionMenu>}
+
+			{mode === 'user' && isOpenModal && (
+				<OptionMenu onClickToggleModal={onClickToggleModal} selected={selectedItem}></OptionMenu>
+			)}
 		</>
 	);
 }

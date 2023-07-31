@@ -1,8 +1,8 @@
 import React from 'react';
-import MenuItem from '../../components/MenuItem';
-import SeletedItemContainer from '../../components/SeletedItemContainer';
+import MenuItem from '../../components/UserMode/MenuItem';
+import SeletedItemContainer from '../../components/UserMode/SeletedItemContainer';
 import { styled } from 'styled-components';
-import MenuListHeader from '../../components/MenuListHeader';
+import MenuListHeader from '../../components/UserMode/MenuListHeader';
 import { darkTheme, defaultTheme } from '../../style/theme';
 
 function MenuList() {
@@ -23,7 +23,6 @@ const Layout = styled.div`
 	background-color: ${({ theme }) =>
 		theme === defaultTheme ? defaultTheme.textColor.lightgray : darkTheme.textColor.black};
 	width: 1194px;
-	height: 834px;
 	overflow-y: hidden;
 `;
 const Main = styled.div`

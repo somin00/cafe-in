@@ -1,21 +1,48 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled, { useTheme } from 'styled-components';
-import AddPointModal from '../../components/AddPointModal';
-import UsePointUser from '../../components/UsePointUser';
+import AddPointModal from '../../components/UserMode/AddPointModal';
+import UsePointUser from '../../components/UserMode/UsePointUser';
 import { darkTheme, defaultTheme } from '../../style/theme';
-
+import { collection, getDocs } from 'firebase/firestore';
+import { db } from '../../firebase/firebaseConfig';
+interface Order {
+	name: string;
+	quantity: number;
+	totalPrice: number;
+}
 function OrderCheck() {
 	const navigate = useNavigate();
 	const theme = useTheme();
 	const [isOpenAddPointModal, setAddPointModalOpen] = useState<boolean>(false);
 	const [isOpenUsePointUserModal, setUsePointUserModalOpen] = useState<boolean>(false);
+	const [orderList, setOrderList] = useState<Order[]>([]);
+
 	const onClickToggleAddPointModal = useCallback(() => {
 		setAddPointModalOpen(!isOpenAddPointModal);
 	}, [isOpenAddPointModal]);
 	const onClickToggleUsePointUserModal = useCallback(() => {
 		setUsePointUserModalOpen(!isOpenUsePointUserModal);
 	}, [isOpenUsePointUserModal]);
+	useEffect(() => {
+		const getOrderList = async () => {
+			const orderListCol = collection(db, 'orderList');
+			const orderListSnapshot = await getDocs(orderListCol);
+			const orderListData: Order[] = orderListSnapshot.docs.map((doc) => {
+				const data = doc.data();
+				return {
+					id: doc.id,
+					name: data.name ?? '',
+					quantity: data.quantity ?? 1,
+					totalPrice: data.totalPrice ?? 0,
+				};
+			});
+			setOrderList(orderListData);
+		};
+		getOrderList();
+	}, []);
+
+	const totalOrderAmount = orderList.reduce((acc, order) => acc + order.totalPrice * order.quantity, 0);
 
 	return (
 		<Layout>
@@ -37,21 +64,23 @@ function OrderCheck() {
 						<li>주문금액 </li>
 					</TableHead>
 					<Tbody>
-						<OrderMenuItem>
-							<div className="products-name">
-								<img src="/assets/user/IceCoffee.svg" alt="제품이미지" width={42} />
-								<p>아메리카노</p>
-							</div>
-							<p>1</p>
-							<p>4,500원</p>
-						</OrderMenuItem>
+						{orderList.map((order, index) => (
+							<OrderMenuItem key={index}>
+								<div className="products-name">
+									<img src="/assets/user/IceCoffee.svg" alt="제품이미지" width={42} />
+									<p>{order.name}</p>
+								</div>
+								<p>{order.quantity}</p>
+								<p>{order.totalPrice}원</p>
+							</OrderMenuItem>
+						))}
 					</Tbody>
 				</OrderList>
 				<OrderTotalPriceContainer>
 					<TotalPrice>
 						<div>
 							<h2>주문금액</h2>
-							<p>2131223123원</p>
+							<p>{totalOrderAmount.toLocaleString()}원</p>
 						</div>
 						<div>
 							<h2>포인트 사용</h2>

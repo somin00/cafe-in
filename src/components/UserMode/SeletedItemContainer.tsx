@@ -1,60 +1,113 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { styled } from 'styled-components';
-import { defaultTheme, darkTheme } from '../style/theme';
+import { defaultTheme, darkTheme } from '../../style/theme';
+import { useRecoilValue } from 'recoil';
+import { selectedOptionsState } from '../../firebase/FirStoreDoc';
+import { db } from '../../firebase/firebaseConfig';
+import { selectedItem } from '../../state/OptinalState';
+import { collection, doc, updateDoc, deleteDoc, addDoc, onSnapshot, increment } from 'firebase/firestore';
 
 function SeletedItemContainer() {
+	const selectedOptions = useRecoilValue(selectedOptionsState);
 	const navigate = useNavigate();
-	const [selectedItems, setSelectedItems] = useState([
-		{ name: '아메리카노', count: 1, price: 4500 },
-		{ name: '캬라멜마끼아또', count: 1, price: 5500 },
-		{ name: '카페라떼', count: 1, price: 5000 },
-	]);
+
+	const [selectedItems, setSelectedItems] = useState<selectedItem[]>([]);
+
+	useEffect(() => {
+		const selectedItemsCol = collection(db, 'seletedItem');
+
+		const unsub = onSnapshot(selectedItemsCol, (snapshot) => {
+			const updatedItems: (selectedItem | undefined)[] = snapshot.docs.map((doc) => {
+				const data = doc.data();
+				if (data.quantity !== undefined) {
+					return { ...data, id: doc.id } as selectedItem;
+				}
+			});
+			setSelectedItems(updatedItems.filter((item) => item !== undefined) as selectedItem[]);
+		});
+
+		return () => unsub();
+	}, []);
+
 	const handleItemDelete = (itemName: string) => {
-		setSelectedItems((prevItems) => prevItems.filter((item) => item.name !== itemName));
+		deleteDoc(doc(db, 'seletedItem', itemName));
 	};
 
-	const handleIncreaseCount = (itemName: string) => {
-		setSelectedItems((prevItems) =>
-			prevItems.map((item) => (item.name === itemName ? { ...item, count: item.count + 1 } : item)),
-		);
+	const handleIncreaseCount = async (itemName: string) => {
+		const docRef = doc(db, 'seletedItem', itemName);
+		await updateDoc(docRef, {
+			quantity: increment(1),
+		});
 	};
 
-	const handleDecreaseCount = (itemName: string) => {
-		setSelectedItems((prevItems) =>
-			prevItems.map((item) => (item.name === itemName && item.count > 1 ? { ...item, count: item.count - 1 } : item)),
-		);
+	const handleDecreaseCount = async (itemName: string) => {
+		const docRef = doc(db, 'seletedItem', itemName);
+		await updateDoc(docRef, {
+			quantity: increment(-1),
+		});
 	};
 
-	const totalPrice = selectedItems.reduce((acc, item) => acc + item.price * item.count, 0);
+	const totalPrice = selectedItems.reduce((acc, item) => acc + item.totalPrice * item.quantity, 0);
 
 	const handleDeleteAll = () => {
 		setSelectedItems([]);
+	};
+
+	const handleAddOrderMoveTo = async () => {
+		navigate('/order');
+		selectedItems.forEach(async (item) => {
+			const newOrder = {
+				category: item.category,
+				data: new Date(),
+				name: item.name,
+				options: item.options ?? '없음',
+				progress: '완료주문',
+				quantity: item.quantity,
+				totalPrice: item.totalPrice * item.quantity,
+			};
+			if (newOrder.category === undefined) {
+				newOrder.category = '없음';
+			}
+			await addDoc(collection(db, 'orderList'), newOrder);
+		});
 	};
 	return (
 		<Background>
 			<Layout>
 				<MenuSeletedContainer>
 					{selectedItems.map((item) => (
-						<SeletedItem key={item.name}>
-							<p>{item.name}</p>
-							<div className="counter">
-								<button
-									className={item.count > 1 ? 'minus active' : 'minus'}
-									onClick={() => handleDecreaseCount(item.name)}
-								>
-									-
-								</button>
-								<p>x{item.count}</p>
-								<button className="plus" onClick={() => handleIncreaseCount(item.name)}>
-									+
-								</button>
+						<SeletedItem key={item.id}>
+							<div className="first">
+								<p>{item.name}</p>
+								<div className="counter">
+									<button
+										className={item.quantity > 1 ? 'minus active' : 'minus'}
+										onClick={() => handleDecreaseCount(item.name)}
+									>
+										-
+									</button>
+									<p>x{item.quantity}</p>
+									<button className="plus" onClick={() => handleIncreaseCount(item.id)}>
+										+
+									</button>
+								</div>
+								<div className="price">
+									<p>{(item.totalPrice * item.quantity).toLocaleString()}원</p>
+									<button className="delete" onClick={() => handleItemDelete(item.id)}>
+										x
+									</button>
+								</div>
 							</div>
-							<div className="price">
-								<p>{(item.price * item.count).toLocaleString()}원</p>
-								<button className="delete" onClick={() => handleItemDelete(item.name)}>
-									x
-								</button>
+							<div className="options-selected">
+								{selectedOptions.map((option) => (
+									<p key={option.id}>{option.name}</p>
+								))}
+							</div>
+							<div className="options-seleted">
+								{selectedOptions.map((option, index) => (
+									<p key={index}>{option.name}</p>
+								))}
 							</div>
 						</SeletedItem>
 					))}
@@ -68,7 +121,7 @@ function SeletedItemContainer() {
 						<img src="/assets/user/AllDeleteBtn.svg" alt="전체삭제" />
 						<p>전체삭제</p>
 					</AllDeleteBtn>
-					<OrderBtn onClick={() => navigate('/order')}>
+					<OrderBtn onClick={handleAddOrderMoveTo}>
 						<p>주문하기</p>
 					</OrderBtn>
 				</PayContainer>
@@ -105,14 +158,32 @@ const MenuSeletedContainer = styled.ul`
 `;
 const SeletedItem = styled.li`
 	display: flex;
-	justify-content: space-around;
-	align-items: center;
+	width: 350px;
+	flex-direction: column;
+	align-items: flex-end;
 	margin: 20px 10px;
-	padding: 15px 0;
+	padding: 15px 10px;
 	font-weight: ${({ theme }) => theme.fontWeight?.bold};
 	border: 1px solid ${({ theme }) => theme.textColor?.lightbrown};
 	background-color: ${({ theme }) => theme.textColor?.white};
 	border-radius: 10px;
+	.first {
+		width: 100%;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+	}
+	.options-selected {
+		display: flex;
+		width: 100%;
+		justify-content: end;
+		margin-top: 10px;
+		padding-top: 6px;
+		border-top: 1px solid ${({ theme }) => theme.textColor.lightbrown};
+		font-size: ${({ theme }) => theme.fontSize.sm};
+		font-weight: ${({ theme }) => theme.fontWeight.semibold};
+		color: ${({ theme }) => theme.textColor.lightgray};
+	}
 	.counter {
 		display: flex;
 		align-items: center;

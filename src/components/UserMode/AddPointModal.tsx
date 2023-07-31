@@ -1,9 +1,9 @@
 import React, { useCallback, useState } from 'react';
 import { styled, useTheme } from 'styled-components';
-import { ModalDefaultType } from '../types/ModalOpenTypes';
-import PointAddCheckModal from './PointAddCheckModal';
-import { darkTheme, defaultTheme } from '../style/theme';
-import Dark_PointAddCheckModal from './darkThemeModal/Dark_PointAddCheckModal';
+import { ModalDefaultType } from '../../types/ModalOpenTypes';
+import PointAddCheckModal from '../UserMode/PointAddCheckModal';
+import { darkTheme, defaultTheme } from '../../style/theme';
+import Dark_PointAddCheckModal from '../darkThemeModal/Dark_PointAddCheckModal';
 
 function AddPointModal({ onClickToggleModal }: ModalDefaultType) {
 	const theme = useTheme();
@@ -14,10 +14,10 @@ function AddPointModal({ onClickToggleModal }: ModalDefaultType) {
 	const [isOpenModal, setModalOpen] = useState<boolean>(false);
 	const onClickOpenModal = useCallback(() => {
 		setModalOpen(true);
-		// setTimeout(() => {
-		// 	setModalOpen(!setModalOpen);
-		// 	onClickToggleModal();
-		// }, 2000); // 15 seconds
+		setTimeout(() => {
+			setModalOpen(true);
+			onClickToggleModal();
+		}, 2000); // 15 seconds
 	}, [onClickToggleModal]);
 
 	return (
