@@ -8,7 +8,6 @@ import { selectedItemsState } from '../firebase/FirStoreDoc';
 
 import { MenuType } from '../types/menuMangementType';
 
-
 interface ItemPropType {
 	menu: MenuType;
 }
@@ -21,7 +20,6 @@ function MenuItem({ menu }: ItemPropType) {
 	const priceTemplate = (price: string) => {
 		return price.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 	};
-
 
 	const onClickToggleModal = useCallback(() => {
 		setModalOpen(!isOpenModal);
@@ -40,8 +38,7 @@ function MenuItem({ menu }: ItemPropType) {
 			{mode === 'user' && isOpenModal && (
 				<OptionMenu onClickToggleModal={onClickToggleModal} selected={selectedItem}></OptionMenu>
 			)}
-		</Layout>
-
+		</>
 	);
 }
 
