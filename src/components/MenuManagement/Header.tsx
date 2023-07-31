@@ -1,17 +1,34 @@
-import React from 'react';
+import React, { useState, useCallback } from 'react';
 import styled from 'styled-components';
+import CategoryManagementModal from './CategoryManagementModal';
+import ModalPortal from '../ModalPortal';
+
 function Header() {
+	const [isCategoryModalOpen, setIsCategoryModalOpen] = useState<boolean>(false);
+	const handleOpenCategoryModal = useCallback(() => {
+		setIsCategoryModalOpen((prev) => !prev);
+	}, []);
+
 	return (
-		<HeadWrapper>
-			<ImageContainer>
-				<img alt="뒤로가기" />
-			</ImageContainer>
-			<h1>메뉴관리</h1>
-			<ButtonContainer>
-				<button type="button">카레고리 관리</button>
-				<button type="button">메뉴 추가</button>
-			</ButtonContainer>
-		</HeadWrapper>
+		<>
+			<HeadWrapper>
+				<ImageContainer>
+					<img alt="뒤로가기" />
+				</ImageContainer>
+				<h1>메뉴관리</h1>
+				<ButtonContainer>
+					<button type="button" onClick={handleOpenCategoryModal}>
+						카테고리 관리
+					</button>
+					<button type="button">메뉴 추가</button>
+				</ButtonContainer>
+			</HeadWrapper>
+			{isCategoryModalOpen && (
+				<ModalPortal>
+					<CategoryManagementModal onClickToggleModal={handleOpenCategoryModal} />
+				</ModalPortal>
+			)}
+		</>
 	);
 }
 

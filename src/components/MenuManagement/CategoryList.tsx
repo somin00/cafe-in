@@ -1,19 +1,19 @@
 import React from 'react';
 import styled from 'styled-components';
+import { useRecoilState } from 'recoil';
+import { categoryListState, selectedCategoryState } from '../../state/CategoryList';
 
 function CategoryList() {
+	const [selectedCategory, setSelectedCategory] = useRecoilState(selectedCategoryState);
+	const [categoryList] = useRecoilState(categoryListState);
 	return (
 		<NavWrapper>
 			<ul>
-				<li className="is-selected">
-					<button type="button">커피</button>
-				</li>
-				<li>
-					<button type="button">음료</button>
-				</li>
-				<li>
-					<button type="button">티</button>
-				</li>
+				{categoryList.map(({ id, category }) => (
+					<li key={id} className={selectedCategory === category ? 'is-selected' : ''}>
+						<button type="button">{category}</button>
+					</li>
+				))}
 			</ul>
 		</NavWrapper>
 	);
