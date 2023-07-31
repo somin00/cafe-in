@@ -1,5 +1,6 @@
 import { atom } from 'recoil';
 import { Option, selectedItem } from '../state/OptinalState';
+import { Item } from '../state/Category';
 
 export const selectedOptionsState = atom<Option[]>({
 	key: 'selectedOptionsState',
@@ -12,15 +13,7 @@ export const selectedItemsState = atom<selectedItem[]>({
 	default: [],
 });
 
-export const menuItemState = atom({
+export const menuItemState = atom<Item[]>({
 	key: 'menuItemState',
-	default: {
-		id: 0,
-		name: '',
-		price: '',
-		imageName: '',
-		imageUrl: '',
-		category: '',
-		soldOut: false,
-	},
+	default: [],
 });

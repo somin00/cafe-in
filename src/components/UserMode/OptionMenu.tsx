@@ -65,19 +65,22 @@ function OptionMenu({ onClickToggleModal }: ModalDefaultType) {
 
 	const handleCloseBtnClick = (e: React.MouseEvent) => {
 		e.stopPropagation();
-
+		if (!menuItem || menuItem.length === 0) {
+			console.error('menuItem is undefined or empty');
+			return;
+		}
 		const itemToBeAdded = {
 			date: new Date(),
-			id: menuItem.id,
-			category: menuItem.category,
-			name: menuItem.name,
+			id: menuItem[0].id,
+			category: menuItem[0].category,
+			name: menuItem[0].name,
 			quantity: 1,
-			totalPrice: menuItem.price,
-			options: selectedOptions.map((i) => i.name).join(', '),
+			totalPrice: menuItem[0].price,
+			options: menuItem.map((i) => i.name).join(', '),
 		};
 
-		const itemsCollection = collection(db, 'seletedItem');
-		addDoc(itemsCollection, itemToBeAdded);
+		const selectedCollection = collection(db, 'seletedItem');
+		addDoc(selectedCollection, itemToBeAdded);
 
 		onClickToggleModal();
 	};

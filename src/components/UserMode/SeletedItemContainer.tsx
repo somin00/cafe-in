@@ -6,7 +6,18 @@ import { useRecoilValue } from 'recoil';
 import { selectedOptionsState } from '../../firebase/FirStoreDoc';
 import { db } from '../../firebase/firebaseConfig';
 import { selectedItem } from '../../state/OptinalState';
-import { Firestore, collection, doc, getDoc, getDocs, updateDoc, deleteDoc, addDoc } from 'firebase/firestore';
+import {
+	Firestore,
+	collection,
+	doc,
+	getDoc,
+	getDocs,
+	updateDoc,
+	deleteDoc,
+	addDoc,
+	onSnapshot,
+	increment,
+} from 'firebase/firestore';
 
 function SeletedItemContainer() {
 	const selectedOptions = useRecoilValue(selectedOptionsState);
@@ -14,42 +25,38 @@ function SeletedItemContainer() {
 
 	const [selectedItems, setSelectedItems] = useState<selectedItem[]>([]);
 
-	const fetchSelectedItems = async (db: Firestore) => {
-		const selectedItemsCol = collection(db, 'seletedItem');
-		const selectedItemsSnapshot = await getDocs(selectedItemsCol);
-		const selectedItems: selectedItem[] = selectedItemsSnapshot.docs.map(
-			(doc) => ({ ...doc.data(), id: doc.id }) as selectedItem,
-		);
-
-		return selectedItems;
-	};
 	useEffect(() => {
-		const fetchData = async () => {
-			const data = await fetchSelectedItems(db);
-			setSelectedItems(data);
-		};
+		const selectedItemsCol = collection(db, 'seletedItem');
 
-		fetchData();
+		const unsub = onSnapshot(selectedItemsCol, (snapshot) => {
+			const updatedItems: (selectedItem | undefined)[] = snapshot.docs.map((doc) => {
+				const data = doc.data();
+				if (data.quantity !== undefined) {
+					return { ...data, id: doc.id } as selectedItem;
+				}
+			});
+			setSelectedItems(updatedItems.filter((item) => item !== undefined) as selectedItem[]);
+		});
+
+		return () => unsub();
 	}, []);
+
 	const handleItemDelete = (itemName: string) => {
 		deleteDoc(doc(db, 'seletedItem', itemName));
 	};
 
-	const handleIncreaseCount = async (itemId: string) => {
-		const selectedItemRef = doc(db, 'seletedItem', itemId);
-		const selectedItemSnap = await getDoc(selectedItemRef);
-		if (selectedItemSnap.exists()) {
-			const selectedItem = selectedItemSnap.data() as selectedItem;
-			await updateDoc(selectedItemRef, { quantity: selectedItem.quantity + 1 });
-		}
+	const handleIncreaseCount = async (itemName: string) => {
+		const docRef = doc(db, 'seletedItem', itemName);
+		await updateDoc(docRef, {
+			quantity: increment(1),
+		});
 	};
 
-	const handleDecreaseCount = (itemName: string) => {
-		setSelectedItems((prevItems) =>
-			prevItems.map((item) =>
-				item.name === itemName && item.quantity > 1 ? { ...item, count: item.quantity - 1 } : item,
-			),
-		);
+	const handleDecreaseCount = async (itemName: string) => {
+		const docRef = doc(db, 'seletedItem', itemName);
+		await updateDoc(docRef, {
+			quantity: increment(-1),
+		});
 	};
 
 	const totalPrice = selectedItems.reduce((acc, item) => acc + item.totalPrice * item.quantity, 0);
