@@ -29,6 +29,7 @@ function CategoryManagementModal({ onClickToggleModal }: ModalDefaultType) {
 						추가
 					</button>
 				</AddContainer>
+				<GuidText>메뉴가 포함된 카테고리는 삭제 불가능합니다.</GuidText>
 				<ul>
 					<CategoryItem />
 				</ul>
@@ -114,4 +115,9 @@ const CloseButton = styled.button`
 	border-radius: 10px;
 	font-size: ${({ theme }) => theme.fontSize['3xl']};
 	font-weight: ${({ theme }) => theme.fontWeight.regular};
+`;
+
+const GuidText = styled.p`
+	color: red;
+	margin-bottom: 20px;
 `;

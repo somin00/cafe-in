@@ -4,12 +4,23 @@ import { useRecoilValue } from 'recoil';
 import { categoryListState } from '../../state/CategoryList';
 import { db } from '../../firebase/firebaseConfig';
 import { deleteDoc, collection, getDocs, query, where, updateDoc } from 'firebase/firestore';
+import { menuListState } from '../../state/MenuListState';
 
 function CategoryItem() {
 	const categoryListRef = collection(db, 'categoryList');
 	const categoryList = useRecoilValue(categoryListState);
+	const menuList = useRecoilValue(menuListState);
 	const [editedCategoryName, setEditedCategoryName] = useState<string>('');
 	const [selectedId, setSelectedId] = useState<number>(0);
+
+	const checkDisabled = useCallback(
+		(id: number) => {
+			const currentCategory = categoryList.filter((category) => category.id === id)[0];
+			const isContain = menuList.some((menu) => menu.category === currentCategory.category);
+			return isContain;
+		},
+		[categoryList, menuList],
+	);
 
 	const handleDeleteCategory = useCallback(
 		async (id: number) => {
@@ -21,14 +32,14 @@ function CategoryItem() {
 		[categoryListRef],
 	);
 
-	const handleEditCategoryName = useCallback((e: ChangeEvent<HTMLInputElement>) => {
+	const handleEditCategoryName = (e: ChangeEvent<HTMLInputElement>) => {
 		setEditedCategoryName(e.target.value);
-	}, []);
+	};
 
-	const handleClickEditButton = useCallback((id: number) => {
+	const handleClickEditButton = (id: number) => {
 		setEditedCategoryName('');
 		setSelectedId(id);
-	}, []);
+	};
 
 	const handleStoreEdit = useCallback(
 		async (id: number) => {
@@ -47,9 +58,9 @@ function CategoryItem() {
 		[categoryListRef, editedCategoryName],
 	);
 
-	const handleDeleteEdit = useCallback(() => {
+	const handleDeleteEdit = () => {
 		setSelectedId(0);
-	}, []);
+	};
 
 	return (
 		<>
@@ -78,6 +89,7 @@ function CategoryItem() {
 							</EditCategoryButton>
 							<button
 								type="button"
+								disabled={checkDisabled(id) ? true : false}
 								onClick={() => {
 									handleDeleteCategory(id);
 								}}
@@ -121,6 +133,11 @@ const CategoryItemWrapper = styled.li`
 		border-radius: 10px;
 		font-size: ${({ theme }) => theme.fontSize['2xl']};
 		font-weight: ${({ theme }) => theme.fontWeight.regular};
+
+		&:disabled {
+			cursor: not-allowed;
+			background-color: ${({ theme }) => theme.textColor.darkgray};
+		}
 	}
 `;
 

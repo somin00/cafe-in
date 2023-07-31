@@ -1,17 +1,17 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import Header from '../../components/MenuManagement/Header';
 import CategoryList from '../../components/MenuManagement/CategoryList';
 import MenuList from '../../components/MenuManagement/MenuList';
 import { db } from '../../firebase/firebaseConfig';
 import { collection, onSnapshot, orderBy, query } from 'firebase/firestore';
-import { useRecoilValue, useSetRecoilState } from 'recoil';
-import { categoryListState, selectedCategoryState } from '../../state/CategoryList';
+import { useRecoilState, useSetRecoilState } from 'recoil';
+import { categoryListState } from '../../state/CategoryList';
 import { CategoryType, MenuType } from '../../types/menuMangementType';
+import { menuListState } from '../../state/MenuListState';
 function MenuManagement() {
-	const selectedCategory = useRecoilValue(selectedCategoryState);
 	const setCategoryList = useSetRecoilState(categoryListState);
-	const [menuList, setMenuList] = useState<MenuType[] | null>([]);
+	const [menuList, setMenuList] = useRecoilState(menuListState);
 
 	useEffect(() => {
 		const fetchCategory = async () => {
@@ -49,13 +49,12 @@ function MenuManagement() {
 						imageName,
 					});
 				});
-				const filteredList = list.filter((item) => item.category === selectedCategory);
-				setMenuList(filteredList);
+				setMenuList(list);
 			});
 			return unsub;
 		};
 		fetchMenu();
-	}, [selectedCategory]);
+	}, [setMenuList]);
 
 	return (
 		<MenuManagementWrapper>

@@ -2,13 +2,20 @@ import React from 'react';
 import styled from 'styled-components';
 import MenuItem from '../MenuItem';
 import { MenuType } from '../../types/menuMangementType';
+import { useRecoilValue } from 'recoil';
+import { selectedCategoryState } from '../../state/CategoryList';
 
 interface ListPropType {
-	list: MenuType[] | null;
+	list: MenuType[];
 }
 
 function MenuList({ list }: ListPropType) {
-	return <MenuListWrapper>{list?.map((item) => <MenuItem key={item.id} menu={item} />)}</MenuListWrapper>;
+	const selectedCategory = useRecoilValue(selectedCategoryState);
+	return (
+		<MenuListWrapper>
+			{list.filter((item) => item.category === selectedCategory)?.map((item) => <MenuItem key={item.id} menu={item} />)}
+		</MenuListWrapper>
+	);
 }
 
 export default MenuList;
