@@ -232,6 +232,10 @@ const InputList = styled.ul`
 		border-radius: 10px;
 		padding-left: 8px;
 		font-size: ${({ theme }) => theme.fontSize['2xl']};
+		-webkit-appearance: none;
+		-moz-appearance: none;
+		appearance: none;
+		background: ${({ theme }) => theme.textColor.white} url('/assets/admin/open.svg') no-repeat 95%;
 	}
 `;
 
