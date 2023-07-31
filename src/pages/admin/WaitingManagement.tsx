@@ -34,7 +34,8 @@ const WaitingManagement = () => {
 		if (storedIsWaiting != null) {
 			setIsWaiting(JSON.parse(storedIsWaiting));
 		}
-	}, [setIsWaiting]);
+		localStorage.setItem('isWaitingAvailable', isWaitingAvailable.toString());
+	}, [isWaiting, isWaitingAvailable, setIsWaiting]);
 
 	const handleIsWaitingChange = (newIsWaiting: boolean) => {
 		setIsWaiting(newIsWaiting);
