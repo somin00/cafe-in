@@ -1,23 +1,27 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import OptionMenu from './OptionMenu';
-import { useRecoilValue } from 'recoil';
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import { selectedModeState } from '../../state/Mode';
 import { Item } from '../../state/Category';
 import { collection, getDocs, query, where } from 'firebase/firestore';
 import { db } from '../../firebase/firebaseConfig';
 import { selectedCategoryState } from '../../state/CategoryList';
+import { selectedItemsState } from '../../firebase/FirStoreDoc';
 
 function MenuItem() {
 	const mode = useRecoilValue(selectedModeState);
 	const selectedCategory = useRecoilValue(selectedCategoryState);
 	const [isOpenModal, setModalOpen] = useState<boolean>(false);
 	const [items, setItems] = useState<Item[]>([]);
-
+	const [selectedItem, setSelectedItem] = useRecoilState(selectedItemsState);
 	const onClickToggleModal = useCallback(() => {
 		setModalOpen(!isOpenModal);
 	}, [isOpenModal]);
-
+	const handleClick = (item: Item) => {
+		console.log(`Item Name: ${item.name}, Item ID: ${item.id}`);
+		setSelectedItem(item);
+	};
 	useEffect(() => {
 		const fetchItems = async () => {
 			try {
@@ -47,14 +51,15 @@ function MenuItem() {
 		<>
 			{items.map((item) => (
 				<MenuItemWrapper key={item.id} onClick={onClickToggleModal}>
-					<button>
+					<button onClick={() => handleClick(item)}>
 						<img src={item.imageUrl} alt={item.imageName} />
 						<p className="menu-name">{item.name}</p>
 						<p className="menu-price">{item.price}</p>
 					</button>
 				</MenuItemWrapper>
 			))}
-			{mode === 'user' || (isOpenModal && <OptionMenu onClickToggleModal={onClickToggleModal}></OptionMenu>)}
+			{mode === 'user' ||
+				(isOpenModal && <OptionMenu onClickToggleModal={onClickToggleModal} selected={selectedItem} />)}
 		</>
 	);
 }

@@ -1,5 +1,5 @@
 import { atom } from 'recoil';
-import { Option, selectedItem } from '../state/OptinalState';
+import { Option } from '../state/OptinalState';
 import { Item } from '../state/Category';
 
 export const selectedOptionsState = atom<Option[]>({
@@ -8,9 +8,9 @@ export const selectedOptionsState = atom<Option[]>({
 });
 
 //사용자가 선택한 메뉴 아이템
-export const selectedItemsState = atom<selectedItem[]>({
+export const selectedItemsState = atom({
 	key: 'selectedItemsState',
-	default: [],
+	default: {} as Item,
 });
 
 export const menuItemState = atom<Item[]>({

@@ -1,18 +1,19 @@
 import React, { useEffect, useState } from 'react';
-import { useRecoilState, useRecoilValue } from 'recoil';
+import { useRecoilState } from 'recoil';
 import { styled } from 'styled-components';
 import { Option } from '../../state/OptinalState';
-import { ModalDefaultType } from '../../types/ModalOpenTypes';
-import { menuItemState, selectedOptionsState } from '../../firebase/FirStoreDoc';
+import { selectedOptionsState } from '../../firebase/FirStoreDoc';
 import { db } from '../../firebase/firebaseConfig';
 import { addDoc, collection, getDocs } from 'firebase/firestore';
-
-function OptionMenu({ onClickToggleModal }: ModalDefaultType) {
+import { Item } from '../../state/Category';
+export interface OptionMenuProps {
+	selected: Item;
+	onClickToggleModal: () => void;
+}
+function OptionMenu({ selected, onClickToggleModal }: OptionMenuProps) {
 	const [selectedOptions, setSelectedOptions] = useRecoilState<Option[]>(selectedOptionsState);
 	const [activeOptions, setActiveOptions] = useState<string[]>([]);
-
 	const [options, setOptions] = useState<{ [key: string]: Option[] }>({});
-	const menuItem = useRecoilValue(menuItemState);
 	useEffect(() => {
 		const fetchOptions = async () => {
 			const optionsCollection = collection(db, 'options');
@@ -65,22 +66,19 @@ function OptionMenu({ onClickToggleModal }: ModalDefaultType) {
 
 	const handleCloseBtnClick = (e: React.MouseEvent) => {
 		e.stopPropagation();
-		if (!menuItem || menuItem.length === 0) {
-			console.error('menuItem is undefined or empty');
-			return;
-		}
+
 		const itemToBeAdded = {
-			date: new Date(),
-			id: menuItem[0].id,
-			category: menuItem[0].category,
-			name: menuItem[0].name,
+			data: new Date(),
+			id: selected.id,
+			category: selected.category,
+			name: selected.name,
 			quantity: 1,
-			totalPrice: menuItem[0].price,
-			options: menuItem.map((i) => i.name).join(', '),
+			totalPrice: selected.price,
+			options: selectedOptions.map((i) => i.name).join(','),
 		};
 
-		const selectedCollection = collection(db, 'seletedItem');
-		addDoc(selectedCollection, itemToBeAdded);
+		const itemsCollection = collection(db, 'seletedItem');
+		addDoc(itemsCollection, itemToBeAdded);
 
 		onClickToggleModal();
 	};
