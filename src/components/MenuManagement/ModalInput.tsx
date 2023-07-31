@@ -51,6 +51,8 @@ function ModalInput({ menuInfo, setMenuState, setFile }: ModalInputPropType) {
 		const reader = new FileReader();
 		reader.readAsDataURL(file);
 
+		e.target.value = '';
+
 		return new Promise<void>((resolve) => {
 			reader.onload = () => {
 				if (reader.result) {
@@ -62,6 +64,11 @@ function ModalInput({ menuInfo, setMenuState, setFile }: ModalInputPropType) {
 	};
 
 	const deleteImage = () => {
+		setFile(undefined);
+		setMenuState({
+			...menuInfo,
+			imageName: '',
+		});
 		setImgSrc('');
 	};
 
