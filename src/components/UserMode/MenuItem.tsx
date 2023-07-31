@@ -34,7 +34,7 @@ function MenuItem() {
 				}
 				const querySnapshot = await getDocs(itemsQuery);
 				const loadedItems = querySnapshot.docs.map((doc) => {
-					const data = doc.data() as { [key: string]: any };
+					const data = doc.data() as Item;
 					return {
 						...data,
 						price: Number(data.price),
