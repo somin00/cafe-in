@@ -1,13 +1,13 @@
 import React, { ChangeEvent, useCallback, useState } from 'react';
 import styled from 'styled-components';
-import { useRecoilState } from 'recoil';
+import { useRecoilValue } from 'recoil';
 import { categoryListState } from '../../state/CategoryList';
 import { db } from '../../firebase/firebaseConfig';
 import { deleteDoc, collection, getDocs, query, where, updateDoc } from 'firebase/firestore';
 
 function CategoryItem() {
 	const categoryListRef = collection(db, 'categoryList');
-	const [categoryList] = useRecoilState(categoryListState);
+	const categoryList = useRecoilValue(categoryListState);
 	const [editedCategoryName, setEditedCategoryName] = useState<string>('');
 	const [selectedId, setSelectedId] = useState<number>(0);
 
