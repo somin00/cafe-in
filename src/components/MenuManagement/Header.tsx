@@ -2,11 +2,18 @@ import React, { useState, useCallback } from 'react';
 import styled from 'styled-components';
 import CategoryManagementModal from './CategoryManagementModal';
 import ModalPortal from '../ModalPortal';
+import AddMenuModal from './AddMenuModal';
 
 function Header() {
 	const [isCategoryModalOpen, setIsCategoryModalOpen] = useState<boolean>(false);
+	const [isAddMenuModalOpen, setIsAddMenuModalOpen] = useState<boolean>(false);
+
 	const handleOpenCategoryModal = useCallback(() => {
 		setIsCategoryModalOpen((prev) => !prev);
+	}, []);
+
+	const handleOpenAddMenuModal = useCallback(() => {
+		setIsAddMenuModalOpen((prev) => !prev);
 	}, []);
 
 	return (
@@ -20,12 +27,19 @@ function Header() {
 					<button type="button" onClick={handleOpenCategoryModal}>
 						카테고리 관리
 					</button>
-					<button type="button">메뉴 추가</button>
+					<button type="button" onClick={handleOpenAddMenuModal}>
+						메뉴 추가
+					</button>
 				</ButtonContainer>
 			</HeadWrapper>
 			{isCategoryModalOpen && (
 				<ModalPortal>
 					<CategoryManagementModal onClickToggleModal={handleOpenCategoryModal} />
+				</ModalPortal>
+			)}
+			{isAddMenuModalOpen && (
+				<ModalPortal>
+					<AddMenuModal onClickToggleModal={handleOpenAddMenuModal} />
 				</ModalPortal>
 			)}
 		</>
@@ -35,8 +49,7 @@ function Header() {
 export default Header;
 
 const HeadWrapper = styled.header`
-	/* 색상 코드 추가되면 수정 */
-	background-color: ${({ theme }) => (theme.lightColor ? theme.textColor.white : '#222222')};
+	background-color: ${({ theme }) => (theme.lightColor ? theme.textColor.white : theme.darkColor?.background)};
 	height: 80px;
 	display: flex;
 	align-items: center;
