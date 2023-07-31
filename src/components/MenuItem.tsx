@@ -28,7 +28,6 @@ function MenuItem() {
 
 export default MenuItem;
 
-
 const Layout = styled.div`
 	display: grid;
 	grid-template-columns: 1fr 1fr 1fr;

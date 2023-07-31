@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { styled, useTheme } from 'styled-components';
 import { Routes, Route, NavLink } from 'react-router-dom';
 import { useRecoilState } from 'recoil';
-import { modalState } from '../../state/modalState';
+import { modalState } from '../../state/ModalState';
+import { isWaitingState } from '../../state/WaitingState';
 
 import WaitingHeader from '../../components/waitingManagement/WaitingHeader';
 import WaitingTableBox from '../../components/waitingManagement/WaitingTableBox';
@@ -13,7 +14,6 @@ type DataStatusProps = {
 };
 
 const WaitingManagement = () => {
-	const [isWaiting, setIsWaiting] = useState<boolean>(true);
 	const [isOpenModal, setIsOpenModal] = useRecoilState<boolean>(modalState);
 
 	const closeModal = () => {
@@ -22,12 +22,14 @@ const WaitingManagement = () => {
 
 	const theme = useTheme();
 
+	const [isWaiting, setIsWaiting] = useRecoilState<boolean>(isWaitingState);
+
 	useEffect(() => {
 		const storedIsWaiting = localStorage.getItem('isWaiting');
 		if (storedIsWaiting != null) {
 			setIsWaiting(JSON.parse(storedIsWaiting));
 		}
-	}, []);
+	}, [setIsWaiting]);
 
 	const handleIsWaitingChange = (newIsWaiting: boolean) => {
 		setIsWaiting(newIsWaiting);
