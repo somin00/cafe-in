@@ -4,8 +4,10 @@ export interface Item {
 	id: number;
 	name: string;
 	price: number;
-	img: string;
+	imageName: string;
+	imageUrl: string;
 	category: string;
+	soldOut: boolean;
 }
 
 export const selectedCategoryState = atom<string>({
@@ -15,13 +17,5 @@ export const selectedCategoryState = atom<string>({
 
 export interface Category {
 	id: string;
-	category: string;
-}
-
-export interface MenuItem {
-	id: number;
-	name: string;
-	price: number;
-	img: string;
 	category: string;
 }

@@ -41,7 +41,7 @@ function MenuItem() {
 			{items.map((item, index) => (
 				<MenuItemWrapper key={index} onClick={onClickToggleModal}>
 					<button>
-						<img src={item.img} alt={item.name} />
+						<img src={item.imageUrl} alt={item.imageName} />
 						<p className="menu-name">{item.name}</p>
 						<p className="menu-price">{item.price}</p>
 					</button>
