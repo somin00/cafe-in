@@ -65,12 +65,14 @@ function SeletedItemContainer() {
 				category: item.category,
 				data: new Date(),
 				name: item.name,
-				options: item.options,
+				options: item.options ?? '없음',
 				progress: '완료주문',
 				quantity: item.quantity,
-				totalPrice: item.price * item.quantity,
+				totalPrice: item.totalPrice * item.quantity,
 			};
-
+			if (newOrder.category === undefined) {
+				newOrder.category = '없음';
+			}
 			await addDoc(collection(db, 'orderList'), newOrder);
 		});
 	};
