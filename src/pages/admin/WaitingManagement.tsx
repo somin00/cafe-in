@@ -1,26 +1,66 @@
-import React from 'react';
-import { styled } from 'styled-components';
-import WaitingHeader from '../../components/waitingManagement/WaitingHeader';
-import WaitingItem from '../../components/waitingManagement/WaitingItem';
+import React, { useState } from 'react';
+import { styled, useTheme } from 'styled-components';
+import { Routes, Route, NavLink } from 'react-router-dom';
+import { useRecoilState } from 'recoil';
+import { modalState } from '../../state/modalState';
 
-interface ThProps {
-	width?: string;
-}
+import WaitingHeader from '../../components/waitingManagement/WaitingHeader';
+import WaitingTableBox from '../../components/waitingManagement/WaitingTableBox';
+import WaitingModal from '../../components/waitingManagement/WaitingModal';
 
 const WaitingManagement = () => {
+	const [isWaiting, setisWaiting] = useState<boolean>(true);
+	const [isOpenModal, setIsOpenModal] = useRecoilState<boolean>(modalState);
+
+	const closeModal = () => {
+		setIsOpenModal(false);
+	};
+
+	const theme = useTheme();
+
 	return (
 		<WaitingManagementWrapper>
+			{isOpenModal && <WaitingModal closeModal={closeModal} />}
 			<WaitingHeader />
 			<WaitingTableWrapper>
 				<TableMenu>
 					<ListWrapper>
-						<WaitingList role="button" tabIndex={0} aria-label="대기 중 명단 선택하기">
-							<img alt="선택된 체크 버튼" />
+						<WaitingList
+							to="/admin/waiting"
+							role="button"
+							tabIndex={0}
+							aria-label="대기 중 명단 선택하기"
+							onClick={() => {
+								setisWaiting(true);
+							}}
+						>
+							<img
+								alt="선택된 체크 버튼"
+								src={
+									isWaiting
+										? process.env.PUBLIC_URL +
+										  (theme.lightColor ? '/assets/admin/check-able_light.svg' : '/assets/admin/check-able_dark.svg')
+										: process.env.PUBLIC_URL + '/assets/admin/check-disable_light.svg'
+								}
+							/>
 							대기 중 명단
 						</WaitingList>
-						<WaitedList role="button" tabIndex={0} aria-label="대기 완료 명단 선택하기">
+						<WaitedList
+							to="/admin/waiting/waitedlist"
+							role="button"
+							tabIndex={0}
+							aria-label="대기 완료 명단 선택하기"
+							onClick={() => {
+								setisWaiting(false);
+							}}
+						>
 							<img
-								src={process.env.PUBLIC_URL + '/assets/admin/check-disable_light.svg'}
+								src={
+									isWaiting
+										? process.env.PUBLIC_URL + '/assets/admin/check-disable_light.svg'
+										: process.env.PUBLIC_URL +
+										  (theme.lightColor ? '/assets/admin/check-able_light.svg' : '/assets/admin/check-able_dark.svg')
+								}
 								alt="선택되지 않은 체크 버튼"
 							/>
 							대기 완료 명단
@@ -31,26 +71,10 @@ const WaitingManagement = () => {
 						<WaitingDisableBtn>대기 마감</WaitingDisableBtn>
 					</WaitingBtnWrapper>
 				</TableMenu>
-				<TableBox>
-					<table>
-						<thead>
-							<TableHeader>
-								<ThCell width="140px">대기 번호</ThCell>
-								<ThCell width="110px">이름</ThCell>
-								<ThCell width="125px">인원</ThCell>
-								<ThCell width="250px">전화번호</ThCell>
-								<ThCell width="300px">
-									현재 대기 <span>649</span>팀
-								</ThCell>
-							</TableHeader>
-						</thead>
-						<WaitingItemList>
-							<WaitingItem />
-							<WaitingItem />
-							<WaitingItem />
-						</WaitingItemList>
-					</table>
-				</TableBox>
+				<Routes>
+					<Route path="/waitedlist" element={<TodayWaitedTable />}></Route>
+					<Route path="/*" element={<WaitingTable />}></Route>
+				</Routes>
 			</WaitingTableWrapper>
 		</WaitingManagementWrapper>
 	);
@@ -63,6 +87,7 @@ const WaitingManagementWrapper = styled.div`
 	height: 834px;
 	background-color: ${({ theme }) => (theme.lightColor ? theme.textColor.white : theme.darkColor?.background)};
 	user-select: none;
+	position: relative;
 `;
 
 const WaitingTableWrapper = styled.div`
@@ -92,23 +117,21 @@ const ListWrapper = styled.div`
 	height: 32px;
 `;
 
-const WaitingList = styled.p`
+const WaitingList = styled(NavLink)`
 	display: flex;
 	justify-content: center;
 	align-items: center;
 	color: ${({ theme }) => (theme.lightColor ? theme.textColor.black : theme.textColor.white)};
 	img {
 		margin-right: 10px;
-		content: ${({ theme }) =>
-			theme.lightColor ? 'url(/assets/admin/check-able_light.svg)' : ' url(/assets/admin/check-able_dark.svg)'};
 	}
 `;
 
-const WaitedList = styled.p`
+const WaitedList = styled(NavLink)`
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	color: ${({ theme }) => theme.textColor.darkgray};
+	color: ${({ theme }) => (theme.lightColor ? theme.textColor.black : theme.textColor.white)};
 	img {
 		margin-right: 10px;
 	}
@@ -139,41 +162,18 @@ const WaitingDisableBtn = styled.button`
 	color: ${({ theme }) => (theme.lightColor ? theme.lightColor?.yellow.point : theme.textColor.darkgray)};
 `;
 
-const TableBox = styled.div`
-	width: 1046px;
-	height: 625px;
-	margin-bottom: 48px;
-	padding-top: 20px;
-	background-color: ${({ theme }) =>
-		theme.lightColor ? theme.lightColor?.yellow.background : theme.darkColor?.background};
-	border: ${({ theme }) => (theme.lightColor ? 'none' : `1px solid ${theme.textColor.white}`)};
-`;
+// ---------------------------
 
-// eslint-disable-next-line prettier/prettier
-const ThCell = styled.th<ThProps>`
-	width: ${({ width }) => width};
-`;
+function TodayWaitedTable() {
+	const waitingDataStatus = 'waited';
+	return (
+		<div>
+			<WaitingTableBox waitingDataStatus={waitingDataStatus} />
+		</div>
+	);
+}
 
-const TableHeader = styled.tr`
-	width: 982px;
-	height: 68px;
-	font-size: ${({ theme }) => theme.fontSize['2xl']};
-	font-weight: ${({ theme }) => theme.fontWeight.semibold};
-	border-radius: 15px;
-	display: flex;
-	align-items: center;
-	margin: 0 32px 15px 32px;
-	padding-left: 32px;
-	padding-right: 40px;
-	background-color: ${({ theme }) => (theme.lightColor ? theme.lightColor.yellow.main : theme.textColor.white)};
-	border: ${({ theme }) => (theme.lightColor ? 'none' : '1px solid white')};
-	span {
-		color: ${({ theme }) => (theme.lightColor ? theme.textColor.darkbrown : theme.darkColor?.sub)};
-	}
-`;
-
-const WaitingItemList = styled.tbody`
-	width: 982px;
-	height: 470px;
-	margin: 0 0 32px 32px;
-`;
+function WaitingTable() {
+	const waitingDataStatus = 'waiting';
+	return <WaitingTableBox waitingDataStatus={waitingDataStatus} />;
+}
