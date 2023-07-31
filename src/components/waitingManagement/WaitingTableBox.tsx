@@ -79,6 +79,14 @@ const TableBox = styled.div`
 	background-color: ${({ theme }) =>
 		theme.lightColor ? theme.lightColor?.yellow.background : theme.darkColor?.background};
 	border: ${({ theme }) => (theme.lightColor ? 'none' : `1px solid ${theme.textColor.white}`)};
+	overflow-y: scroll;
+	overflow-x: hidden;
+	-ms-overflow-style: none;
+	scrollbar-width: none;
+
+	&::-webkit-scrollbar {
+		display: none;
+	}
 `;
 
 // eslint-disable-next-line prettier/prettier
