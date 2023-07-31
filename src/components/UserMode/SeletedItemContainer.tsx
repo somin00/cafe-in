@@ -5,20 +5,20 @@ import { defaultTheme, darkTheme } from '../../style/theme';
 import { useRecoilValue } from 'recoil';
 import { selectedOptionsState } from '../../firebase/FirStoreDoc';
 import { db } from '../../firebase/firebaseConfig';
-import { seletedItem } from '../../state/OptinalState';
+import { selectedItem } from '../../state/OptinalState';
 import { Firestore, collection, doc, getDoc, getDocs, updateDoc, deleteDoc, addDoc } from 'firebase/firestore';
 
 function SeletedItemContainer() {
 	const selectedOptions = useRecoilValue(selectedOptionsState);
 	const navigate = useNavigate();
 
-	const [selectedItems, setSelectedItems] = useState<seletedItem[]>([]);
+	const [selectedItems, setSelectedItems] = useState<selectedItem[]>([]);
 
 	const fetchSelectedItems = async (db: Firestore) => {
 		const selectedItemsCol = collection(db, 'seletedItem');
 		const selectedItemsSnapshot = await getDocs(selectedItemsCol);
-		const selectedItems: seletedItem[] = selectedItemsSnapshot.docs.map(
-			(doc) => ({ ...doc.data(), id: doc.id }) as seletedItem,
+		const selectedItems: selectedItem[] = selectedItemsSnapshot.docs.map(
+			(doc) => ({ ...doc.data(), id: doc.id }) as selectedItem,
 		);
 
 		return selectedItems;
@@ -39,7 +39,7 @@ function SeletedItemContainer() {
 		const selectedItemRef = doc(db, 'seletedItem', itemId);
 		const selectedItemSnap = await getDoc(selectedItemRef);
 		if (selectedItemSnap.exists()) {
-			const selectedItem = selectedItemSnap.data() as seletedItem;
+			const selectedItem = selectedItemSnap.data() as selectedItem;
 			await updateDoc(selectedItemRef, { quantity: selectedItem.quantity + 1 });
 		}
 	};
