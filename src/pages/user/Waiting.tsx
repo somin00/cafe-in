@@ -4,6 +4,7 @@ import { styled } from 'styled-components';
 
 function Waiting() {
 	const navigate = useNavigate();
+
 	return (
 		<WaitingWrapper>
 			<WaitingHeaderText>

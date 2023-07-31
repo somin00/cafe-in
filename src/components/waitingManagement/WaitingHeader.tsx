@@ -7,7 +7,7 @@ function WaitingHeader() {
 		<WaitingHeaderWrapper>
 			<IconWrapper
 				onClick={() => {
-					navigate(-1);
+					navigate('/admin');
 				}}
 			>
 				<img alt="뒤로가기 버튼" />
