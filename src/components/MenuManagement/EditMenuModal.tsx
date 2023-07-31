@@ -5,7 +5,7 @@ import ModalInput from './ModalInput';
 function EditMenuModal() {
 	return (
 		<EditModalWrapper>
-			<ModalInput />
+			{/* <ModalInput /> */}
 			<div>
 				<Button type="button">수정</Button>
 				<Button type="button">삭제</Button>

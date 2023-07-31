@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { styled, useTheme } from 'styled-components';
 import { Routes, Route, NavLink } from 'react-router-dom';
 import { useRecoilState } from 'recoil';
-import { modalState } from '../../state/modalState';
+import { modalState } from '../../state/ModalState';
 import { isWaitingState } from '../../state/WaitingState';
 
 import WaitingHeader from '../../components/waitingManagement/WaitingHeader';
