@@ -1,7 +1,7 @@
 import React from 'react';
 import { styled } from 'styled-components';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
-import { modalState, modalTypeState, modalUpdateState } from '../../state/modalState';
+import { modalState, modalTypeState, modalUpdateState } from '../../state/ModalState';
 
 type modalProps = {
 	closeModal?: () => void;
