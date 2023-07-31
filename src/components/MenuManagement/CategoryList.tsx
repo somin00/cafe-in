@@ -1,17 +1,24 @@
-import React from 'react';
+import React, { MouseEvent } from 'react';
 import styled from 'styled-components';
-import { useRecoilState } from 'recoil';
+import { useRecoilState, useRecoilValue } from 'recoil';
 import { categoryListState, selectedCategoryState } from '../../state/CategoryList';
 
 function CategoryList() {
 	const [selectedCategory, setSelectedCategory] = useRecoilState(selectedCategoryState);
-	const [categoryList] = useRecoilState(categoryListState);
+	const categoryList = useRecoilValue(categoryListState);
+
+	const handleSelectCategory = (e: MouseEvent) => {
+		const categoryName = e.currentTarget;
+		if (categoryName.textContent) setSelectedCategory(categoryName.textContent);
+	};
 	return (
 		<NavWrapper>
 			<ul>
 				{categoryList.map(({ id, category }) => (
 					<li key={id} className={selectedCategory === category ? 'is-selected' : ''}>
-						<button type="button">{category}</button>
+						<button type="button" onClick={handleSelectCategory}>
+							{category}
+						</button>
 					</li>
 				))}
 			</ul>
@@ -22,8 +29,7 @@ function CategoryList() {
 export default CategoryList;
 
 export const NavWrapper = styled.nav`
-	/* 색상 코드 추가되면 수정 */
-	background-color: ${({ theme }) => (theme.lightColor ? theme.textColor.white : '#222222')};
+	background-color: ${({ theme }) => (theme.lightColor ? theme.textColor.white : theme.darkColor?.background)};
 	height: 60px;
 	ul {
 		margin-left: 50px;
@@ -39,10 +45,8 @@ export const NavWrapper = styled.nav`
 		margin-right: 10px;
 	}
 
-	/* 선택된 카테고리만 이 스타일 사용할 것 is-selected 클래스 사용*/
 	li.is-selected button {
-		/* 색상 코드 추가되면 수정 */
-		color: ${({ theme }) => (theme.lightColor ? theme.lightColor?.yellow.sub : '#068FFF')};
+		color: ${({ theme }) => (theme.lightColor ? theme.lightColor?.yellow.sub : theme.darkColor?.main)};
 		font-weight: ${({ theme }) => theme.fontWeight.semibold};
 	}
 `;

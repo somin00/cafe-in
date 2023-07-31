@@ -3,50 +3,49 @@ import { styled } from 'styled-components';
 import OptionMenu from '../components/UserMode/OptionMenu';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { selectedModeState } from '../state/Mode';
+
 import { selectedItemsState } from '../firebase/FirStoreDoc';
 
-function MenuItem() {
+import { MenuType } from '../types/menuMangementType';
+
+
+interface ItemPropType {
+	menu: MenuType;
+}
+function MenuItem({ menu }: ItemPropType) {
 	const mode = useRecoilValue(selectedModeState);
 	const [isOpenModal, setModalOpen] = useState<boolean>(false);
+
 	const [selectedItem, setSelectedItem] = useRecoilState(selectedItemsState);
+
+	const priceTemplate = (price: string) => {
+		return price.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+	};
+
+
 	const onClickToggleModal = useCallback(() => {
 		setModalOpen(!isOpenModal);
 	}, [isOpenModal]);
 
 	return (
-		<Layout>
+		<>
 			<MenuItemWrapper onClick={onClickToggleModal}>
 				<button>
-					<img src="/assets/user/IceCoffee.svg" alt="Ice Coffee" />
-					<p className="menu-name"> 아메리카노 [Iced]</p>
-					<p className="menu-price">4,500원</p>
+					{menu.imageUrl ? <img src={menu.imageUrl} alt={`${menu.name}이미지`} /> : <div>이미지 없음</div>}
+					<p className="menu-name"> {menu.name}</p>
+					<p className="menu-price">{priceTemplate(menu.price)}원</p>
 				</button>
 			</MenuItemWrapper>
+
 			{mode === 'user' && isOpenModal && (
 				<OptionMenu onClickToggleModal={onClickToggleModal} selected={selectedItem}></OptionMenu>
 			)}
 		</Layout>
+
 	);
 }
 
 export default MenuItem;
-
-const Layout = styled.div`
-	display: grid;
-	grid-template-columns: 1fr 1fr 1fr 1fr;
-	gap: 8px;
-	height: 830px;
-	margin: 30px 0;
-	overflow-y: auto;
-	overflow-x: hidden;
-	margin-right: 10px;
-	padding-left: 10px;
-	&::-webkit-scrollbar {
-		display: none;
-	}
-	/* Firefox */
-	scrollbar-width: none;
-`;
 
 const MenuItemWrapper = styled.li`
 	background-color: ${({ theme }) => theme.textColor.white};
@@ -59,11 +58,25 @@ const MenuItemWrapper = styled.li`
 		width: 100%;
 		height: 100%;
 		border-radius: 15px;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
 	}
 
 	img {
 		width: 218px;
 		height: 204px;
+	}
+
+	div {
+		width: 218px;
+		height: 204px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		font-size: ${({ theme }) => theme.fontSize['xl']};
+		font-weight: ${({ theme }) => theme.fontWeight.regular};
+		background-color: ${({ theme }) => theme.textColor.white};
 	}
 
 	.menu-name {

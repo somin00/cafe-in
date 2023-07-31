@@ -10,7 +10,21 @@ function MenuList() {
 	);
 }
 
+
+import MenuItem from '../MenuItem';
+import { MenuType } from '../../types/menuMangementType';
+
+interface ListPropType {
+	list: MenuType[] | null;
+}
+
+function MenuList({ list }: ListPropType) {
+	return <MenuListWrapper>{list?.map((item) => <MenuItem key={item.id} menu={item} />)}</MenuListWrapper>;
+}
+
 export default MenuList;
+
+
 const MenuListWrapper = styled.ul`
 	padding: 40px 28px 45px 28px;
 	display: grid;
