@@ -5,7 +5,7 @@ export interface Option {
 	options: string;
 }
 
-export interface seletedItem {
+export interface selectedItem {
 	price: number;
 	category: string;
 	id: string;
