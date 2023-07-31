@@ -1,9 +1,8 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { styled } from 'styled-components';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import { modalItemId, modalState, modalTypeState, modalUpdateState } from '../../state/modalState';
 import { WaitingDataType } from '../../types/waitingDataType';
-
 import { db } from '../../firebase/firebaseConfig';
 import { updateDoc, doc } from 'firebase/firestore';
 
@@ -20,8 +19,6 @@ const WaitingItem = (props: WaitingItemProps) => {
 	const modalUpdate = useRecoilValue<boolean>(modalUpdateState);
 
 	// 모달창에서 예를 클릭했을 때 업데이트 (취소, 착석완료만)
-
-	// Update status
 	const updateStatus = async (id: string, type: string) => {
 		const statusDoc = doc(db, 'waitingList', id);
 		try {
@@ -31,9 +28,11 @@ const WaitingItem = (props: WaitingItemProps) => {
 		}
 	};
 
-	if (itemId && modalUpdate && modalType !== 'notification') {
-		updateStatus(itemId, modalType);
-	}
+	useEffect(() => {
+		if (itemId && modalUpdate && modalType !== 'notification') {
+			updateStatus(itemId, modalType);
+		}
+	}, [modalUpdate, itemId, modalType]);
 
 	const formatTel = (tel: string) => {
 		const cleanNumber = tel.replace(/\D/g, '');

@@ -2,9 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { styled } from 'styled-components';
 import WaitingItem from './WaitingItem';
 import { WaitingDataType } from '../../types/waitingDataType';
-
 import { db } from '../../firebase/firebaseConfig';
-import { collection, getDocs } from 'firebase/firestore';
+import { collection, onSnapshot } from 'firebase/firestore';
 import { filterTodayWaiting } from '../../utils/filter';
 
 interface ThProps {
@@ -21,20 +20,17 @@ const WaitingTableBox = (props: waitingDataProps) => {
 
 	useEffect(() => {
 		const waitingCollectionRef = collection(db, 'waitingList');
-		const getWaitingList = async () => {
-			try {
-				const data = await getDocs(waitingCollectionRef);
-				setWaitingList(
-					data.docs.map((doc) => ({
-						id: doc.id,
-						...(doc.data() as WaitingDataType),
-					})),
-				);
-			} catch (error) {
-				console.error('Error fetching waitingList : ', error);
-			}
-		};
-		getWaitingList();
+		const getWaitingList = onSnapshot(waitingCollectionRef, (snapshot) => {
+			const data: WaitingDataType[] = [];
+			snapshot.forEach((doc) => {
+				data.push({
+					id: doc.id,
+					...(doc.data() as WaitingDataType),
+				});
+			});
+			setWaitingList(data);
+		});
+		return () => getWaitingList();
 	}, []);
 
 	//* 당일 날짜 + 선택한 status(waitingDataStatus)에 따라 해당 status의 data만 저장해서 리턴하는 함수
