@@ -33,7 +33,8 @@ function AddMenuModal({ onClickToggleModal }: ModalDefaultType) {
 		if (
 			menuInfo.name.trim().length === 0 ||
 			menuInfo.price.trim().length === 0 ||
-			menuInfo.category.trim().length === 0
+			menuInfo.category.trim().length === 0 ||
+			!menuInfo.imageName
 		) {
 			isValid = false;
 		}
@@ -49,12 +50,11 @@ function AddMenuModal({ onClickToggleModal }: ModalDefaultType) {
 	};
 
 	const handleAddMenu = async () => {
-		if (!validate()) return;
 		const imageUrl = await storeImg();
 		addDoc(menuItemRef, {
 			...menuInfo,
 			id: Date.now(),
-			imageUrl: imageUrl ? imageUrl : '',
+			imageUrl: imageUrl,
 		});
 		setMenuInfo(initialMenu);
 		onClickToggleModal();
@@ -69,6 +69,7 @@ function AddMenuModal({ onClickToggleModal }: ModalDefaultType) {
 		<AddModalWrapper>
 			<AddModalContent>
 				<ModalInput menuInfo={menuInfo} setMenuState={setMenuInfo} setFile={setFile} />
+				<Guide>*모든 정보 입력 후 메뉴 추가가 가능합니다.</Guide>
 				<div>
 					<Button type="button" onClick={handleAddMenu} disabled={!validate() ? true : false}>
 						추가
@@ -104,6 +105,15 @@ const AddModalContent = styled.div`
 	background-color: ${({ theme }) => (theme.lightColor ? theme.lightColor?.yellow.background : theme.textColor.black)};
 	padding-top: 58px;
 	border-radius: 10px;
+`;
+
+const Guide = styled.p`
+	position: relative;
+	top: -55px;
+	right: 62px;
+	width: 400px;
+	text-align: right;
+	align-self: flex-end;
 `;
 
 const Button = styled.button`
