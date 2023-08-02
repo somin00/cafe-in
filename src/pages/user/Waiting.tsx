@@ -1,20 +1,38 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useRecoilState } from 'recoil';
+import { useRecoilValue } from 'recoil';
 import { styled } from 'styled-components';
 import { isWaitingAvailableState } from '../../state/WaitingState';
+import { collection, getDocs } from 'firebase/firestore';
+import { db } from '../../firebase/firebaseConfig';
 
 function Waiting() {
 	const navigate = useNavigate();
 
-	const [isWaitingAvailable, setIsWaitingAvailable] = useRecoilState<boolean>(isWaitingAvailableState);
+	const isWaitingAvailable = useRecoilValue<boolean>(isWaitingAvailableState);
+	const [waitingNum, setWaitingNum] = useState<number>(0);
+
+	// 문서의 길이 = 대기 길이 가져오기
+	const getWaitingNum = async () => {
+		try {
+			const querySnapshot = await getDocs(collection(db, 'waitingList'));
+			setWaitingNum(querySnapshot.size);
+		} catch (error) {
+			console.error('Error getting waitingNum:', error);
+		}
+	};
+
+	useEffect(() => {
+		// 대기 팀 수 가져오기
+		getWaitingNum();
+	}, [waitingNum]);
 
 	return (
 		<WaitingWrapper>
 			{isWaitingAvailable ? (
 				<>
 					<WaitingHeaderText>
-						649 팀이 <p> 대기중이에요</p>
+						{waitingNum} 팀이 <p> 대기중이에요</p>
 					</WaitingHeaderText>
 					<ApplicationBox>
 						<ApplicationHeaderText>대기를 원하시면 번호를 입력해주세요.</ApplicationHeaderText>
