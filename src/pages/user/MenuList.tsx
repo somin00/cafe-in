@@ -10,9 +10,7 @@ function MenuList() {
 		<Layout>
 			<MenuListHeader />
 			<Main>
-				<MenuListLayout>
-					<MenuItem />
-				</MenuListLayout>
+				<MenuListLayout>{/* <MenuItem /> */}</MenuListLayout>
 				<SeletedItemContainer />
 			</Main>
 		</Layout>
