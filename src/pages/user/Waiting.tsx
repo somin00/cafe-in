@@ -73,7 +73,7 @@ function Waiting() {
 		getWaitingNum();
 
 		// 인원 수 선택 버튼 disable 관리
-		if (waitingPersonNum === 0) {
+		if (waitingPersonNum === 1) {
 			setDecreaseDisable(true);
 		} else {
 			setDecreaseDisable(false);
