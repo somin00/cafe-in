@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
 import { styled } from 'styled-components';
 import { isWaitingAvailableState } from '../../state/WaitingState';
-import { collection, getDocs } from 'firebase/firestore';
+import { collection, getDocs, addDoc } from 'firebase/firestore';
 import { db } from '../../firebase/firebaseConfig';
 import { WaitingDataType } from '../../types/waitingDataType';
 import { filterTodayWaiting } from '../../utils/filter';
@@ -14,13 +14,14 @@ type DecreaseProps = {
 
 function Waiting() {
 	const navigate = useNavigate();
-
 	const isWaitingAvailable = useRecoilValue<boolean>(isWaitingAvailableState);
-	const [waitingNum, setWaitingNum] = useState<number>(0);
-	const [currentData, setCurrentData] = useState<WaitingDataType[]>([]);
 
-	// 대기 신청 데이터 담을 변수
-	const [waitingDatas, setWaitingDatas] = useState<WaitingDataType[]>([]);
+	// 현재 대기중인 팀 수
+	const [waitingNum, setWaitingNum] = useState<number>(0);
+	// 기존 대기 데이터
+	const [currentData, setCurrentData] = useState<WaitingDataType[]>([]);
+	// 기존 전체 대기 팀 수
+	const [currentWaitingNum, setCurrentWaitingNum] = useState<number>(0);
 
 	// 대기 신청 시 필수 입력 값
 	const [waitingPersonNum, setWaitingPersonNum] = useState<number>(1);
@@ -43,6 +44,38 @@ function Waiting() {
 		}
 	};
 
+	// 파베 DB
+	const waitingCollection = collection(db, 'waitingList');
+
+	useEffect(() => {
+		// 당일 현재 대기 팀 수 가져오기 + 전체 대기 수 저장
+		const getWaitingNum = async () => {
+			try {
+				const data = await getDocs(waitingCollection);
+				setCurrentData(
+					data.docs.map((doc) => ({
+						id: doc.id,
+						...(doc.data() as WaitingDataType),
+					})),
+				);
+				setCurrentWaitingNum(currentData.length);
+				setWaitingNum(filterTodayWaiting(currentData, 'waiting').length);
+			} catch (error) {
+				console.error('Error getting waitingNum:', error);
+			}
+		};
+
+		// 대기 팀 수 가져오기
+		getWaitingNum();
+
+		// 인원 수 선택 버튼 disable 관리
+		if (waitingPersonNum === 1) {
+			setDecreaseDisable(true);
+		} else {
+			setDecreaseDisable(false);
+		}
+	}, [waitingNum, waitingPersonNum, currentData, waitingCollection]);
+
 	// *유효성 검사
 	// - 필수 입력값 입력하지 않았을 때 입력창으로 focus
 
@@ -58,39 +91,24 @@ function Waiting() {
 			telInput.current.focus();
 			return;
 		}
+
+		await addDoc(waitingCollection, {
+			name: waitingName,
+			tel: waitingTel,
+			date: new Date().getTime(),
+			personNum: waitingPersonNum,
+			no: currentWaitingNum + 1,
+			status: 'waiting',
+		});
+
+		window.alert('대기 신청을 완료하였습니다.');
+
+		navigate('/waitingcheck', {
+			state: {
+				userWaitingNum: currentWaitingNum + 1,
+			},
+		});
 	};
-
-	useEffect(() => {
-		// 당일 현재 대기 팀 수 가져오기
-		const getWaitingNum = async () => {
-			try {
-				const waitingCollection = collection(db, 'waitingList');
-				const data = await getDocs(waitingCollection);
-				setCurrentData(
-					filterTodayWaiting(
-						data.docs.map((doc) => ({
-							id: doc.id,
-							...(doc.data() as WaitingDataType),
-						})),
-						'waiting',
-					),
-				);
-				setWaitingNum(currentData.length);
-			} catch (error) {
-				console.error('Error getting waitingNum:', error);
-			}
-		};
-
-		// 대기 팀 수 가져오기
-		getWaitingNum();
-
-		// 인원 수 선택 버튼 disable 관리
-		if (waitingPersonNum === 1) {
-			setDecreaseDisable(true);
-		} else {
-			setDecreaseDisable(false);
-		}
-	}, [waitingNum, waitingPersonNum, currentData]);
 
 	return (
 		<WaitingWrapper>
@@ -140,7 +158,6 @@ function Waiting() {
 							</ApplicationBtn>
 							<ApplicationBtn
 								onClick={() => {
-									// navigate('/waitingcheck');
 									applyWaiting();
 								}}
 							>

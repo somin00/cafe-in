@@ -1,9 +1,12 @@
 import React from 'react';
-import { Navigate, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { styled } from 'styled-components';
 
 function WaitingCheck() {
 	const navigate = useNavigate();
+	const location = useLocation();
+	const { userWaitingNum } = location.state;
+
 	return (
 		<WaitingCheckWrapper>
 			<WaitingCheckHeaderText>
@@ -11,7 +14,7 @@ function WaitingCheck() {
 			</WaitingCheckHeaderText>
 			<WaitingNumWrapper>
 				<LeftFireworks />
-				<WaitingNumText>640번</WaitingNumText>
+				<WaitingNumText>{userWaitingNum}번</WaitingNumText>
 				<RightFireworks />
 			</WaitingNumWrapper>
 			<HomeBtn onClick={() => navigate('/home')}>
@@ -79,7 +82,7 @@ const RightFireworks = styled.img`
 const WaitingNumText = styled.div`
 	position: absolute;
 	top: 40%;
-	left: 25%;
+	left: 30%;
 	display: flex;
 	justify-content: center;
 	align-items: center;
