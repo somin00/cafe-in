@@ -5,12 +5,36 @@ import { styled } from 'styled-components';
 import { isWaitingAvailableState } from '../../state/WaitingState';
 import { collection, getDocs } from 'firebase/firestore';
 import { db } from '../../firebase/firebaseConfig';
+import { WaitingDataType } from '../../types/waitingDataType';
+
+type DecreaseProps = {
+	$decreaseDisable: boolean;
+};
 
 function Waiting() {
 	const navigate = useNavigate();
 
 	const isWaitingAvailable = useRecoilValue<boolean>(isWaitingAvailableState);
 	const [waitingNum, setWaitingNum] = useState<number>(0);
+
+	// 대기 신청 데이터 담을 변수
+	const [waitingDatas, setWaitingDatas] = useState<WaitingDataType[]>([]);
+
+	// 대기 신청 시 필수 입력 값
+	const [waitingPersonNum, setWaitingPersonNum] = useState<number>(1);
+	const [decreaseDisable, setDecreaseDisable] = useState<boolean>(false);
+	const [waitingName, setWaitingName] = useState<string>('');
+	const [waitingTel, setWaitingTel] = useState<string>('');
+
+	const onIncrease = () => {
+		setWaitingPersonNum((prevNum) => prevNum + 1);
+	};
+
+	const onDecrease = () => {
+		if (!decreaseDisable) {
+			setWaitingPersonNum((prevNum) => prevNum - 1);
+		}
+	};
 
 	// 문서의 길이 = 대기 길이 가져오기
 	const getWaitingNum = async () => {
@@ -25,7 +49,14 @@ function Waiting() {
 	useEffect(() => {
 		// 대기 팀 수 가져오기
 		getWaitingNum();
-	}, [waitingNum]);
+
+		// 인원 수 선택 버튼 disable 관리
+		if (waitingPersonNum === 0) {
+			setDecreaseDisable(true);
+		} else {
+			setDecreaseDisable(false);
+		}
+	}, [waitingNum, waitingPersonNum]);
 
 	return (
 		<WaitingWrapper>
@@ -37,17 +68,31 @@ function Waiting() {
 					<ApplicationBox>
 						<ApplicationHeaderText>대기를 원하시면 번호를 입력해주세요.</ApplicationHeaderText>
 						<NumCheckBox>
-							<MinusBtn>
+							<MinusBtn onClick={onDecrease} $decreaseDisable={decreaseDisable}>
 								<img alt="1 빼기 버튼" aria-label="1 빼기" />
 							</MinusBtn>
-							1
-							<PlusBtn>
+							{waitingPersonNum}
+							<PlusBtn onClick={onIncrease}>
 								<img alt="1 더하기 버튼" aria-label="1 더하기" />
 							</PlusBtn>
 						</NumCheckBox>
 						<InputBoxWrapper>
-							<InputBox type="text" placeholder="이름을 입력해주세요." required />
-							<InputBox type="tel" placeholder="전화 번호를 입력해주세요." required />
+							<InputBox
+								type="text"
+								placeholder="이름을 입력해주세요."
+								onChange={(event) => {
+									setWaitingName(event.target.value);
+								}}
+								required
+							/>
+							<InputBox
+								type="tel"
+								placeholder="전화 번호를 입력해주세요."
+								onChange={(event) => {
+									setWaitingTel(event.target.value);
+								}}
+								required
+							/>
 						</InputBoxWrapper>
 						<ApplicationButtnoWrapper>
 							<ApplicationBtn
@@ -140,11 +185,17 @@ const NumCheckBox = styled.div`
 	color: ${({ theme }) => (theme.lightColor ? theme.textColor.black : theme.textColor.white)};
 `;
 
-const MinusBtn = styled.button`
+const MinusBtn = styled.button<DecreaseProps>`
 	img {
-		content: ${({ theme }) =>
-			theme.lightColor ? 'url(/assets/user/minusIcon_disable.svg)' : 'url(/assets/user/minusIcon_disable.svg)'};
+		content: ${({ theme, $decreaseDisable }) =>
+			$decreaseDisable
+				? 'url(/assets/user/minusIcon_disable.svg)'
+				: theme.lightColor
+				? 'url(/assets/user/minusIcon_able_light.svg)'
+				: 'url(/assets/user/minusIcon_dark.svg)'};
 	}
+
+	cursor: ${({ $decreaseDisable }) => ($decreaseDisable ? 'not-allowed' : 'pointer')};
 `;
 
 const PlusBtn = styled.button`
