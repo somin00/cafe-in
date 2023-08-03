@@ -4,14 +4,29 @@ import CategoryItem from './CategoryItem';
 import { ModalDefaultType } from '../../types/ModalOpenTypes';
 import { db } from '../../firebase/firebaseConfig';
 import { addDoc, collection } from 'firebase/firestore';
+import { useRecoilValue } from 'recoil';
+import { categoryListState } from '../../state/CategoryList';
 function CategoryManagementModal({ onClickToggleModal }: ModalDefaultType) {
 	const [categoryName, setCategoryName] = useState<string>('');
-
+	const [isDuplicate, setIsDuplicate] = useState<boolean>(false);
 	const categoryListRef = collection(db, 'categoryList');
+	const categoryList = useRecoilValue(categoryListState);
 
-	const handleChangeCategoryName = useCallback((e: ChangeEvent<HTMLInputElement>) => {
+	const checkDuplicate = useCallback(
+		(categoryName: string) => {
+			setIsDuplicate(false);
+			const categoryNameList = categoryList.map((category) => category.category);
+			if (categoryNameList.includes(categoryName)) {
+				setIsDuplicate(true);
+			}
+		},
+		[categoryList],
+	);
+
+	const handleChangeCategoryName = (e: ChangeEvent<HTMLInputElement>) => {
 		setCategoryName(e.target.value);
-	}, []);
+		checkDuplicate(e.target.value);
+	};
 
 	const handleAddCategory = useCallback(async () => {
 		if (categoryName.trim()) {
@@ -23,12 +38,14 @@ function CategoryManagementModal({ onClickToggleModal }: ModalDefaultType) {
 	return (
 		<CategoryManagementWrapper>
 			<CategoryModalContent>
+				<GuidText>* 이미 존재하는 카테고리는 추가 불가능합니다.</GuidText>
 				<AddContainer>
 					<input type="text" value={categoryName} onChange={handleChangeCategoryName} />
-					<button type="button" onClick={handleAddCategory} disabled={!categoryName ? true : false}>
+					<button type="button" onClick={handleAddCategory} disabled={!categoryName || isDuplicate ? true : false}>
 						추가
 					</button>
 				</AddContainer>
+				<GuidText>* 메뉴가 포함된 카테고리는 삭제 불가능합니다.</GuidText>
 				<ul>
 					<CategoryItem />
 				</ul>
@@ -62,7 +79,7 @@ const CategoryModalContent = styled.div`
 	display: flex;
 	flex-direction: column;
 	align-items: start;
-	padding: 50px 0 0 58px;
+	padding: 30px 0 0 58px;
 
 	ul {
 		display: flex;
@@ -114,4 +131,9 @@ const CloseButton = styled.button`
 	border-radius: 10px;
 	font-size: ${({ theme }) => theme.fontSize['3xl']};
 	font-weight: ${({ theme }) => theme.fontWeight.regular};
+`;
+
+const GuidText = styled.p`
+	color: ${({ theme }) => theme.textColor.black};
+	margin-bottom: 10px;
 `;

@@ -40,9 +40,8 @@ export const NavWrapper = styled.nav`
 	button {
 		font-size: ${({ theme }) => theme.fontSize['4xl']};
 		color: ${({ theme }) => (theme.lightColor ? theme.textColor.black : theme.textColor.white)};
-		width: 123px;
 		height: 60px;
-		margin-right: 10px;
+		margin-right: 50px;
 	}
 
 	li.is-selected button {

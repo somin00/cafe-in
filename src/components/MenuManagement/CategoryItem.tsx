@@ -1,34 +1,50 @@
 import React, { ChangeEvent, useCallback, useState } from 'react';
 import styled from 'styled-components';
-import { useRecoilValue } from 'recoil';
-import { categoryListState } from '../../state/CategoryList';
+import { useRecoilValue, useSetRecoilState } from 'recoil';
+import { categoryListState, selectedCategoryState } from '../../state/CategoryList';
 import { db } from '../../firebase/firebaseConfig';
 import { deleteDoc, collection, getDocs, query, where, updateDoc } from 'firebase/firestore';
+import { menuListState } from '../../state/MenuListState';
 
 function CategoryItem() {
 	const categoryListRef = collection(db, 'categoryList');
+	const menuItemRef = collection(db, 'menuItem');
+
 	const categoryList = useRecoilValue(categoryListState);
+	const menuList = useRecoilValue(menuListState);
+	const setSelectedCategory = useSetRecoilState(selectedCategoryState);
+
 	const [editedCategoryName, setEditedCategoryName] = useState<string>('');
 	const [selectedId, setSelectedId] = useState<number>(0);
 
-	const handleDeleteCategory = useCallback(
+	const checkDisabled = useCallback(
+		(id: number) => {
+			const currentCategory = categoryList.filter((category) => category.id === id)[0];
+			const isContain = menuList.some((menu) => menu.category === currentCategory.category);
+			return isContain;
+		},
+		[categoryList, menuList],
+	);
+
+	const handleRemoveCategory = useCallback(
 		async (id: number) => {
 			const data = await getDocs(query(categoryListRef, where('id', '==', id)));
 			if (data.docs.length !== 0) {
 				await deleteDoc(data.docs[0].ref);
 			}
+			setSelectedCategory(categoryList[0].category);
 		},
-		[categoryListRef],
+		[categoryList, categoryListRef, setSelectedCategory],
 	);
 
-	const handleEditCategoryName = useCallback((e: ChangeEvent<HTMLInputElement>) => {
+	const handleEditCategoryName = (e: ChangeEvent<HTMLInputElement>) => {
 		setEditedCategoryName(e.target.value);
-	}, []);
+	};
 
-	const handleClickEditButton = useCallback((id: number) => {
+	const handleClickEditButton = (id: number) => {
 		setEditedCategoryName('');
 		setSelectedId(id);
-	}, []);
+	};
 
 	const handleStoreEdit = useCallback(
 		async (id: number) => {
@@ -42,14 +58,25 @@ function CategoryItem() {
 					category: editedCategoryName,
 				});
 			}
+
+			const currentCategory = categoryList.filter((category) => category.id === id)[0].category;
+			const editMenuListDoc = await getDocs(query(menuItemRef, where('category', '==', currentCategory)));
+			if (editMenuListDoc.docs.length !== 0) {
+				editMenuListDoc.docs.forEach(async (doc) => {
+					await updateDoc(doc.ref, {
+						category: editedCategoryName,
+					});
+				});
+			}
 			setSelectedId(0);
+			setSelectedCategory(editedCategoryName);
 		},
-		[categoryListRef, editedCategoryName],
+		[categoryList, categoryListRef, editedCategoryName, menuItemRef, setSelectedCategory],
 	);
 
-	const handleDeleteEdit = useCallback(() => {
+	const handleDeleteEdit = () => {
 		setSelectedId(0);
-	}, []);
+	};
 
 	return (
 		<>
@@ -78,8 +105,9 @@ function CategoryItem() {
 							</EditCategoryButton>
 							<button
 								type="button"
+								disabled={checkDisabled(id) ? true : false}
 								onClick={() => {
-									handleDeleteCategory(id);
+									handleRemoveCategory(id);
 								}}
 							>
 								삭제
@@ -121,6 +149,11 @@ const CategoryItemWrapper = styled.li`
 		border-radius: 10px;
 		font-size: ${({ theme }) => theme.fontSize['2xl']};
 		font-weight: ${({ theme }) => theme.fontWeight.regular};
+
+		&:disabled {
+			cursor: not-allowed;
+			background-color: ${({ theme }) => theme.textColor.darkgray};
+		}
 	}
 `;
 
