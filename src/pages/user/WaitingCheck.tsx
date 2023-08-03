@@ -1,10 +1,11 @@
-import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { styled } from 'styled-components';
 
 function WaitingCheck() {
 	const navigate = useNavigate();
 	const location = useLocation();
+
+	//? 대기 신청 페이지에서 넘겨 받은 대기 번호
 	const { userWaitingNum } = location.state;
 
 	return (
