@@ -6,6 +6,7 @@ import { isWaitingAvailableState } from '../../state/WaitingState';
 import { collection, getDocs } from 'firebase/firestore';
 import { db } from '../../firebase/firebaseConfig';
 import { WaitingDataType } from '../../types/waitingDataType';
+import { filterTodayWaiting } from '../../utils/filter';
 
 type DecreaseProps = {
 	$decreaseDisable: boolean;
@@ -16,6 +17,7 @@ function Waiting() {
 
 	const isWaitingAvailable = useRecoilValue<boolean>(isWaitingAvailableState);
 	const [waitingNum, setWaitingNum] = useState<number>(0);
+	const [currentData, setCurrentData] = useState<WaitingDataType[]>([]);
 
 	// 대기 신청 데이터 담을 변수
 	const [waitingDatas, setWaitingDatas] = useState<WaitingDataType[]>([]);
@@ -29,16 +31,6 @@ function Waiting() {
 	// 유효성 검사
 	const nameInput = useRef<HTMLInputElement>(null);
 	const telInput = useRef<HTMLInputElement>(null);
-
-	// 문서의 길이 = 대기 길이 가져오기
-	const getWaitingNum = async () => {
-		try {
-			const querySnapshot = await getDocs(collection(db, 'waitingList'));
-			setWaitingNum(querySnapshot.size);
-		} catch (error) {
-			console.error('Error getting waitingNum:', error);
-		}
-	};
 
 	// 인원 수 버튼으로 조절
 	const onIncrease = () => {
@@ -69,6 +61,26 @@ function Waiting() {
 	};
 
 	useEffect(() => {
+		// 당일 현재 대기 팀 수 가져오기
+		const getWaitingNum = async () => {
+			try {
+				const waitingCollection = collection(db, 'waitingList');
+				const data = await getDocs(waitingCollection);
+				setCurrentData(
+					filterTodayWaiting(
+						data.docs.map((doc) => ({
+							id: doc.id,
+							...(doc.data() as WaitingDataType),
+						})),
+						'waiting',
+					),
+				);
+				setWaitingNum(currentData.length);
+			} catch (error) {
+				console.error('Error getting waitingNum:', error);
+			}
+		};
+
 		// 대기 팀 수 가져오기
 		getWaitingNum();
 
@@ -78,7 +90,7 @@ function Waiting() {
 		} else {
 			setDecreaseDisable(false);
 		}
-	}, [waitingNum, waitingPersonNum]);
+	}, [waitingNum, waitingPersonNum, currentData]);
 
 	return (
 		<WaitingWrapper>
