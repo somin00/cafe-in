@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
 import { styled } from 'styled-components';
@@ -26,6 +26,21 @@ function Waiting() {
 	const [waitingName, setWaitingName] = useState<string>('');
 	const [waitingTel, setWaitingTel] = useState<string>('');
 
+	// 유효성 검사
+	const nameInput = useRef<HTMLInputElement>(null);
+	const telInput = useRef<HTMLInputElement>(null);
+
+	// 문서의 길이 = 대기 길이 가져오기
+	const getWaitingNum = async () => {
+		try {
+			const querySnapshot = await getDocs(collection(db, 'waitingList'));
+			setWaitingNum(querySnapshot.size);
+		} catch (error) {
+			console.error('Error getting waitingNum:', error);
+		}
+	};
+
+	// 인원 수 버튼으로 조절
 	const onIncrease = () => {
 		setWaitingPersonNum((prevNum) => prevNum + 1);
 	};
@@ -36,13 +51,20 @@ function Waiting() {
 		}
 	};
 
-	// 문서의 길이 = 대기 길이 가져오기
-	const getWaitingNum = async () => {
-		try {
-			const querySnapshot = await getDocs(collection(db, 'waitingList'));
-			setWaitingNum(querySnapshot.size);
-		} catch (error) {
-			console.error('Error getting waitingNum:', error);
+	// *유효성 검사
+	// - 필수 입력값 입력하지 않았을 때 입력창으로 focus
+
+	const applyWaiting = async () => {
+		if (waitingName.length === 0 && nameInput.current != null) {
+			alert('이름을 입력해주세요.');
+			nameInput.current.focus();
+			return;
+		}
+
+		if (waitingTel.length !== 11 && telInput.current !== null) {
+			alert('전화번호 11자리를 모두 입력해주세요.');
+			telInput.current.focus();
+			return;
 		}
 	};
 
@@ -80,6 +102,7 @@ function Waiting() {
 							<InputBox
 								type="text"
 								placeholder="이름을 입력해주세요."
+								ref={nameInput}
 								onChange={(event) => {
 									setWaitingName(event.target.value);
 								}}
@@ -88,6 +111,7 @@ function Waiting() {
 							<InputBox
 								type="tel"
 								placeholder="전화 번호를 입력해주세요."
+								ref={telInput}
 								onChange={(event) => {
 									setWaitingTel(event.target.value);
 								}}
@@ -102,7 +126,14 @@ function Waiting() {
 							>
 								취소
 							</ApplicationBtn>
-							<ApplicationBtn onClick={() => navigate('/waitingcheck')}>신청</ApplicationBtn>
+							<ApplicationBtn
+								onClick={() => {
+									// navigate('/waitingcheck');
+									applyWaiting();
+								}}
+							>
+								신청
+							</ApplicationBtn>
 						</ApplicationButtnoWrapper>
 					</ApplicationBox>
 				</>
