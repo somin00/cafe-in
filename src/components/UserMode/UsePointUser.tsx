@@ -1,8 +1,8 @@
 import React, { useCallback, useState } from 'react';
-import { ModalDefaultType } from '../types/ModalOpenTypes';
+import { ModalDefaultType } from '../../types/ModalOpenTypes';
 import { styled } from 'styled-components';
 import CheckPointUsedIt from './CheckPointUsedIt';
-import { darkTheme, defaultTheme } from '../style/theme';
+import { darkTheme, defaultTheme } from '../../style/theme';
 
 function UsePointUser({ onClickToggleModal }: ModalDefaultType) {
 	const [isOpenModal, setModalOpen] = useState<boolean>(false);
@@ -12,7 +12,7 @@ function UsePointUser({ onClickToggleModal }: ModalDefaultType) {
 	};
 	const onClickOpenModal = useCallback(() => {
 		setModalOpen(true);
-	}, [onClickToggleModal]);
+	}, []);
 	return (
 		<ModalContainer onClick={onClickToggleModal}>
 			<DialogBox onClick={(e) => e.stopPropagation()}>

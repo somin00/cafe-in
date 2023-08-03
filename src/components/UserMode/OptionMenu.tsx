@@ -1,38 +1,46 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useRecoilState } from 'recoil';
 import { styled } from 'styled-components';
-import { selectedOptionsState, Option } from '../state/OptinalState';
-import { ModalDefaultType } from '../types/ModalOpenTypes';
-
-function OptionMenu({ onClickToggleModal }: ModalDefaultType) {
+import { Option } from '../../state/OptinalState';
+import { selectedOptionsState } from '../../firebase/FirStoreDoc';
+import { db } from '../../firebase/firebaseConfig';
+import { addDoc, collection, getDocs } from 'firebase/firestore';
+import { Item } from '../../state/Category';
+export interface OptionMenuProps {
+	selected: Item;
+	onClickToggleModal: () => void;
+}
+function OptionMenu({ selected, onClickToggleModal }: OptionMenuProps) {
 	const [selectedOptions, setSelectedOptions] = useRecoilState<Option[]>(selectedOptionsState);
 	const [activeOptions, setActiveOptions] = useState<string[]>([]);
-	const options: Option[] = [
-		{ category: '음료선택', name: 'HOT', price: 0 },
-		{ category: '음료선택', name: 'ICE', price: 0 },
-		{ category: '추가선택', name: '샷추가', price: 500 },
-		{ category: '추가선택', name: '시럽추가', price: 500 },
-		{ category: '농도선택', name: '연하게', price: 0 },
-		{ category: '농도선택', name: '진하게', price: 0 },
-		{ category: '농도선택', name: '얼음 많이', price: 0 },
-		{ category: '농도선택', name: '얼음적게', price: 0 },
-	];
-	const categories = options.reduce((result: Record<string, Option[]>, option) => {
-		if (!result[option.category]) {
-			result[option.category] = [];
-		}
-		result[option.category].push(option);
-		return result;
-	}, {});
+	const [options, setOptions] = useState<{ [key: string]: Option[] }>({});
+	useEffect(() => {
+		const fetchOptions = async () => {
+			const optionsCollection = collection(db, 'options');
+			const optionsSnapshot = await getDocs(optionsCollection);
+
+			if (optionsSnapshot.docs.length > 0) {
+				const fetchedOptions = optionsSnapshot.docs[0].data() as { [key: string]: Option[] };
+
+				const customOrder = ['음료선택', '추가선택', '농도선택'];
+				const orderedOptions: { [key: string]: Option[] } = {};
+				customOrder.forEach((key) => {
+					if (key in fetchedOptions) {
+						orderedOptions[key] = fetchedOptions[key];
+					}
+				});
+				setOptions(orderedOptions);
+			}
+		};
+
+		fetchOptions();
+	}, []);
+
 	const handleOptionClick = (e: React.MouseEvent, option: Option) => {
 		e.preventDefault();
-
-		// 카테고리별로 선택되어 있는 옵션 개수를 확인
 		const selectedInCategory = selectedOptions.filter((selectedOption) => selectedOption.category === option.category);
-		// 음료선택 카테고리의 선택 제한 로직
 		if (option.category === '음료선택') {
 			if (selectedInCategory.length >= 1) {
-				// 선택된 옵션을 취소하고 새로운 옵션을 선택
 				setSelectedOptions((oldSelectedOptions) =>
 					oldSelectedOptions.filter((selectedOption) => selectedOption.category !== option.category).concat(option),
 				);
@@ -58,18 +66,33 @@ function OptionMenu({ onClickToggleModal }: ModalDefaultType) {
 
 	const handleCloseBtnClick = (e: React.MouseEvent) => {
 		e.stopPropagation();
+
+		const itemToBeAdded = {
+			data: new Date(),
+			id: selected.id,
+			category: selected.category,
+			name: selected.name,
+			quantity: 1,
+			totalPrice: selected.price,
+			options: selectedOptions.map((i) => i.name).join(','),
+		};
+
+		const itemsCollection = collection(db, 'seletedItem');
+		addDoc(itemsCollection, itemToBeAdded);
+
 		onClickToggleModal();
 	};
+
 	return (
 		<ModalContainer onClick={onClickToggleModal}>
 			<DialogBox onClick={(e) => e.stopPropagation()}>
 				<h1>원하는 옵션을 선택해주세요</h1>
 				<Layout>
-					{Object.entries(categories).map(([category, options]) => (
-						<CheckMenuContainer key={category}>
+					{Object.entries(options).map(([category, options]) => (
+						<CheckMenuContainer key={category} onClick={() => handleOptionClick}>
 							<p className="category">{category}</p>
 							<div>
-								{(options as Option[]).map((option: Option) => (
+								{options.map((option: Option) => (
 									<CheckOption
 										key={option.name}
 										onClick={(e) => handleOptionClick(e, option)}
