@@ -139,5 +139,6 @@ const TableMesesage = styled.tr`
 	align-items: center;
 	td {
 		padding-left: 40px;
+		color: ${({ theme }) => (theme.lightColor ? theme.textColor.black : theme.textColor.white)};
 	}
 `;
