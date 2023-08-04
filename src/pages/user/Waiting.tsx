@@ -7,7 +7,7 @@ import { collection, getDocs, addDoc } from 'firebase/firestore';
 import { db } from '../../firebase/firebaseConfig';
 import { WaitingDataType } from '../../types/waitingDataType';
 import { filterTodayWaiting } from '../../utils/filter';
-import { modalState } from '../../state/ModalState';
+import { modalState, modalTypeState } from '../../state/ModalState';
 import WaitingApplyModal from '../../components/waitingManagement/WaitingApplyModal';
 
 type DecreaseProps = {
@@ -21,11 +21,9 @@ function Waiting() {
 	//* 대기 신청 확인 모달
 	const [isOpenModal, setIsOpenModal] = useRecoilState<boolean>(modalState);
 
-	const [isNavigate, setIsNavigate] = useState<boolean>(false);
+	const [modalType, setModalType] = useRecoilState<string>(modalTypeState);
 
-	const closeModal = () => {
-		setIsOpenModal(false);
-	};
+	const [isNavigate, setIsNavigate] = useState<boolean>(false);
 
 	//* 기존 대기 데이터
 	const [currentData, setCurrentData] = useState<WaitingDataType[]>([]);
@@ -48,6 +46,11 @@ function Waiting() {
 	const [msg, setMsg] = useState<string>('');
 	const [inputError, setInputError] = useState<boolean>(false);
 
+	//* 모달 닫기 함수
+	const closeModal = () => {
+		setIsOpenModal(false);
+	};
+
 	//* 인원 수 더하기, 빼기 함수
 	const onIncrease = () => {
 		setWaitingPersonNum((prevNum) => prevNum + 1);
@@ -58,16 +61,6 @@ function Waiting() {
 			setWaitingPersonNum((prevNum) => prevNum - 1);
 		}
 	};
-
-	useEffect(() => {
-		if (!isOpenModal && isNavigate) {
-			navigate('/waitingcheck', {
-				state: {
-					userWaitingNum: currentWaitingNum + 1,
-				},
-			});
-		}
-	}, [isOpenModal, isNavigate]);
 
 	//* 기존 대기 데이터와 기존 전체 대기 팀 수를 업데이트
 	useEffect(() => {
@@ -100,11 +93,26 @@ function Waiting() {
 		}
 	}, [waitingPersonNum]);
 
-	// *유효성 검사
-	// - 필수 입력값 입력하지 않았을 때 입력창으로 focus
+	//* 모달이 닫혔고, 대기 신청을 선택했고, DB 저장에 성공했을 때 대기 완료 페이지로 이동
+	useEffect(() => {
+		if (!isOpenModal && isNavigate && modalType === 'try') {
+			navigate('/waitingcheck', {
+				state: {
+					userWaitingNum: currentWaitingNum + 1,
+				},
+			});
+		}
+	}, [isOpenModal, isNavigate]);
+
+	//* 대기 신청하기
+	// - 유효성 검사
+	// - 데이터 모아서 DB에 저장하기
+
 	const applyWaiting = async () => {
 		const waitingCollection = collection(db, 'waitingList');
 
+		// *유효성 검사
+		// - 필수 입력값 입력하지 않았을 때 입력창으로 focus
 		if (waitingName.length === 0 && nameInput.current != null) {
 			setInputError(true);
 			setMsg('이름을 입력해주세요.');
@@ -128,18 +136,24 @@ function Waiting() {
 			}
 		}
 
-		await addDoc(waitingCollection, {
-			name: waitingName,
-			tel: waitingTel,
-			date: new Date().getTime(),
-			personNum: waitingPersonNum,
-			no: currentWaitingNum + 1,
-			status: 'waiting',
-		});
+		try {
+			await addDoc(waitingCollection, {
+				name: waitingName,
+				tel: waitingTel,
+				date: new Date().getTime(),
+				personNum: waitingPersonNum,
+				no: currentWaitingNum + 1,
+				status: 'waiting',
+			});
 
+			setModalType('try');
+		} catch (error) {
+			setModalType('error');
+			console.error(error);
+		}
+
+		// 대기 신청 클릭시 모달 준비, 페이지 이동 준비
 		setIsOpenModal(true);
-
-		//? 방금 대기 신청한 대기 번호 -> 대기 완료 페이지로 넘기기
 		setIsNavigate(true);
 	};
 

@@ -1,7 +1,6 @@
-import React from 'react';
 import { styled } from 'styled-components';
-import { modalState } from '../../state/ModalState';
-import { useRecoilState } from 'recoil';
+import { modalState, modalTypeState } from '../../state/ModalState';
+import { useRecoilState, useRecoilValue } from 'recoil';
 
 type modalProps = {
 	closeModal?: () => void;
@@ -9,12 +8,13 @@ type modalProps = {
 
 function WaitingApplyModal({ closeModal }: modalProps) {
 	const [isOpenModal, setIsOpenModal] = useRecoilState<boolean>(modalState);
+	const modalType = useRecoilValue<string>(modalTypeState);
 
 	return (
 		<>
 			{isOpenModal && <WaitingApplyBackground onClick={closeModal} />}
 			<WaitingApplyWrapper>
-				<h1>대기 신청이 완료되었습니다.</h1>
+				{modalType === 'error' ? <h1>대기 신청을 실패하였습니다.</h1> : <h1>대기 신청이 완료되었습니다.</h1>}
 				<ApplyModalBtn
 					onClick={() => {
 						setIsOpenModal(false);
