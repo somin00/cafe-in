@@ -1,14 +1,55 @@
-import React from 'react';
+import React, { Dispatch, SetStateAction } from 'react';
 import { styled } from 'styled-components';
+import { db } from '../../firebase/firebaseConfig';
+import { getDocs, query, where, collection, deleteDoc } from 'firebase/firestore';
+import { getStorage, ref as storageRef, deleteObject } from 'firebase/storage';
+import { MenuType } from '../../types/menuMangementType';
+interface DeletePropType {
+	menu: MenuType;
+	setIsDeleteModalOpen: Dispatch<SetStateAction<boolean>>;
+	onCloseModal: () => void;
+}
+function DeleteModal({ menu, setIsDeleteModalOpen, onCloseModal }: DeletePropType) {
+	const menuItemRef = collection(db, 'menuItem');
+	const storage = getStorage();
 
-function DeleteModal() {
+	const removeImg = async () => {
+		const deleteRef = storageRef(storage, `images/${menu.imageName}`);
+		deleteObject(deleteRef)
+			.then(() => {
+				return true;
+			})
+			.catch(() => {
+				alert('이미지 삭제에 실패했습니다.');
+				return;
+			});
+	};
+
+	const handleRemoveItem = async () => {
+		const menuData = await getDocs(query(menuItemRef, where('id', '==', menu.id)));
+		if (menuData.docs.length !== 0) {
+			await removeImg();
+			await deleteDoc(menuData.docs[0].ref);
+		}
+		onCloseModal();
+	};
+
+	const handleCancelRemove = () => {
+		setIsDeleteModalOpen(false);
+	};
 	return (
 		<DeleteModalWrapper>
-			<p>OOOO을 삭제하시겠습니까?</p>
-			<div>
-				<button type="button">삭제</button>
-				<button type="button">취소</button>
-			</div>
+			<DeleteContent>
+				<p>{`${menu.name}을 삭제하시겠습니까?`}</p>
+				<div>
+					<button type="button" onClick={handleRemoveItem}>
+						삭제
+					</button>
+					<button type="button" onClick={handleCancelRemove}>
+						취소
+					</button>
+				</div>
+			</DeleteContent>
 		</DeleteModalWrapper>
 	);
 }
@@ -16,6 +57,17 @@ function DeleteModal() {
 export default DeleteModal;
 
 const DeleteModalWrapper = styled.div`
+	width: 100%;
+	height: 100%;
+	background-color: rgba(0, 0, 0, 0.2);
+	position: fixed;
+	left: 0;
+	top: 0;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+`;
+const DeleteContent = styled.div`
 	width: 896px;
 	height: 586px;
 	background-color: ${({ theme }) => (theme.lightColor ? theme.textColor.white : theme.textColor.black)};
@@ -38,8 +90,7 @@ const DeleteModalWrapper = styled.div`
 		font-size: ${({ theme }) => theme.fontSize['3xl']};
 		font-weight: ${({ theme }) => theme.fontWeight.regular};
 		color: ${({ theme }) => theme.textColor.white};
-		/* 색상 코드 추가되면 수정 */
-		background-color: ${({ theme }) => (theme.lightColor ? theme.lightColor?.yellow.sub : '#068FFF')};
+		background-color: ${({ theme }) => (theme.lightColor ? theme.lightColor?.yellow.sub : theme.darkColor?.main)};
 		border-radius: 10px;
 
 		&:first-child {

@@ -1,12 +1,12 @@
 import React, { useCallback, useState } from 'react';
 import { styled } from 'styled-components';
-import OptionMenu from '../components/UserMode/OptionMenu';
+import OptionMenu from './UserMode/OptionMenu';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { selectedModeState } from '../state/Mode';
-
-import { selectedItemsState } from '../firebase/FirStoreDoc';
-
 import { MenuType } from '../types/menuMangementType';
+import EditMenuModal from './MenuManagement/EditMenuModal';
+import ModalPortal from './ModalPortal';
+import { selectedItemsState } from '../firebase/FirStoreDoc';
 
 interface ItemPropType {
 	menu: MenuType;
@@ -27,16 +27,20 @@ function MenuItem({ menu }: ItemPropType) {
 
 	return (
 		<>
-			<MenuItemWrapper onClick={onClickToggleModal}>
-				<button>
+			<MenuItemWrapper>
+				<button onClick={onClickToggleModal}>
 					{menu.imageUrl ? <img src={menu.imageUrl} alt={`${menu.name}이미지`} /> : <div>이미지 없음</div>}
 					<p className="menu-name"> {menu.name}</p>
 					<p className="menu-price">{priceTemplate(menu.price)}원</p>
 				</button>
 			</MenuItemWrapper>
-
 			{mode === 'user' && isOpenModal && (
 				<OptionMenu onClickToggleModal={onClickToggleModal} selected={selectedItem}></OptionMenu>
+			)}
+			{mode === 'admin' && isOpenModal && (
+				<ModalPortal>
+					<EditMenuModal menu={menu} onCloseModal={onClickToggleModal} />
+				</ModalPortal>
 			)}
 		</>
 	);
