@@ -5,9 +5,7 @@ import { useRecoilValue } from 'recoil';
 import { categoryListState } from '../../state/CategoryList';
 
 function ModalInput({ menuInfo, setMenuState, setFile }: ModalInputPropType) {
-	// props 전달 내용이 있다면 수정 모달
-
-	const [imgSrc, setImgSrc]: any = useState('');
+	const [imgSrc, setImgSrc]: any = useState(menuInfo.imageUrl ? menuInfo.imageUrl : '');
 
 	const categoryList = useRecoilValue(categoryListState);
 
@@ -16,27 +14,33 @@ function ModalInput({ menuInfo, setMenuState, setFile }: ModalInputPropType) {
 
 	const handleChangeInput = (e: ChangeEvent<HTMLInputElement> | ChangeEvent<HTMLSelectElement>) => {
 		const { name, value } = e.target;
-		setMenuState({
-			...menuInfo,
-			[name]: value,
+		setMenuState((prev) => {
+			return {
+				...prev,
+				[name]: value,
+			};
 		});
 	};
 
 	const handleClickInStockButton = () => {
 		instockRef.current?.classList.add('is-selected');
 		soldoutRef.current?.classList.remove('is-selected');
-		setMenuState({
-			...menuInfo,
-			soldout: false,
+		setMenuState((prev) => {
+			return {
+				...prev,
+				soldout: false,
+			};
 		});
 	};
 
 	const handleClickSoldoutButton = () => {
 		soldoutRef.current?.classList.add('is-selected');
 		instockRef.current?.classList.remove('is-selected');
-		setMenuState({
-			...menuInfo,
-			soldout: true,
+		setMenuState((prev) => {
+			return {
+				...prev,
+				soldout: true,
+			};
 		});
 	};
 
@@ -46,7 +50,12 @@ function ModalInput({ menuInfo, setMenuState, setFile }: ModalInputPropType) {
 		const file = files[0];
 		const fileName = `${Date.now()}${file.name}`;
 		setFile(file);
-		setMenuState({ ...menuInfo, imageName: fileName });
+		setMenuState((prev) => {
+			return {
+				...prev,
+				imageName: fileName,
+			};
+		});
 
 		const reader = new FileReader();
 		reader.readAsDataURL(file);
@@ -65,9 +74,11 @@ function ModalInput({ menuInfo, setMenuState, setFile }: ModalInputPropType) {
 
 	const deleteImage = () => {
 		setFile(undefined);
-		setMenuState({
-			...menuInfo,
-			imageName: '',
+		setMenuState((prev) => {
+			return {
+				...prev,
+				imageName: '',
+			};
 		});
 		setImgSrc('');
 	};
@@ -95,15 +106,21 @@ function ModalInput({ menuInfo, setMenuState, setFile }: ModalInputPropType) {
 				<InputList>
 					<li>
 						<label htmlFor="name">메뉴명</label>
-						<input type="text" name="name" id="name" value={menuInfo.name} onChange={handleChangeInput} />
+						<input type="text" name="name" id="name" defaultValue={menuInfo.name || ''} onChange={handleChangeInput} />
 					</li>
 					<li>
 						<label htmlFor="price">금액</label>
-						<input type="text" name="price" id="price" value={menuInfo.price} onChange={handleChangeInput} />
+						<input
+							type="text"
+							name="price"
+							id="price"
+							defaultValue={menuInfo.price || ''}
+							onChange={handleChangeInput}
+						/>
 					</li>
 					<li>
 						<label htmlFor="category">카테고리</label>
-						<select name="category" id="category" value={menuInfo.category} onChange={handleChangeInput}>
+						<select name="category" id="category" defaultValue={menuInfo.category || ''} onChange={handleChangeInput}>
 							{categoryList.map((category) => (
 								<option key={category.id} value={category.category}>
 									{category.category}
@@ -112,10 +129,20 @@ function ModalInput({ menuInfo, setMenuState, setFile }: ModalInputPropType) {
 						</select>
 					</li>
 					<li>
-						<InventoryButton type="button" ref={instockRef} className="is-selected" onClick={handleClickInStockButton}>
+						<InventoryButton
+							type="button"
+							ref={instockRef}
+							className={menuInfo.soldout ? '' : 'is-selected'}
+							onClick={handleClickInStockButton}
+						>
 							재고있음
 						</InventoryButton>
-						<InventoryButton type="button" ref={soldoutRef} onClick={handleClickSoldoutButton}>
+						<InventoryButton
+							type="button"
+							ref={soldoutRef}
+							className={menuInfo.soldout ? 'is-selected' : ''}
+							onClick={handleClickSoldoutButton}
+						>
 							품절
 						</InventoryButton>
 					</li>
