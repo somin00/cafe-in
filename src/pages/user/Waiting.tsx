@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
 import { styled } from 'styled-components';
@@ -16,12 +16,13 @@ function Waiting() {
 	const navigate = useNavigate();
 	const isWaitingAvailable = useRecoilValue<boolean>(isWaitingAvailableState);
 
-	//* 현재 대기중인 팀 수
-	const [waitingNum, setWaitingNum] = useState<number>(0);
 	//* 기존 대기 데이터
 	const [currentData, setCurrentData] = useState<WaitingDataType[]>([]);
-	//* 기존 전체 대기 팀 수
+	//* 기존 대기 데이터 수
 	const [currentWaitingNum, setCurrentWaitingNum] = useState<number>(0);
+
+	//* 당일 날짜의 현재 대기 팀 수
+	const filteredWaitingNum = useMemo(() => filterTodayWaiting(currentData, 'waiting').length, [currentData]);
 
 	//* 대기 신청 시 필수 입력 값
 	const [waitingPersonNum, setWaitingPersonNum] = useState<number>(1);
@@ -33,10 +34,7 @@ function Waiting() {
 	const nameInput = useRef<HTMLInputElement>(null);
 	const telInput = useRef<HTMLInputElement>(null);
 
-	//* 파베 DB
-	const waitingCollection = collection(db, 'waitingList');
-
-	//? 인원 수 더하기, 빼기 함수
+	//* 인원 수 더하기, 빼기 함수
 	const onIncrease = () => {
 		setWaitingPersonNum((prevNum) => prevNum + 1);
 	};
@@ -47,9 +45,10 @@ function Waiting() {
 		}
 	};
 
-	//* 당일 현재 대기 팀 수 가져오기 + 전체 대기 수 저장
+	//* 기존 대기 데이터와 기존 전체 대기 팀 수를 업데이트
 	useEffect(() => {
-		const getWaitingNum = async () => {
+		const waitingCollection = collection(db, 'waitingList');
+		const getWaitingData = async () => {
 			try {
 				const data = await getDocs(waitingCollection);
 				const dataArray = data.docs.map((doc) => ({
@@ -59,34 +58,46 @@ function Waiting() {
 
 				setCurrentData(dataArray);
 				setCurrentWaitingNum(dataArray.length);
-				setWaitingNum(filterTodayWaiting(dataArray, 'waiting').length);
 			} catch (error) {
-				console.error('Error getting waitingNum:', error);
+				console.error('Error getting waiting data:', error);
 			}
 		};
 
-		//* 대기 팀 수 가져오기
-		getWaitingNum();
+		getWaitingData();
+	}, []);
 
+	//* 인원 수를 선택하는 버튼의 활성/비활성 상태를 관리
+	useEffect(() => {
 		//* 인원 수 선택 버튼 disable 관리
 		if (waitingPersonNum === 1) {
 			setDecreaseDisable(true);
 		} else {
 			setDecreaseDisable(false);
 		}
-	}, [waitingNum, waitingPersonNum, currentData.length, waitingCollection]);
+	}, [waitingPersonNum]);
 
 	// *유효성 검사
 	// - 필수 입력값 입력하지 않았을 때 입력창으로 focus
-
 	const applyWaiting = async () => {
+		const waitingCollection = collection(db, 'waitingList');
+
 		if (waitingName.length === 0 && nameInput.current != null) {
 			alert('이름을 입력해주세요.');
 			nameInput.current.focus();
 			return;
 		}
 
-		if (waitingTel.length !== 11 && telInput.current !== null) {
+		const telRule = /^010[0-9]{3,4}[0-9]{4}$/;
+
+		if (waitingTel.length === 0 && telInput.current !== null) {
+			alert('전화번호 11자리를 입력해주세요.');
+			telInput.current.focus();
+			return;
+		} else if (waitingTel.length === 11 && !telRule.test(waitingTel.toString()) && telInput.current !== null) {
+			alert('전화번호 형식에 맞게 입력해주세요.');
+			telInput.current.focus();
+			return;
+		} else if (waitingTel.length !== 11 && telInput.current !== null) {
 			alert('전화번호 11자리를 모두 입력해주세요.');
 			telInput.current.focus();
 			return;
@@ -116,7 +127,7 @@ function Waiting() {
 			{isWaitingAvailable ? (
 				<>
 					<WaitingHeaderText>
-						{waitingNum} 팀이 <p> 대기중이에요</p>
+						{filteredWaitingNum} 팀이 <p> 대기중이에요</p>
 					</WaitingHeaderText>
 					<ApplicationBox>
 						<ApplicationHeaderText>대기를 원하시면 번호를 입력해주세요.</ApplicationHeaderText>
