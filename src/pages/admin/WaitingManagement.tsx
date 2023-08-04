@@ -1,9 +1,9 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { styled, useTheme } from 'styled-components';
 import { Routes, Route, NavLink } from 'react-router-dom';
 import { useRecoilState } from 'recoil';
 import { modalState } from '../../state/ModalState';
-import { isWaitingState, isWaitingAvailableState } from '../../state/WaitingState';
+import { isWaitingAvailableState } from '../../state/WaitingState';
 
 import WaitingHeader from '../../components/waitingManagement/WaitingHeader';
 import WaitingTableBox from '../../components/waitingManagement/WaitingTableBox';
@@ -26,7 +26,7 @@ const WaitingManagement = () => {
 
 	const theme = useTheme();
 
-	const [isWaiting, setIsWaiting] = useRecoilState<boolean>(isWaitingState);
+	const [isWaiting, setIsWaiting] = useState<boolean>(true);
 	const [isWaitingAvailable, setIsWaitingAvailable] = useRecoilState<boolean>(isWaitingAvailableState);
 
 	useEffect(() => {
