@@ -1,12 +1,14 @@
 import { useState, useEffect, useRef, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useRecoilValue } from 'recoil';
+import { useRecoilState, useRecoilValue } from 'recoil';
 import { styled } from 'styled-components';
 import { isWaitingAvailableState } from '../../state/WaitingState';
 import { collection, getDocs, addDoc } from 'firebase/firestore';
 import { db } from '../../firebase/firebaseConfig';
 import { WaitingDataType } from '../../types/waitingDataType';
 import { filterTodayWaiting } from '../../utils/filter';
+import { modalState } from '../../state/ModalState';
+import WaitingApplyModal from '../../components/waitingManagement/WaitingApplyModal';
 
 type DecreaseProps = {
 	$decreaseDisable: boolean;
@@ -15,6 +17,15 @@ type DecreaseProps = {
 function Waiting() {
 	const navigate = useNavigate();
 	const isWaitingAvailable = useRecoilValue<boolean>(isWaitingAvailableState);
+
+	//* 대기 신청 확인 모달
+	const [isOpenModal, setIsOpenModal] = useRecoilState<boolean>(modalState);
+
+	const [isNavigate, setIsNavigate] = useState<boolean>(false);
+
+	const closeModal = () => {
+		setIsOpenModal(false);
+	};
 
 	//* 기존 대기 데이터
 	const [currentData, setCurrentData] = useState<WaitingDataType[]>([]);
@@ -47,6 +58,16 @@ function Waiting() {
 			setWaitingPersonNum((prevNum) => prevNum - 1);
 		}
 	};
+
+	useEffect(() => {
+		if (!isOpenModal && isNavigate) {
+			navigate('/waitingcheck', {
+				state: {
+					userWaitingNum: currentWaitingNum + 1,
+				},
+			});
+		}
+	}, [isOpenModal, isNavigate]);
 
 	//* 기존 대기 데이터와 기존 전체 대기 팀 수를 업데이트
 	useEffect(() => {
@@ -107,8 +128,6 @@ function Waiting() {
 			}
 		}
 
-		setInputError(false);
-
 		await addDoc(waitingCollection, {
 			name: waitingName,
 			tel: waitingTel,
@@ -118,20 +137,17 @@ function Waiting() {
 			status: 'waiting',
 		});
 
-		window.alert('대기 신청을 완료하였습니다.');
+		setIsOpenModal(true);
 
 		//? 방금 대기 신청한 대기 번호 -> 대기 완료 페이지로 넘기기
-		navigate('/waitingcheck', {
-			state: {
-				userWaitingNum: currentWaitingNum + 1,
-			},
-		});
+		setIsNavigate(true);
 	};
 
 	return (
 		<WaitingWrapper>
 			{isWaitingAvailable ? (
 				<>
+					{isOpenModal && <WaitingApplyModal closeModal={closeModal} />}
 					<WaitingHeaderText>
 						{filteredWaitingNum} 팀이 <p> 대기중이에요</p>
 					</WaitingHeaderText>
@@ -212,6 +228,7 @@ const WaitingWrapper = styled.div`
 	display: flex;
 	align-items: center;
 	flex-flow: column nowrap;
+	position: relative;
 `;
 
 const WaitingHeaderText = styled.h1`
