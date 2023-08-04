@@ -23,7 +23,6 @@ const WaitingManagement = () => {
 	const closeModal = () => {
 		setIsOpenModal(false);
 	};
-
 	const theme = useTheme();
 
 	const [isWaiting, setIsWaiting] = useState<boolean>(true);

@@ -34,6 +34,9 @@ function Waiting() {
 	const nameInput = useRef<HTMLInputElement>(null);
 	const telInput = useRef<HTMLInputElement>(null);
 
+	const [msg, setMsg] = useState<string>('');
+	const [inputError, setInputError] = useState<boolean>(false);
+
 	//* 인원 수 더하기, 빼기 함수
 	const onIncrease = () => {
 		setWaitingPersonNum((prevNum) => prevNum + 1);
@@ -82,26 +85,29 @@ function Waiting() {
 		const waitingCollection = collection(db, 'waitingList');
 
 		if (waitingName.length === 0 && nameInput.current != null) {
-			alert('이름을 입력해주세요.');
+			setInputError(true);
+			setMsg('이름을 입력해주세요.');
 			nameInput.current.focus();
 			return;
 		}
 
 		const telRule = /^010[0-9]{3,4}[0-9]{4}$/;
 
-		if (waitingTel.length === 0 && telInput.current !== null) {
-			alert('전화번호 11자리를 입력해주세요.');
-			telInput.current.focus();
-			return;
-		} else if (waitingTel.length === 11 && !telRule.test(waitingTel.toString()) && telInput.current !== null) {
-			alert('전화번호 형식에 맞게 입력해주세요.');
-			telInput.current.focus();
-			return;
-		} else if (waitingTel.length !== 11 && telInput.current !== null) {
-			alert('전화번호 11자리를 모두 입력해주세요.');
-			telInput.current.focus();
-			return;
+		if (telInput.current !== null) {
+			if (waitingTel.length !== 0 && !telRule.test(waitingTel.toString())) {
+				setInputError(true);
+				setMsg('전화번호 형식에 맞게 입력해주세요.');
+				telInput.current.focus();
+				return;
+			} else if (waitingTel.length === 0 || waitingTel.length !== 11) {
+				setInputError(true);
+				setMsg('전화번호 11자리를 입력해주세요.');
+				telInput.current.focus();
+				return;
+			}
 		}
+
+		setInputError(false);
 
 		await addDoc(waitingCollection, {
 			name: waitingName,
@@ -159,6 +165,7 @@ function Waiting() {
 								}}
 								required
 							/>
+							{inputError ? <h1>{msg}</h1> : <h1>&nbsp;</h1>}
 						</InputBoxWrapper>
 						<ApplicationButtnoWrapper>
 							<ApplicationBtn
@@ -279,6 +286,13 @@ const PlusBtn = styled.button`
 
 const InputBoxWrapper = styled.div`
 	width: 400px;
+	height: 220px;
+
+	h1 {
+		padding-left: 5px;
+		font-size: ${({ theme }) => theme.fontSize.lg};
+		color: ${({ theme }) => (theme.lightColor ? theme.lightColor.pink.point : theme.darkColor?.point)};
+	}
 `;
 const InputBox = styled.input`
 	width: 400px;
