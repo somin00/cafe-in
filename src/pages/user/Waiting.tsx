@@ -102,7 +102,7 @@ function Waiting() {
 				},
 			});
 		}
-	}, [isOpenModal, isNavigate]);
+	}, [isOpenModal, isNavigate, modalType]);
 
 	//* 대기 신청하기
 	// - 유효성 검사

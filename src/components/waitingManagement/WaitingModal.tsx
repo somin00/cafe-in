@@ -2,12 +2,9 @@ import React from 'react';
 import { styled } from 'styled-components';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import { modalState, modalTypeState, modalUpdateState } from '../../state/ModalState';
+import { ModalProps } from '../../types/ModalProps';
 
-type modalProps = {
-	closeModal?: () => void;
-};
-
-function WaitingModal({ closeModal }: modalProps) {
+function WaitingModal({ closeModal }: ModalProps) {
 	const [isOpenModal, setIsOpenModal] = useRecoilState<boolean>(modalState);
 
 	const modalType = useRecoilValue<string>(modalTypeState);
