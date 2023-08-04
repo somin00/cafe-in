@@ -5,6 +5,8 @@ import { MenuType } from '../../types/menuMangementType';
 import { db } from '../../firebase/firebaseConfig';
 import { getDocs, query, where, updateDoc, collection } from 'firebase/firestore';
 import { getStorage, ref as storageRef, getDownloadURL, uploadBytes } from 'firebase/storage';
+import ModalPortal from '../ModalPortal';
+import DeleteModal from './DeleteModal';
 
 interface EditModalPropType {
 	menu: MenuType;
@@ -13,6 +15,7 @@ interface EditModalPropType {
 function EditMenuModal({ menu, onCloseModal }: EditModalPropType) {
 	const [menuInfo, setMenuInfo] = useState<MenuType>(menu);
 	const [file, setFile] = useState<File>();
+	const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
 
 	const menuItemRef = collection(db, 'menuItem');
 	const storage = getStorage();
@@ -42,26 +45,40 @@ function EditMenuModal({ menu, onCloseModal }: EditModalPropType) {
 		onCloseModal();
 	};
 
+	const handleRemoveMenu = () => {
+		console.log('delete menu');
+		setIsDeleteModalOpen(true);
+	};
+
 	const handleDeleteEdit = () => {
 		setMenuInfo(menu);
 		onCloseModal();
 	};
 
 	return (
-		<EditModalWrapper>
-			<EditModalContent>
-				<ModalInput menuInfo={menu} setMenuState={setMenuInfo} setFile={setFile} />
-				<div>
-					<Button type="button" onClick={handleEditMenu}>
-						수정
-					</Button>
-					<Button type="button">삭제</Button>
-					<Button type="button" onClick={handleDeleteEdit}>
-						취소
-					</Button>
-				</div>
-			</EditModalContent>
-		</EditModalWrapper>
+		<>
+			<EditModalWrapper>
+				<EditModalContent>
+					<ModalInput menuInfo={menu} setMenuState={setMenuInfo} setFile={setFile} />
+					<div>
+						<Button type="button" onClick={handleEditMenu}>
+							수정
+						</Button>
+						<Button type="button" onClick={handleRemoveMenu}>
+							삭제
+						</Button>
+						<Button type="button" onClick={handleDeleteEdit}>
+							취소
+						</Button>
+					</div>
+				</EditModalContent>
+			</EditModalWrapper>
+			{isDeleteModalOpen && (
+				<ModalPortal>
+					<DeleteModal menu={menuInfo} setIsDeleteModalOpen={setIsDeleteModalOpen} onCloseModal={onCloseModal} />
+				</ModalPortal>
+			)}
+		</>
 	);
 }
 
