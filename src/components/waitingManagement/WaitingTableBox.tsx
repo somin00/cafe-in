@@ -5,6 +5,8 @@ import { WaitingDataType } from '../../types/waitingDataType';
 import { db } from '../../firebase/firebaseConfig';
 import { collection, onSnapshot } from 'firebase/firestore';
 import { filterTodayWaiting } from '../../utils/filter';
+import { useRecoilValue } from 'recoil';
+import { isWaitingAvailableState } from '../../state/WaitingState';
 
 interface ThProps {
 	width?: string;
@@ -17,6 +19,7 @@ type waitingDataProps = {
 const WaitingTableBox = (props: waitingDataProps) => {
 	const { waitingDataStatus } = props;
 	const [waitingList, setWaitingList] = useState<WaitingDataType[]>([]);
+	const isWaitingAvailable = useRecoilValue<boolean>(isWaitingAvailableState);
 
 	useEffect(() => {
 		const waitingCollectionRef = collection(db, 'waitingList');
@@ -63,6 +66,13 @@ const WaitingTableBox = (props: waitingDataProps) => {
 				</thead>
 				<WaitingItemList>
 					<WaitingItem waitingInfo={waitingInfo} waitingDataStatus={waitingDataStatus} />
+					{!isWaitingAvailable ? (
+						<TableMesesage>
+							<td>대기가 마감되었습니다.</td>
+						</TableMesesage>
+					) : (
+						<></>
+					)}
 				</WaitingItemList>
 			</table>
 		</TableBox>
@@ -117,4 +127,17 @@ const WaitingItemList = styled.tbody`
 	width: 982px;
 	height: 470px;
 	margin: 0 0 32px 32px;
+`;
+
+const TableMesesage = styled.tr`
+	width: 982px;
+	height: 72px;
+	font-size: ${({ theme }) => theme.fontSize['2xl']};
+	font-weight: ${({ theme }) => theme.fontWeight.semibold};
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	td {
+		padding-left: 40px;
+	}
 `;

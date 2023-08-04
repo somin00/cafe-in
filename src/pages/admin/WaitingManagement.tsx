@@ -102,11 +102,7 @@ const WaitingManagement = () => {
 					</WaitingBtnWrapper>
 				</TableMenu>
 				<Routes>
-					{isWaitingAvailable ? (
-						<Route path="/*" element={<WaitingTable />}></Route>
-					) : (
-						<Route path="/*" element={<WaitingDisable>대기가 마감되었습니다.</WaitingDisable>}></Route>
-					)}
+					<Route path="/*" element={<WaitingTable />}></Route>
 					<Route path="/waitedlist" element={<TodayWaitedTable />}></Route>
 				</Routes>
 			</WaitingTableWrapper>
@@ -216,22 +212,6 @@ const WaitingDisableBtn = styled.button<IsAvailableProps>`
 				? theme.lightColor?.yellow.point
 				: theme.textColor.darkgray
 			: theme.textColor.white};
-`;
-
-const WaitingDisable = styled.div`
-	width: 1046px;
-	height: 625px;
-	margin-bottom: 48px;
-	padding-top: 20px;
-	background-color: ${({ theme }) =>
-		theme.lightColor ? theme.lightColor?.yellow.background : theme.darkColor?.background};
-	border: ${({ theme }) => (theme.lightColor ? 'none' : `1px solid ${theme.textColor.white}`)};
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	color: ${({ theme }) => (theme.lightColor ? theme.textColor.black : theme.textColor.white)};
-	font-weight: ${({ theme }) => theme.fontWeight.semibold};
-	font-size: ${({ theme }) => theme.fontSize['3xl']};
 `;
 
 // ---------------------------
