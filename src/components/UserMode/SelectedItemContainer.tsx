@@ -2,14 +2,12 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { styled } from 'styled-components';
 import { defaultTheme, darkTheme } from '../../style/theme';
-import { useRecoilValue } from 'recoil';
-import { selectedOptionsState } from '../../firebase/FirStoreDoc';
+
 import { db } from '../../firebase/firebaseConfig';
 import { selectedItem } from '../../state/OptinalState';
 import { collection, doc, updateDoc, deleteDoc, addDoc, onSnapshot, increment } from 'firebase/firestore';
 
 function SelectedItemContainer() {
-	const selectedOptions = useRecoilValue(selectedOptionsState);
 	const navigate = useNavigate();
 
 	const [selectedItems, setSelectedItems] = useState<selectedItem[]>([]);
@@ -28,6 +26,7 @@ function SelectedItemContainer() {
 		});
 		return () => unsub();
 	}, []);
+
 	const handleItemDelete = (itemName: string) => {
 		deleteDoc(doc(db, 'selectedItem', itemName));
 	};

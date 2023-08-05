@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { Option } from '../../state/OptinalState';
 import { db } from '../../firebase/firebaseConfig';
-import { addDoc, collection, getDocs } from 'firebase/firestore';
+import { addDoc, collection, doc, getDocs, increment, query, updateDoc, where } from 'firebase/firestore';
 import { Item } from '../../state/Category';
 export interface OptionMenuProps {
 	selected: Item;
@@ -70,22 +70,39 @@ function OptionMenu({ selected, onClickToggleModal }: OptionMenuProps) {
 		}
 	};
 
-	const handleCloseBtnClick = (e: React.MouseEvent) => {
+	const handleCloseBtnClick = async (e: React.MouseEvent) => {
 		e.stopPropagation();
-		const itemToBeAdded = {
-			...selected,
-			data: new Date(),
-			quantity: 1,
-			options: selectedItemOptions.length > 0 ? selectedItemOptions.map((i) => i.name).join(',') : '없음', // 선택된 옵션을 추가
-			totalPrice: selected.price,
-		};
-		const itemsCollection = collection(db, 'selectedItem');
-		addDoc(itemsCollection, itemToBeAdded);
 
-		console.log(itemToBeAdded);
+		const itemsCollection = collection(db, 'selectedItem');
+		const selectedOptionsStr =
+			selectedItemOptions.length > 0 ? selectedItemOptions.map((i) => i.name).join(',') : '없음';
+
+		const q = query(itemsCollection, where('name', '==', selected.name), where('options', '==', selectedOptionsStr));
+
+		const matchingDocs = await getDocs(q);
+
+		if (!matchingDocs.empty) {
+			// 이미 존재하는 문서에 수량을 증가
+			const existingDoc = matchingDocs.docs[0];
+			const docRef = doc(db, 'selectedItem', existingDoc.id);
+			await updateDoc(docRef, {
+				quantity: increment(1),
+			});
+		} else {
+			// 존재하지 않는 경우 새로운 문서를 추가
+			const itemToBeAdded = {
+				...selected,
+				data: new Date(),
+				quantity: 1,
+				options: selectedOptionsStr, // 선택된 옵션을 추가
+				totalPrice: selected.price,
+			};
+
+			await addDoc(itemsCollection, itemToBeAdded);
+		}
+
 		onClickToggleModal();
 	};
-
 	return (
 		<ModalContainer onClick={onClickToggleModal}>
 			<DialogBox onClick={(e) => e.stopPropagation()}>
