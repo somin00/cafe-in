@@ -22,6 +22,7 @@ function MenuItem() {
 		console.log(`Item Name: ${item.name}, Item ID: ${item.id}`);
 		setSelectedItem(item);
 	};
+
 	useEffect(() => {
 		const fetchItems = async () => {
 			try {
@@ -47,6 +48,7 @@ function MenuItem() {
 		};
 		fetchItems();
 	}, [selectedCategory]);
+
 	return (
 		<>
 			{items.map((item) => (

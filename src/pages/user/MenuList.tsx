@@ -1,6 +1,6 @@
 import React from 'react';
 import MenuItem from '../../components/UserMode/MenuItem';
-import SeletedItemContainer from '../../components/UserMode/SeletedItemContainer';
+import SelectedItemContainer from '../../components/UserMode/SelectedItemContainer';
 import { styled } from 'styled-components';
 import MenuListHeader from '../../components/UserMode/MenuListHeader';
 import { darkTheme, defaultTheme } from '../../style/theme';
@@ -13,7 +13,7 @@ function MenuList() {
 				<MenuListLayout>
 					<MenuItem />
 				</MenuListLayout>
-				<SeletedItemContainer />
+				<SelectedItemContainer />
 			</Main>
 		</Layout>
 	);

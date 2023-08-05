@@ -1,4 +1,5 @@
 export interface Item {
+	options: string;
 	id: number;
 	name: string;
 	price: number;

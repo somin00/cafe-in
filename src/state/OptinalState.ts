@@ -11,7 +11,7 @@ export interface selectedItem {
 	category: string;
 	id: string;
 	name: string;
-	options: string[];
+	options: string;
 	quantity: number;
 	totalPrice: number;
 }
