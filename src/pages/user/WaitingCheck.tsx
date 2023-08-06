@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { styled } from 'styled-components';
 
@@ -9,11 +9,11 @@ function WaitingCheck() {
 	//? 대기 신청 페이지에서 넘겨 받은 대기 번호
 	const { userWaitingNum } = location.state;
 
-	const goToHome = () => {
-		navigate('/home');
-	};
-
 	const [remainingTime, setRemainingTime] = useState<number>(20);
+
+	const RemainingTimeText = ({ remainingTime }: { remainingTime: number }) => {
+		return <p>{remainingTime}초 뒤에 자동으로 홈 화면으로 이동합니다.</p>;
+	};
 
 	useEffect(() => {
 		const timeoutId = setTimeout(() => {
@@ -27,6 +27,10 @@ function WaitingCheck() {
 		return () => clearTimeout(timeoutId);
 	}, [remainingTime]);
 
+	const goToHome = useCallback(() => {
+		navigate('/home');
+	}, []);
+
 	return (
 		<WaitingCheckWrapper>
 			<WaitingCheckHeaderText>
@@ -37,7 +41,7 @@ function WaitingCheck() {
 				<WaitingNumText>{userWaitingNum}번</WaitingNumText>
 				<RightFireworks />
 			</WaitingNumWrapper>
-			<RemainingTimeText>{remainingTime}초 후에 홈 화면으로 이동됩니다.</RemainingTimeText>
+			<RemainingTimeText remainingTime={remainingTime} />
 			<HomeBtn onClick={goToHome}>
 				홈화면으로 <p>이동하기</p>
 			</HomeBtn>
@@ -110,12 +114,6 @@ const WaitingNumText = styled.div`
 	align-items: center;
 	padding-bottom: 7px;
 	border-bottom: 1px solid ${({ theme }) => theme.textColor.white};
-`;
-
-const RemainingTimeText = styled.p`
-	font-size: ${({ theme }) => theme.fontSize['3xl']};
-	font-weight: ${({ theme }) => theme.fontWeight.semibold};
-	color: ${({ theme }) => (theme.lightColor ? theme.textColor.black : theme.textColor.white)};
 `;
 
 const HomeBtn = styled.button`
