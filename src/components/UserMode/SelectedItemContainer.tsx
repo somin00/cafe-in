@@ -61,7 +61,7 @@ function SelectedItemContainer() {
 		const selectedItemsCol = collection(db, 'selectedItem');
 		const snapshot = await getDocs(selectedItemsCol);
 
-		//모든 작업을 한번에 할때 writeBatch
+		//모든 작업을 한번에 단일요청할때 writeBatch
 		const batch = writeBatch(db);
 
 		snapshot.docs.forEach((doc) => {
