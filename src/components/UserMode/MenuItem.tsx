@@ -19,8 +19,11 @@ function MenuItem() {
 		setModalOpen(!isOpenModal);
 	}, [isOpenModal]);
 	const handleClick = (item: Item) => {
-		console.log(`Item Name: ${item.name}, Item ID: ${item.id}`);
+		console.log(`Item Name: ${item.name}, Item ID: ${item.id},Item category: ${item.category}`);
 		setSelectedItem(item);
+		if (item.category !== '스무디' && item.category !== '디저트') {
+			onClickToggleModal();
+		}
 	};
 
 	useEffect(() => {
@@ -52,7 +55,7 @@ function MenuItem() {
 	return (
 		<>
 			{items.map((item) => (
-				<MenuItemWrapper key={item.id} onClick={onClickToggleModal}>
+				<MenuItemWrapper key={item.id}>
 					<button onClick={() => handleClick(item)}>
 						<img src={item.imageUrl} alt={item.imageName} />
 						<p className="menu-name">{item.name}</p>
