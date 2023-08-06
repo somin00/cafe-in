@@ -5,7 +5,17 @@ import { defaultTheme, darkTheme } from '../../style/theme';
 
 import { db } from '../../firebase/firebaseConfig';
 import { selectedItem } from '../../state/OptinalState';
-import { collection, doc, updateDoc, deleteDoc, addDoc, onSnapshot, increment } from 'firebase/firestore';
+import {
+	collection,
+	doc,
+	writeBatch,
+	updateDoc,
+	deleteDoc,
+	addDoc,
+	onSnapshot,
+	increment,
+	getDocs,
+} from 'firebase/firestore';
 
 function SelectedItemContainer() {
 	const navigate = useNavigate();
@@ -47,7 +57,19 @@ function SelectedItemContainer() {
 
 	const totalPrice = selectedItems.reduce((acc, item) => acc + item.totalPrice * item.quantity, 0);
 
-	const handleDeleteAll = () => {
+	const handleDeleteAll = async () => {
+		const selectedItemsCol = collection(db, 'selectedItem');
+		const snapshot = await getDocs(selectedItemsCol);
+
+		//모든 작업을 한번에 할때 writeBatch
+		const batch = writeBatch(db);
+
+		snapshot.docs.forEach((doc) => {
+			batch.delete(doc.ref);
+		});
+
+		await batch.commit();
+
 		setSelectedItems([]);
 	};
 
