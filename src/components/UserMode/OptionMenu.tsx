@@ -75,8 +75,12 @@ function OptionMenu({ selected, onClickToggleModal }: OptionMenuProps) {
 
 		const itemsCollection = collection(db, 'selectedItem');
 		const selectedOptionsStr =
-			selectedItemOptions.length > 0 ? selectedItemOptions.map((i) => i.name).join(',') : '없음';
-
+			selectedItemOptions.length > 0
+				? selectedItemOptions
+						.map((i) => i.name)
+						.sort()
+						.join(',')
+				: '없음';
 		const q = query(itemsCollection, where('name', '==', selected.name), where('options', '==', selectedOptionsStr));
 
 		const matchingDocs = await getDocs(q);
@@ -94,7 +98,7 @@ function OptionMenu({ selected, onClickToggleModal }: OptionMenuProps) {
 				...selected,
 				data: new Date(),
 				quantity: 1,
-				options: selectedOptionsStr, // 선택된 옵션을 추가
+				options: selectedOptionsStr,
 				totalPrice: selected.price,
 			};
 

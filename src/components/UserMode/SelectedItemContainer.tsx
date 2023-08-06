@@ -226,13 +226,13 @@ const SelectedItem = styled.li`
 const OptionsSelected = styled.div<{ noOptions: boolean }>`
 	display: flex;
 	width: 100%;
-	justify-content: end;
+	justify-content: start;
 	margin-top: ${({ noOptions }) => (noOptions ? '0' : '10px')};
 	padding-top: ${({ noOptions }) => (noOptions ? '0' : '6px')};
 	border-top: ${({ noOptions, theme }) => (noOptions ? 'none' : `1px solid ${theme.textColor.lightbrown}`)};
 	font-size: ${({ theme }) => theme.fontSize.sm};
-	font-weight: ${({ theme }) => theme.fontWeight.semibold};
-	color: ${({ theme }) => theme.textColor.lightgray};
+	font-weight: ${({ theme }) => theme.fontWeight.bold};
+	color: ${({ theme }) => theme.textColor.darkgray};
 `;
 const PayContainer = styled.div`
 	flex: 0.3;
