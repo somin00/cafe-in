@@ -3,13 +3,15 @@ import { styled } from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 function WaitingHeader() {
 	const navigate = useNavigate();
+
+	const handleBackClick = () => {
+		localStorage.setItem('isWaiting', JSON.stringify(true));
+		navigate('/admin');
+	};
+
 	return (
 		<WaitingHeaderWrapper>
-			<IconWrapper
-				onClick={() => {
-					navigate('/admin');
-				}}
-			>
+			<IconWrapper onClick={handleBackClick}>
 				<img alt="뒤로가기 버튼" />
 			</IconWrapper>
 			<HeaderTitle>대기 관리</HeaderTitle>
