@@ -1,7 +1,13 @@
 import React, { useEffect } from 'react';
 import { styled } from 'styled-components';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
-import { modalItemId, modalState, modalTypeState, modalUpdateState } from '../../state/ModalState';
+import {
+	modalItemId,
+	modalState,
+	modalTypeState,
+	modalUpdateState,
+	notificationUserState,
+} from '../../state/ModalState';
 import { WaitingDataType } from '../../types/waitingDataType';
 import { db } from '../../firebase/firebaseConfig';
 import { updateDoc, doc } from 'firebase/firestore';
@@ -17,6 +23,7 @@ const WaitingItem = (props: WaitingItemProps) => {
 	const [modalType, setModalType] = useRecoilState<string>(modalTypeState);
 	const [itemId, setItemId] = useRecoilState<string | undefined>(modalItemId);
 	const modalUpdate = useRecoilValue<boolean>(modalUpdateState);
+	const [notificationUser, setNotificationUser] = useRecoilState<string>(notificationUserState);
 
 	// 모달창에서 예를 클릭했을 때 업데이트 (취소, 착석완료만)
 	const updateStatus = async (id: string, type: string) => {
@@ -59,6 +66,7 @@ const WaitingItem = (props: WaitingItemProps) => {
 										setIsOpenModal(true);
 										setModalType('notification');
 										setItemId(value.id);
+										setNotificationUser(value.name);
 									}}
 								>
 									알림
