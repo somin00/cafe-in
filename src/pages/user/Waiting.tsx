@@ -1,40 +1,195 @@
-import React from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useRecoilValue } from 'recoil';
 import { styled } from 'styled-components';
+import { isWaitingAvailableState } from '../../state/WaitingState';
+import { collection, getDocs, addDoc } from 'firebase/firestore';
+import { db } from '../../firebase/firebaseConfig';
+import { WaitingDataType } from '../../types/waitingDataType';
+import { filterTodayWaiting } from '../../utils/filter';
+
+type DecreaseProps = {
+	$decreaseDisable: boolean;
+};
 
 function Waiting() {
 	const navigate = useNavigate();
+	const isWaitingAvailable = useRecoilValue<boolean>(isWaitingAvailableState);
+
+	//* 기존 대기 데이터
+	const [currentData, setCurrentData] = useState<WaitingDataType[]>([]);
+	//* 기존 대기 데이터 수
+	const [currentWaitingNum, setCurrentWaitingNum] = useState<number>(0);
+
+	//* 당일 날짜의 현재 대기 팀 수
+	const filteredWaitingNum = useMemo(() => filterTodayWaiting(currentData, 'waiting').length, [currentData]);
+
+	//* 대기 신청 시 필수 입력 값
+	const [waitingPersonNum, setWaitingPersonNum] = useState<number>(1);
+	const [decreaseDisable, setDecreaseDisable] = useState<boolean>(false);
+	const [waitingName, setWaitingName] = useState<string>('');
+	const [waitingTel, setWaitingTel] = useState<string>('');
+
+	//* 유효성 검사 시 필요한  useRef
+	const nameInput = useRef<HTMLInputElement>(null);
+	const telInput = useRef<HTMLInputElement>(null);
+
+	//* 인원 수 더하기, 빼기 함수
+	const onIncrease = () => {
+		setWaitingPersonNum((prevNum) => prevNum + 1);
+	};
+
+	const onDecrease = () => {
+		if (!decreaseDisable) {
+			setWaitingPersonNum((prevNum) => prevNum - 1);
+		}
+	};
+
+	//* 기존 대기 데이터와 기존 전체 대기 팀 수를 업데이트
+	useEffect(() => {
+		const waitingCollection = collection(db, 'waitingList');
+		const getWaitingData = async () => {
+			try {
+				const data = await getDocs(waitingCollection);
+				const dataArray = data.docs.map((doc) => ({
+					id: doc.id,
+					...(doc.data() as WaitingDataType),
+				}));
+
+				setCurrentData(dataArray);
+				setCurrentWaitingNum(dataArray.length);
+			} catch (error) {
+				console.error('Error getting waiting data:', error);
+			}
+		};
+
+		getWaitingData();
+	}, []);
+
+	//* 인원 수를 선택하는 버튼의 활성/비활성 상태를 관리
+	useEffect(() => {
+		//* 인원 수 선택 버튼 disable 관리
+		if (waitingPersonNum === 1) {
+			setDecreaseDisable(true);
+		} else {
+			setDecreaseDisable(false);
+		}
+	}, [waitingPersonNum]);
+
+	// *유효성 검사
+	// - 필수 입력값 입력하지 않았을 때 입력창으로 focus
+	const applyWaiting = async () => {
+		const waitingCollection = collection(db, 'waitingList');
+
+		if (waitingName.length === 0 && nameInput.current != null) {
+			alert('이름을 입력해주세요.');
+			nameInput.current.focus();
+			return;
+		}
+
+		const telRule = /^010[0-9]{3,4}[0-9]{4}$/;
+
+		if (waitingTel.length === 0 && telInput.current !== null) {
+			alert('전화번호 11자리를 입력해주세요.');
+			telInput.current.focus();
+			return;
+		} else if (waitingTel.length === 11 && !telRule.test(waitingTel.toString()) && telInput.current !== null) {
+			alert('전화번호 형식에 맞게 입력해주세요.');
+			telInput.current.focus();
+			return;
+		} else if (waitingTel.length !== 11 && telInput.current !== null) {
+			alert('전화번호 11자리를 모두 입력해주세요.');
+			telInput.current.focus();
+			return;
+		}
+
+		await addDoc(waitingCollection, {
+			name: waitingName,
+			tel: waitingTel,
+			date: new Date().getTime(),
+			personNum: waitingPersonNum,
+			no: currentWaitingNum + 1,
+			status: 'waiting',
+		});
+
+		window.alert('대기 신청을 완료하였습니다.');
+
+		//? 방금 대기 신청한 대기 번호 -> 대기 완료 페이지로 넘기기
+		navigate('/waitingcheck', {
+			state: {
+				userWaitingNum: currentWaitingNum + 1,
+			},
+		});
+	};
+
 	return (
 		<WaitingWrapper>
-			<WaitingHeaderText>
-				649 팀이 <p> 대기중이에요</p>
-			</WaitingHeaderText>
-			<ApplicationBox>
-				<ApplicationHeaderText>대기를 원하시면 번호를 입력해주세요.</ApplicationHeaderText>
-				<NumCheckBox>
-					<MinusBtn>
-						<img alt="1 빼기 버튼" aria-label="1 빼기" />
-					</MinusBtn>
-					1
-					<PlusBtn>
-						<img alt="1 더하기 버튼" aria-label="1 더하기" />
-					</PlusBtn>
-				</NumCheckBox>
-				<InputBoxWrapper>
-					<InputBox type="text" placeholder="이름을 입력해주세요." required />
-					<InputBox type="tel" placeholder="전화 번호를 입력해주세요." required />
-				</InputBoxWrapper>
-				<ApplicationButtnoWrapper>
-					<ApplicationBtn
+			{isWaitingAvailable ? (
+				<>
+					<WaitingHeaderText>
+						{filteredWaitingNum} 팀이 <p> 대기중이에요</p>
+					</WaitingHeaderText>
+					<ApplicationBox>
+						<ApplicationHeaderText>대기를 원하시면 번호를 입력해주세요.</ApplicationHeaderText>
+						<NumCheckBox>
+							<MinusBtn onClick={onDecrease} $decreaseDisable={decreaseDisable}>
+								<img alt="1 빼기 버튼" aria-label="1 빼기" />
+							</MinusBtn>
+							{waitingPersonNum}
+							<PlusBtn onClick={onIncrease}>
+								<img alt="1 더하기 버튼" aria-label="1 더하기" />
+							</PlusBtn>
+						</NumCheckBox>
+						<InputBoxWrapper>
+							<InputBox
+								type="text"
+								placeholder="이름을 입력해주세요."
+								ref={nameInput}
+								onChange={(event) => {
+									setWaitingName(event.target.value);
+								}}
+								required
+							/>
+							<InputBox
+								type="tel"
+								placeholder="전화 번호를 입력해주세요."
+								ref={telInput}
+								onChange={(event) => {
+									setWaitingTel(event.target.value);
+								}}
+								required
+							/>
+						</InputBoxWrapper>
+						<ApplicationButtnoWrapper>
+							<ApplicationBtn
+								onClick={() => {
+									navigate(-1);
+								}}
+							>
+								취소
+							</ApplicationBtn>
+							<ApplicationBtn
+								onClick={() => {
+									applyWaiting();
+								}}
+							>
+								신청
+							</ApplicationBtn>
+						</ApplicationButtnoWrapper>
+					</ApplicationBox>
+				</>
+			) : (
+				<WaitingDisableMessage>
+					대기가 마감되었습니다.
+					<BackHomeBtn
 						onClick={() => {
-							navigate(-1);
+							navigate('/home');
 						}}
 					>
-						취소
-					</ApplicationBtn>
-					<ApplicationBtn onClick={() => navigate('/waitingcheck')}>신청</ApplicationBtn>
-				</ApplicationButtnoWrapper>
-			</ApplicationBox>
+						홈화면으로 돌아가기
+					</BackHomeBtn>
+				</WaitingDisableMessage>
+			)}
 		</WaitingWrapper>
 	);
 }
@@ -102,11 +257,17 @@ const NumCheckBox = styled.div`
 	color: ${({ theme }) => (theme.lightColor ? theme.textColor.black : theme.textColor.white)};
 `;
 
-const MinusBtn = styled.button`
+const MinusBtn = styled.button<DecreaseProps>`
 	img {
-		content: ${({ theme }) =>
-			theme.lightColor ? 'url(/assets/user/minusIcon_disable.svg)' : 'url(/assets/user/minusIcon_disable.svg)'};
+		content: ${({ theme, $decreaseDisable }) =>
+			$decreaseDisable
+				? 'url(/assets/user/minusIcon_disable.svg)'
+				: theme.lightColor
+				? 'url(/assets/user/minusIcon_able_light.svg)'
+				: 'url(/assets/user/minusIcon_dark.svg)'};
 	}
+
+	cursor: ${({ $decreaseDisable }) => ($decreaseDisable ? 'not-allowed' : 'pointer')};
 `;
 
 const PlusBtn = styled.button`
@@ -152,4 +313,27 @@ const ApplicationBtn = styled.button`
 	background-color: ${({ theme }) => (theme.lightColor ? theme.textColor.darkbrown : theme.textColor.darkgray)};
 	font-size: ${({ theme }) => theme.fontSize['2xl']};
 	font-weight: ${({ theme }) => theme.fontWeight.semibold};
+`;
+
+const WaitingDisableMessage = styled.div`
+	width: 100%;
+	height: 100%;
+	display: flex;
+	flex-flow: column nowrap;
+	justify-content: center;
+	align-items: center;
+	font-size: ${({ theme }) => theme.fontSize['5xl']};
+	font-weight: ${({ theme }) => theme.fontWeight.semibold};
+	color: ${({ theme }) => (theme.lightColor ? theme.textColor.black : theme.textColor.white)};
+`;
+
+const BackHomeBtn = styled.button`
+	width: 225px;
+	height: 75px;
+	border-radius: 10px;
+	background-color: ${({ theme }) => (theme.lightColor ? theme.lightColor?.yellow.main : theme.darkColor?.main)};
+	color: ${({ theme }) => (theme.lightColor ? theme.textColor.black : theme.textColor.white)};
+	font-size: ${({ theme }) => theme.fontSize['2xl']};
+	font-weight: ${({ theme }) => theme.fontWeight.semibold};
+	margin-top: 50px;
 `;

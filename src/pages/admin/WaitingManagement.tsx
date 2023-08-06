@@ -3,7 +3,7 @@ import { styled, useTheme } from 'styled-components';
 import { Routes, Route, NavLink } from 'react-router-dom';
 import { useRecoilState } from 'recoil';
 import { modalState } from '../../state/ModalState';
-import { isWaitingState } from '../../state/WaitingState';
+import { isWaitingState, isWaitingAvailableState } from '../../state/WaitingState';
 
 import WaitingHeader from '../../components/waitingManagement/WaitingHeader';
 import WaitingTableBox from '../../components/waitingManagement/WaitingTableBox';
@@ -11,6 +11,10 @@ import WaitingModal from '../../components/waitingManagement/WaitingModal';
 
 type DataStatusProps = {
 	$isWaiting: boolean;
+};
+
+type IsAvailableProps = {
+	$isWaitingAvailable: boolean;
 };
 
 const WaitingManagement = () => {
@@ -23,13 +27,15 @@ const WaitingManagement = () => {
 	const theme = useTheme();
 
 	const [isWaiting, setIsWaiting] = useRecoilState<boolean>(isWaitingState);
+	const [isWaitingAvailable, setIsWaitingAvailable] = useRecoilState<boolean>(isWaitingAvailableState);
 
 	useEffect(() => {
 		const storedIsWaiting = localStorage.getItem('isWaiting');
 		if (storedIsWaiting != null) {
 			setIsWaiting(JSON.parse(storedIsWaiting));
 		}
-	}, [setIsWaiting]);
+		localStorage.setItem('isWaitingAvailable', isWaitingAvailable.toString());
+	}, [isWaiting, isWaitingAvailable, setIsWaiting]);
 
 	const handleIsWaitingChange = (newIsWaiting: boolean) => {
 		setIsWaiting(newIsWaiting);
@@ -87,13 +93,21 @@ const WaitingManagement = () => {
 						</WaitedList>
 					</ListWrapper>
 					<WaitingBtnWrapper>
-						<WaitingAbleBtn>대기 가능</WaitingAbleBtn>
-						<WaitingDisableBtn>대기 마감</WaitingDisableBtn>
+						<WaitingAbleBtn $isWaitingAvailable={isWaitingAvailable} onClick={() => setIsWaitingAvailable(true)}>
+							대기 가능
+						</WaitingAbleBtn>
+						<WaitingDisableBtn $isWaitingAvailable={isWaitingAvailable} onClick={() => setIsWaitingAvailable(false)}>
+							대기 마감
+						</WaitingDisableBtn>
 					</WaitingBtnWrapper>
 				</TableMenu>
 				<Routes>
+					{isWaitingAvailable ? (
+						<Route path="/*" element={<WaitingTable />}></Route>
+					) : (
+						<Route path="/*" element={<WaitingDisable>대기가 마감되었습니다.</WaitingDisable>}></Route>
+					)}
 					<Route path="/waitedlist" element={<TodayWaitedTable />}></Route>
-					<Route path="/*" element={<WaitingTable />}></Route>
 				</Routes>
 			</WaitingTableWrapper>
 		</WaitingManagementWrapper>
@@ -167,22 +181,57 @@ const WaitingBtnWrapper = styled.div`
 	font-weight: ${({ theme }) => theme.fontWeight.bold};
 `;
 
-const WaitingAbleBtn = styled.button`
+const WaitingAbleBtn = styled.button<IsAvailableProps>`
 	width: 137px;
 	height: 54px;
-	background-color: ${({ theme }) => (theme.lightColor ? theme.lightColor?.yellow.point : theme.textColor.darkgray)};
-	color: ${({ theme }) => theme.textColor.white};
+	background-color: ${({ theme, $isWaitingAvailable }) =>
+		$isWaitingAvailable ? (theme.lightColor ? theme.lightColor?.yellow.point : theme.textColor.darkgray) : 'none'};
+	color: ${({ theme, $isWaitingAvailable }) =>
+		$isWaitingAvailable
+			? theme.textColor.white
+			: theme.lightColor
+			? theme.lightColor?.yellow.point
+			: theme.textColor.darkgray};
+	border: ${({ theme, $isWaitingAvailable }) =>
+		$isWaitingAvailable
+			? 'none'
+			: theme.lightColor
+			? `2px solid ${theme.lightColor?.yellow.point}`
+			: `2px solid ${theme.textColor.darkgray}`};
 	border-radius: 10px;
 	margin-right: 8px;
 `;
 
-const WaitingDisableBtn = styled.button`
+const WaitingDisableBtn = styled.button<IsAvailableProps>`
 	width: 137px;
 	height: 54px;
 	border-radius: 10px;
+	background-color: ${({ theme, $isWaitingAvailable }) =>
+		$isWaitingAvailable ? 'none' : theme.lightColor ? theme.lightColor?.yellow.point : theme.textColor.darkgray};
 	border: ${({ theme }) =>
 		theme.lightColor ? `2px solid ${theme.lightColor?.yellow.point}` : `2px solid ${theme.textColor.darkgray}`};
-	color: ${({ theme }) => (theme.lightColor ? theme.lightColor?.yellow.point : theme.textColor.darkgray)};
+	color: ${({ theme, $isWaitingAvailable }) =>
+		$isWaitingAvailable
+			? theme.lightColor
+				? theme.lightColor?.yellow.point
+				: theme.textColor.darkgray
+			: theme.textColor.white};
+`;
+
+const WaitingDisable = styled.div`
+	width: 1046px;
+	height: 625px;
+	margin-bottom: 48px;
+	padding-top: 20px;
+	background-color: ${({ theme }) =>
+		theme.lightColor ? theme.lightColor?.yellow.background : theme.darkColor?.background};
+	border: ${({ theme }) => (theme.lightColor ? 'none' : `1px solid ${theme.textColor.white}`)};
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	color: ${({ theme }) => (theme.lightColor ? theme.textColor.black : theme.textColor.white)};
+	font-weight: ${({ theme }) => theme.fontWeight.semibold};
+	font-size: ${({ theme }) => theme.fontSize['3xl']};
 `;
 
 // ---------------------------

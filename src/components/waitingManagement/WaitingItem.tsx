@@ -123,6 +123,10 @@ const WatingBtnWrapper = styled.td`
 	display: flex;
 	justify-content: center;
 	align-items: center;
+
+	span {
+		color: ${({ theme }) => (theme.lightColor ? theme.lightColor.yellow.point : theme.darkColor?.point)};
+	}
 `;
 
 const ShortBtn = styled.button`
