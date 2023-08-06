@@ -1,9 +1,9 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { styled, useTheme } from 'styled-components';
 import { Routes, Route, NavLink } from 'react-router-dom';
 import { useRecoilState } from 'recoil';
 import { modalState } from '../../state/ModalState';
-import { isWaitingState } from '../../state/WaitingState';
+import { isWaitingAvailableState } from '../../state/WaitingState';
 
 import WaitingHeader from '../../components/waitingManagement/WaitingHeader';
 import WaitingTableBox from '../../components/waitingManagement/WaitingTableBox';
@@ -13,23 +13,28 @@ type DataStatusProps = {
 	$isWaiting: boolean;
 };
 
+type IsAvailableProps = {
+	$isWaitingAvailable: boolean;
+};
+
 const WaitingManagement = () => {
 	const [isOpenModal, setIsOpenModal] = useRecoilState<boolean>(modalState);
 
 	const closeModal = () => {
 		setIsOpenModal(false);
 	};
-
 	const theme = useTheme();
 
-	const [isWaiting, setIsWaiting] = useRecoilState<boolean>(isWaitingState);
+	const [isWaiting, setIsWaiting] = useState<boolean>(true);
+	const [isWaitingAvailable, setIsWaitingAvailable] = useRecoilState<boolean>(isWaitingAvailableState);
 
 	useEffect(() => {
 		const storedIsWaiting = localStorage.getItem('isWaiting');
 		if (storedIsWaiting != null) {
 			setIsWaiting(JSON.parse(storedIsWaiting));
 		}
-	}, [setIsWaiting]);
+		localStorage.setItem('isWaitingAvailable', isWaitingAvailable.toString());
+	}, [isWaiting, isWaitingAvailable, setIsWaiting]);
 
 	const handleIsWaitingChange = (newIsWaiting: boolean) => {
 		setIsWaiting(newIsWaiting);
@@ -87,13 +92,17 @@ const WaitingManagement = () => {
 						</WaitedList>
 					</ListWrapper>
 					<WaitingBtnWrapper>
-						<WaitingAbleBtn>대기 가능</WaitingAbleBtn>
-						<WaitingDisableBtn>대기 마감</WaitingDisableBtn>
+						<WaitingAbleBtn $isWaitingAvailable={isWaitingAvailable} onClick={() => setIsWaitingAvailable(true)}>
+							대기 가능
+						</WaitingAbleBtn>
+						<WaitingDisableBtn $isWaitingAvailable={isWaitingAvailable} onClick={() => setIsWaitingAvailable(false)}>
+							대기 마감
+						</WaitingDisableBtn>
 					</WaitingBtnWrapper>
 				</TableMenu>
 				<Routes>
-					<Route path="/waitedlist" element={<TodayWaitedTable />}></Route>
 					<Route path="/*" element={<WaitingTable />}></Route>
+					<Route path="/waitedlist" element={<TodayWaitedTable />}></Route>
 				</Routes>
 			</WaitingTableWrapper>
 		</WaitingManagementWrapper>
@@ -167,22 +176,41 @@ const WaitingBtnWrapper = styled.div`
 	font-weight: ${({ theme }) => theme.fontWeight.bold};
 `;
 
-const WaitingAbleBtn = styled.button`
+const WaitingAbleBtn = styled.button<IsAvailableProps>`
 	width: 137px;
 	height: 54px;
-	background-color: ${({ theme }) => (theme.lightColor ? theme.lightColor?.yellow.point : theme.textColor.darkgray)};
-	color: ${({ theme }) => theme.textColor.white};
+	background-color: ${({ theme, $isWaitingAvailable }) =>
+		$isWaitingAvailable ? (theme.lightColor ? theme.lightColor?.yellow.point : theme.textColor.darkgray) : 'none'};
+	color: ${({ theme, $isWaitingAvailable }) =>
+		$isWaitingAvailable
+			? theme.textColor.white
+			: theme.lightColor
+			? theme.lightColor?.yellow.point
+			: theme.textColor.darkgray};
+	border: ${({ theme, $isWaitingAvailable }) =>
+		$isWaitingAvailable
+			? 'none'
+			: theme.lightColor
+			? `2px solid ${theme.lightColor?.yellow.point}`
+			: `2px solid ${theme.textColor.darkgray}`};
 	border-radius: 10px;
 	margin-right: 8px;
 `;
 
-const WaitingDisableBtn = styled.button`
+const WaitingDisableBtn = styled.button<IsAvailableProps>`
 	width: 137px;
 	height: 54px;
 	border-radius: 10px;
+	background-color: ${({ theme, $isWaitingAvailable }) =>
+		$isWaitingAvailable ? 'none' : theme.lightColor ? theme.lightColor?.yellow.point : theme.textColor.darkgray};
 	border: ${({ theme }) =>
 		theme.lightColor ? `2px solid ${theme.lightColor?.yellow.point}` : `2px solid ${theme.textColor.darkgray}`};
-	color: ${({ theme }) => (theme.lightColor ? theme.lightColor?.yellow.point : theme.textColor.darkgray)};
+	color: ${({ theme, $isWaitingAvailable }) =>
+		$isWaitingAvailable
+			? theme.lightColor
+				? theme.lightColor?.yellow.point
+				: theme.textColor.darkgray
+			: theme.textColor.white};
 `;
 
 // ---------------------------

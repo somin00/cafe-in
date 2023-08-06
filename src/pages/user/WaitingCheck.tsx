@@ -1,9 +1,36 @@
-import React from 'react';
-import { Navigate, useNavigate } from 'react-router-dom';
+import React, { useEffect, useState, useCallback } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { styled } from 'styled-components';
 
 function WaitingCheck() {
 	const navigate = useNavigate();
+	const location = useLocation();
+
+	//? 대기 신청 페이지에서 넘겨 받은 대기 번호
+	const { userWaitingNum } = location.state;
+
+	const [remainingTime, setRemainingTime] = useState<number>(20);
+
+	const RemainingTimeText = ({ remainingTime }: { remainingTime: number }) => {
+		return <p>{remainingTime}초 뒤에 자동으로 홈 화면으로 이동합니다.</p>;
+	};
+
+	useEffect(() => {
+		const timeoutId = setTimeout(() => {
+			setRemainingTime((prevTime) => prevTime - 1);
+		}, 1000);
+
+		if (remainingTime === 0) {
+			goToHome();
+		}
+
+		return () => clearTimeout(timeoutId);
+	}, [remainingTime]);
+
+	const goToHome = useCallback(() => {
+		navigate('/home');
+	}, []);
+
 	return (
 		<WaitingCheckWrapper>
 			<WaitingCheckHeaderText>
@@ -11,10 +38,11 @@ function WaitingCheck() {
 			</WaitingCheckHeaderText>
 			<WaitingNumWrapper>
 				<LeftFireworks />
-				<WaitingNumText>640번</WaitingNumText>
+				<WaitingNumText>{userWaitingNum}번</WaitingNumText>
 				<RightFireworks />
 			</WaitingNumWrapper>
-			<HomeBtn onClick={() => navigate('/home')}>
+			<RemainingTimeText remainingTime={remainingTime} />
+			<HomeBtn onClick={goToHome}>
 				홈화면으로 <p>이동하기</p>
 			</HomeBtn>
 		</WaitingCheckWrapper>
@@ -44,6 +72,7 @@ const WaitingCheckHeaderText = styled.h1`
 	flex-flow: column nowrap;
 	justify-content: center;
 	align-items: center;
+	padding-top: 10px;
 
 	p {
 		margin-top: 10px;
@@ -79,7 +108,7 @@ const RightFireworks = styled.img`
 const WaitingNumText = styled.div`
 	position: absolute;
 	top: 40%;
-	left: 25%;
+	left: 30%;
 	display: flex;
 	justify-content: center;
 	align-items: center;
