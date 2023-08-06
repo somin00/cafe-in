@@ -1,19 +1,19 @@
 import React, { useEffect, useState } from 'react';
-import { useRecoilState } from 'recoil';
-import { styled } from 'styled-components';
+import styled from 'styled-components';
 import { Option } from '../../state/OptinalState';
-import { selectedOptionsState } from '../../firebase/FirStoreDoc';
 import { db } from '../../firebase/firebaseConfig';
-import { addDoc, collection, getDocs } from 'firebase/firestore';
+import { addDoc, collection, doc, getDocs, increment, query, updateDoc, where } from 'firebase/firestore';
 import { Item } from '../../state/Category';
 export interface OptionMenuProps {
 	selected: Item;
 	onClickToggleModal: () => void;
 }
 function OptionMenu({ selected, onClickToggleModal }: OptionMenuProps) {
-	const [selectedOptions, setSelectedOptions] = useRecoilState<Option[]>(selectedOptionsState);
-	const [activeOptions, setActiveOptions] = useState<string[]>([]);
 	const [options, setOptions] = useState<{ [key: string]: Option[] }>({});
+	const [activeOptions, setActiveOptions] = useState<string[]>([]);
+
+	const [selectedItemOptions, setSelectedItemOptions] = useState<Option[]>([]);
+
 	useEffect(() => {
 		const fetchOptions = async () => {
 			const optionsCollection = collection(db, 'options');
@@ -32,57 +32,81 @@ function OptionMenu({ selected, onClickToggleModal }: OptionMenuProps) {
 				setOptions(orderedOptions);
 			}
 		};
-
+		setSelectedItemOptions([]);
 		fetchOptions();
-	}, []);
+	}, [selected]);
 
 	const handleOptionClick = (e: React.MouseEvent, option: Option) => {
 		e.preventDefault();
-		const selectedInCategory = selectedOptions.filter((selectedOption) => selectedOption.category === option.category);
+
+		const selectedInCategory = selectedItemOptions.filter(
+			(selectedOption) => selectedOption.category === option.category,
+		);
+
 		if (option.category === '음료선택') {
 			if (selectedInCategory.length >= 1) {
-				setSelectedOptions((oldSelectedOptions) =>
+				setSelectedItemOptions((oldSelectedOptions) =>
 					oldSelectedOptions.filter((selectedOption) => selectedOption.category !== option.category).concat(option),
 				);
-				setActiveOptions((oldActiveOptions) =>
-					oldActiveOptions
-						.filter((activeOption) => !selectedInCategory.map((o) => o.name).includes(activeOption))
-						.concat(option.name),
-				);
+				setActiveOptions((oldActiveOptions) => {
+					const newActiveOptions = oldActiveOptions.filter(
+						(activeOption) => activeOption !== selectedInCategory[0].name,
+					);
+					newActiveOptions.push(option.name);
+					return newActiveOptions;
+				});
 				return;
 			}
 		}
 
-		if (activeOptions.includes(option.name)) {
-			setActiveOptions((oldActiveOptions) => oldActiveOptions.filter((activeOption) => activeOption !== option.name));
-			setSelectedOptions((oldSelectedOptions) =>
+		if (selectedItemOptions.some((selectedOption) => selectedOption.name === option.name)) {
+			setSelectedItemOptions((oldSelectedOptions) =>
 				oldSelectedOptions.filter((selectedOption) => selectedOption.name !== option.name),
 			);
+			setActiveOptions((oldActiveOptions) => oldActiveOptions.filter((activeOption) => activeOption !== option.name));
 		} else {
-			setSelectedOptions((oldSelectedOptions: Option[]) => [...oldSelectedOptions, option]);
+			setSelectedItemOptions((oldSelectedOptions: Option[]) => [...oldSelectedOptions, option]);
 			setActiveOptions((oldActiveOptions) => [...oldActiveOptions, option.name]);
 		}
 	};
 
-	const handleCloseBtnClick = (e: React.MouseEvent) => {
+	const handleCloseBtnClick = async (e: React.MouseEvent) => {
 		e.stopPropagation();
 
-		const itemToBeAdded = {
-			data: new Date(),
-			id: selected.id,
-			category: selected.category,
-			name: selected.name,
-			quantity: 1,
-			totalPrice: selected.price,
-			options: selectedOptions.map((i) => i.name).join(','),
-		};
+		const itemsCollection = collection(db, 'selectedItem');
+		const selectedOptionsStr =
+			selectedItemOptions.length > 0
+				? selectedItemOptions
+						.map((i) => i.name)
+						.sort()
+						.join(',')
+				: '없음';
+		const q = query(itemsCollection, where('name', '==', selected.name), where('options', '==', selectedOptionsStr));
 
-		const itemsCollection = collection(db, 'seletedItem');
-		addDoc(itemsCollection, itemToBeAdded);
+		const matchingDocs = await getDocs(q);
+
+		if (!matchingDocs.empty) {
+			// 이미 존재하는 문서에 수량을 증가
+			const existingDoc = matchingDocs.docs[0];
+			const docRef = doc(db, 'selectedItem', existingDoc.id);
+			await updateDoc(docRef, {
+				quantity: increment(1),
+			});
+		} else {
+			// 존재하지 않는 경우 새로운 문서를 추가
+			const itemToBeAdded = {
+				...selected,
+				data: new Date(),
+				quantity: 1,
+				options: selectedOptionsStr,
+				totalPrice: selected.price,
+			};
+
+			await addDoc(itemsCollection, itemToBeAdded);
+		}
 
 		onClickToggleModal();
 	};
-
 	return (
 		<ModalContainer onClick={onClickToggleModal}>
 			<DialogBox onClick={(e) => e.stopPropagation()}>

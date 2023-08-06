@@ -15,7 +15,7 @@ function MenuItem({ menu }: ItemPropType) {
 	const mode = useRecoilValue(selectedModeState);
 	const [isOpenModal, setModalOpen] = useState<boolean>(false);
 
-	const [selectedItem, setSelectedItem] = useRecoilState(selectedItemsState);
+	const [selectedItem] = useRecoilState(selectedItemsState);
 
 	const priceTemplate = (price: string) => {
 		return price.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
@@ -34,9 +34,7 @@ function MenuItem({ menu }: ItemPropType) {
 					<p className="menu-price">{priceTemplate(menu.price)}원</p>
 				</button>
 			</MenuItemWrapper>
-			{mode === 'user' && isOpenModal && (
-				<OptionMenu onClickToggleModal={onClickToggleModal} selected={selectedItem}></OptionMenu>
-			)}
+			{mode === 'user' && isOpenModal && <OptionMenu onClickToggleModal={onClickToggleModal} selected={selectedItem} />}
 			{mode === 'admin' && isOpenModal && (
 				<ModalPortal>
 					<EditMenuModal menu={menu} onCloseModal={onClickToggleModal} />

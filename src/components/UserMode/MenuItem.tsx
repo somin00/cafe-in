@@ -4,11 +4,11 @@ import OptionMenu from './OptionMenu';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { selectedModeState } from '../../state/Mode';
 import { Item } from '../../state/Category';
-import { collection, getDocs, query, where } from 'firebase/firestore';
+import { addDoc, collection, doc, getDocs, increment, query, updateDoc, where } from 'firebase/firestore';
 import { db } from '../../firebase/firebaseConfig';
 import { selectedCategoryState } from '../../state/CategoryList';
 import { selectedItemsState } from '../../firebase/FirStoreDoc';
-
+import { Option } from '../../state/OptinalState';
 function MenuItem() {
 	const mode = useRecoilValue(selectedModeState);
 	const selectedCategory = useRecoilValue(selectedCategoryState);
@@ -18,10 +18,7 @@ function MenuItem() {
 	const onClickToggleModal = useCallback(() => {
 		setModalOpen(!isOpenModal);
 	}, [isOpenModal]);
-	const handleClick = (item: Item) => {
-		console.log(`Item Name: ${item.name}, Item ID: ${item.id}`);
-		setSelectedItem(item);
-	};
+
 	useEffect(() => {
 		const fetchItems = async () => {
 			try {
@@ -47,10 +44,55 @@ function MenuItem() {
 		};
 		fetchItems();
 	}, [selectedCategory]);
+	const saveToSelectedItem = async (selectedItem: Item, selectedItemOptions: Option[] = []) => {
+		const itemsCollection = collection(db, 'selectedItem');
+
+		const selectedOptionsStr =
+			selectedItemOptions.length > 0
+				? selectedItemOptions
+						.map((i) => i.name)
+						.sort()
+						.join(',')
+				: '없음';
+
+		const q = query(
+			itemsCollection,
+			where('name', '==', selectedItem.name),
+			where('options', '==', selectedOptionsStr),
+		);
+
+		const matchingDocs = await getDocs(q);
+
+		if (!matchingDocs.empty) {
+			const existingDoc = matchingDocs.docs[0];
+			const docRef = doc(db, 'selectedItem', existingDoc.id);
+			await updateDoc(docRef, {
+				quantity: increment(1),
+			});
+		} else {
+			const itemToBeAdded = {
+				...selectedItem,
+				data: new Date(),
+				quantity: 1,
+				options: selectedOptionsStr,
+				totalPrice: selectedItem.price,
+			};
+
+			await addDoc(itemsCollection, itemToBeAdded);
+		}
+	};
+	const handleClick = async (item: Item) => {
+		setSelectedItem(item);
+		if (item.category === '스무디' || item.category === '디저트') {
+			await saveToSelectedItem(item);
+		} else {
+			onClickToggleModal();
+		}
+	};
 	return (
 		<>
 			{items.map((item) => (
-				<MenuItemWrapper key={item.id} onClick={onClickToggleModal}>
+				<MenuItemWrapper key={item.id}>
 					<button onClick={() => handleClick(item)}>
 						<img src={item.imageUrl} alt={item.imageName} />
 						<p className="menu-name">{item.name}</p>

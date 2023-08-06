@@ -4,7 +4,7 @@ import styled, { useTheme } from 'styled-components';
 import AddPointModal from '../../components/UserMode/AddPointModal';
 import UsePointUser from '../../components/UserMode/UsePointUser';
 import { darkTheme, defaultTheme } from '../../style/theme';
-import { collection, getDocs } from 'firebase/firestore';
+import { collection, getDocs, writeBatch } from 'firebase/firestore';
 import { db } from '../../firebase/firebaseConfig';
 interface Order {
 	name: string;
@@ -43,11 +43,29 @@ function OrderCheck() {
 	}, []);
 
 	const totalOrderAmount = orderList.reduce((acc, order) => acc + order.totalPrice * order.quantity, 0);
+	const handleDeleteAll = async () => {
+		const selectedItemsCol = collection(db, 'orderList');
+		const snapshot = await getDocs(selectedItemsCol);
 
+		const batch = writeBatch(db);
+
+		snapshot.docs.forEach((doc) => {
+			batch.delete(doc.ref);
+		});
+
+		await batch.commit();
+
+		setOrderList([]);
+	};
 	return (
 		<Layout>
 			<Header>
-				<BackBTn onClick={() => navigate('/menu')}>
+				<BackBTn
+					onClick={() => {
+						handleDeleteAll();
+						navigate('/menu');
+					}}
+				>
 					<img
 						className="backBtn"
 						src={theme === defaultTheme ? '/assets/user/BackBtn_light.svg' : '/assets/user/BackBtn_dark.svg'}
@@ -103,7 +121,7 @@ function OrderCheck() {
 							{isOpenAddPointModal && <AddPointModal onClickToggleModal={onClickToggleAddPointModal} />}
 							{isOpenUsePointUserModal && <UsePointUser onClickToggleModal={onClickToggleUsePointUserModal} />}
 						</div>
-						<button className="payment">
+						<button className="payment" onClick={() => handleDeleteAll()}>
 							결제하기
 							<img src="/assets/user/buy.svg" />
 						</button>

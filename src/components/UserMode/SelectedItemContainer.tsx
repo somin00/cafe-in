@@ -2,47 +2,54 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { styled } from 'styled-components';
 import { defaultTheme, darkTheme } from '../../style/theme';
-import { useRecoilValue } from 'recoil';
-import { selectedOptionsState } from '../../firebase/FirStoreDoc';
+
 import { db } from '../../firebase/firebaseConfig';
 import { selectedItem } from '../../state/OptinalState';
-import { collection, doc, updateDoc, deleteDoc, addDoc, onSnapshot, increment } from 'firebase/firestore';
+import {
+	collection,
+	doc,
+	writeBatch,
+	updateDoc,
+	deleteDoc,
+	addDoc,
+	onSnapshot,
+	increment,
+	getDocs,
+} from 'firebase/firestore';
 
-function SeletedItemContainer() {
-	const selectedOptions = useRecoilValue(selectedOptionsState);
+function SelectedItemContainer() {
 	const navigate = useNavigate();
 
 	const [selectedItems, setSelectedItems] = useState<selectedItem[]>([]);
 
 	useEffect(() => {
-		const selectedItemsCol = collection(db, 'seletedItem');
+		const selectedItemsCol = collection(db, 'selectedItem');
 
 		const unsub = onSnapshot(selectedItemsCol, (snapshot) => {
 			const updatedItems: (selectedItem | undefined)[] = snapshot.docs.map((doc) => {
 				const data = doc.data();
 				if (data.quantity !== undefined) {
-					return { ...data, id: doc.id } as selectedItem;
+					return { ...data, id: doc.id, options: data.options } as selectedItem;
 				}
 			});
 			setSelectedItems(updatedItems.filter((item) => item !== undefined) as selectedItem[]);
 		});
-
 		return () => unsub();
 	}, []);
 
 	const handleItemDelete = (itemName: string) => {
-		deleteDoc(doc(db, 'seletedItem', itemName));
+		deleteDoc(doc(db, 'selectedItem', itemName));
 	};
 
 	const handleIncreaseCount = async (itemName: string) => {
-		const docRef = doc(db, 'seletedItem', itemName);
+		const docRef = doc(db, 'selectedItem', itemName);
 		await updateDoc(docRef, {
 			quantity: increment(1),
 		});
 	};
 
 	const handleDecreaseCount = async (itemName: string) => {
-		const docRef = doc(db, 'seletedItem', itemName);
+		const docRef = doc(db, 'selectedItem', itemName);
 		await updateDoc(docRef, {
 			quantity: increment(-1),
 		});
@@ -50,7 +57,19 @@ function SeletedItemContainer() {
 
 	const totalPrice = selectedItems.reduce((acc, item) => acc + item.totalPrice * item.quantity, 0);
 
-	const handleDeleteAll = () => {
+	const handleDeleteAll = async () => {
+		const selectedItemsCol = collection(db, 'selectedItem');
+		const snapshot = await getDocs(selectedItemsCol);
+
+		//모든 작업을 한번에 단일요청할때 writeBatch
+		const batch = writeBatch(db);
+
+		snapshot.docs.forEach((doc) => {
+			batch.delete(doc.ref);
+		});
+
+		await batch.commit();
+
 		setSelectedItems([]);
 	};
 
@@ -61,23 +80,21 @@ function SeletedItemContainer() {
 				category: item.category,
 				data: new Date(),
 				name: item.name,
-				options: item.options ?? '없음',
+				options: item.options,
 				progress: '완료주문',
 				quantity: item.quantity,
 				totalPrice: item.totalPrice * item.quantity,
 			};
-			if (newOrder.category === undefined) {
-				newOrder.category = '없음';
-			}
+
 			await addDoc(collection(db, 'orderList'), newOrder);
 		});
 	};
 	return (
 		<Background>
 			<Layout>
-				<MenuSeletedContainer>
+				<MenuSelectedContainer>
 					{selectedItems.map((item) => (
-						<SeletedItem key={item.id}>
+						<SelectedItem key={item.id}>
 							<div className="first">
 								<p>{item.name}</p>
 								<div className="counter">
@@ -99,19 +116,12 @@ function SeletedItemContainer() {
 									</button>
 								</div>
 							</div>
-							<div className="options-selected">
-								{selectedOptions.map((option) => (
-									<p key={option.id}>{option.name}</p>
-								))}
-							</div>
-							<div className="options-seleted">
-								{selectedOptions.map((option, index) => (
-									<p key={index}>{option.name}</p>
-								))}
-							</div>
-						</SeletedItem>
+							<OptionsSelected $noOptions={item.options === '없음'}>
+								{item.options !== '없음' && <p key={item.name}>{item.options}</p>}
+							</OptionsSelected>
+						</SelectedItem>
 					))}
-				</MenuSeletedContainer>
+				</MenuSelectedContainer>
 				<PayContainer>
 					<TotalPrice>
 						<p>총 결제 금액</p>
@@ -141,7 +151,7 @@ const Layout = styled.div`
 	flex-direction: column;
 	justify-content: space-between;
 `;
-const MenuSeletedContainer = styled.ul`
+const MenuSelectedContainer = styled.ul`
 	display: flex;
 	flex-direction: column;
 	height: 440px;
@@ -156,12 +166,12 @@ const MenuSeletedContainer = styled.ul`
 	/* Firefox */
 	scrollbar-width: none;
 `;
-const SeletedItem = styled.li`
+const SelectedItem = styled.li`
 	display: flex;
-	width: 350px;
+	width: 359px;
 	flex-direction: column;
 	align-items: flex-end;
-	margin: 20px 10px;
+	margin: 10px;
 	padding: 15px 10px;
 	font-weight: ${({ theme }) => theme.fontWeight?.bold};
 	border: 1px solid ${({ theme }) => theme.textColor?.lightbrown};
@@ -173,17 +183,7 @@ const SeletedItem = styled.li`
 		align-items: center;
 		justify-content: space-between;
 	}
-	.options-selected {
-		display: flex;
-		width: 100%;
-		justify-content: end;
-		margin-top: 10px;
-		padding-top: 6px;
-		border-top: 1px solid ${({ theme }) => theme.textColor.lightbrown};
-		font-size: ${({ theme }) => theme.fontSize.sm};
-		font-weight: ${({ theme }) => theme.fontWeight.semibold};
-		color: ${({ theme }) => theme.textColor.lightgray};
-	}
+
 	.counter {
 		display: flex;
 		align-items: center;
@@ -221,6 +221,18 @@ const SeletedItem = styled.li`
 			border-radius: 5px;
 		}
 	}
+`;
+
+const OptionsSelected = styled.div<{ $noOptions: boolean }>`
+	display: flex;
+	width: 100%;
+	justify-content: start;
+	margin-top: ${({ $noOptions }) => ($noOptions ? '0' : '10px')};
+	padding-top: ${({ $noOptions }) => ($noOptions ? '0' : '6px')};
+	border-top: ${({ $noOptions, theme }) => ($noOptions ? 'none' : `1px solid ${theme.textColor.lightbrown}`)};
+	font-size: ${({ theme }) => theme.fontSize.sm};
+	font-weight: ${({ theme }) => theme.fontWeight.bold};
+	color: ${({ theme }) => theme.textColor.darkgray};
 `;
 const PayContainer = styled.div`
 	flex: 0.3;
@@ -272,4 +284,4 @@ const OrderBtn = styled.button`
 	background-color: ${({ theme }) =>
 		theme === defaultTheme ? theme.lightColor?.yellow.sub : darkTheme.darkColor?.point};
 `;
-export default SeletedItemContainer;
+export default SelectedItemContainer;
