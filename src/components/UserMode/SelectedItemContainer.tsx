@@ -77,13 +77,12 @@ function SelectedItemContainer() {
 		navigate('/order');
 		selectedItems.forEach(async (item) => {
 			const newOrder = {
-				category: item.category,
-				data: new Date(),
-				name: item.name,
-				options: item.options,
+				id: Date.now(),
+				date: Date(),
+				list: [{ menu: item.name, quantity: item.quantity, options: item.options }],
 				progress: '완료주문',
-				quantity: item.quantity,
 				totalPrice: item.totalPrice * item.quantity,
+				tackOut: true,
 			};
 
 			await addDoc(collection(db, 'orderList'), newOrder);
