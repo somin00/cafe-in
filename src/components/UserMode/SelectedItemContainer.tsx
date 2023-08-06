@@ -116,7 +116,7 @@ function SelectedItemContainer() {
 									</button>
 								</div>
 							</div>
-							<OptionsSelected noOptions={item.options === '없음'}>
+							<OptionsSelected $noOptions={item.options === '없음'}>
 								{item.options !== '없음' && <p key={item.name}>{item.options}</p>}
 							</OptionsSelected>
 						</SelectedItem>
@@ -223,13 +223,13 @@ const SelectedItem = styled.li`
 	}
 `;
 
-const OptionsSelected = styled.div<{ noOptions: boolean }>`
+const OptionsSelected = styled.div<{ $noOptions: boolean }>`
 	display: flex;
 	width: 100%;
 	justify-content: start;
-	margin-top: ${({ noOptions }) => (noOptions ? '0' : '10px')};
-	padding-top: ${({ noOptions }) => (noOptions ? '0' : '6px')};
-	border-top: ${({ noOptions, theme }) => (noOptions ? 'none' : `1px solid ${theme.textColor.lightbrown}`)};
+	margin-top: ${({ $noOptions }) => ($noOptions ? '0' : '10px')};
+	padding-top: ${({ $noOptions }) => ($noOptions ? '0' : '6px')};
+	border-top: ${({ $noOptions, theme }) => ($noOptions ? 'none' : `1px solid ${theme.textColor.lightbrown}`)};
 	font-size: ${({ theme }) => theme.fontSize.sm};
 	font-weight: ${({ theme }) => theme.fontWeight.bold};
 	color: ${({ theme }) => theme.textColor.darkgray};
