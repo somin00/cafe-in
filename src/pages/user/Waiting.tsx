@@ -1,12 +1,14 @@
 import { useState, useEffect, useRef, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useRecoilValue } from 'recoil';
+import { useRecoilState, useRecoilValue } from 'recoil';
 import { styled } from 'styled-components';
 import { isWaitingAvailableState } from '../../state/WaitingState';
 import { collection, getDocs, addDoc } from 'firebase/firestore';
 import { db } from '../../firebase/firebaseConfig';
 import { WaitingDataType } from '../../types/waitingDataType';
 import { filterTodayWaiting } from '../../utils/filter';
+import { modalState, modalTypeState } from '../../state/ModalState';
+import WaitingApplyModal from '../../components/waitingManagement/WaitingApplyModal';
 
 type DecreaseProps = {
 	$decreaseDisable: boolean;
@@ -15,6 +17,13 @@ type DecreaseProps = {
 function Waiting() {
 	const navigate = useNavigate();
 	const isWaitingAvailable = useRecoilValue<boolean>(isWaitingAvailableState);
+
+	//* 대기 신청 확인 모달
+	const [isOpenModal, setIsOpenModal] = useRecoilState<boolean>(modalState);
+
+	const [modalType, setModalType] = useRecoilState<string>(modalTypeState);
+
+	const [isNavigate, setIsNavigate] = useState<boolean>(false);
 
 	//* 기존 대기 데이터
 	const [currentData, setCurrentData] = useState<WaitingDataType[]>([]);
@@ -33,6 +42,14 @@ function Waiting() {
 	//* 유효성 검사 시 필요한  useRef
 	const nameInput = useRef<HTMLInputElement>(null);
 	const telInput = useRef<HTMLInputElement>(null);
+
+	const [msg, setMsg] = useState<string>('');
+	const [inputError, setInputError] = useState<boolean>(false);
+
+	//* 모달 닫기 함수
+	const closeModal = () => {
+		setIsOpenModal(false);
+	};
 
 	//* 인원 수 더하기, 빼기 함수
 	const onIncrease = () => {
@@ -76,56 +93,75 @@ function Waiting() {
 		}
 	}, [waitingPersonNum]);
 
-	// *유효성 검사
-	// - 필수 입력값 입력하지 않았을 때 입력창으로 focus
+	//* 모달이 닫혔고, 대기 신청을 선택했고, DB 저장에 성공했을 때 대기 완료 페이지로 이동
+	useEffect(() => {
+		if (!isOpenModal && isNavigate && modalType === 'try') {
+			navigate('/waitingcheck', {
+				state: {
+					userWaitingNum: currentWaitingNum + 1,
+				},
+			});
+		}
+	}, [isOpenModal, isNavigate, modalType]);
+
+	//* 대기 신청하기
+	// - 유효성 검사
+	// - 데이터 모아서 DB에 저장하기
+
 	const applyWaiting = async () => {
 		const waitingCollection = collection(db, 'waitingList');
 
+		// *유효성 검사
+		// - 필수 입력값 입력하지 않았을 때 입력창으로 focus
 		if (waitingName.length === 0 && nameInput.current != null) {
-			alert('이름을 입력해주세요.');
+			setInputError(true);
+			setMsg('이름을 입력해주세요.');
 			nameInput.current.focus();
 			return;
 		}
 
 		const telRule = /^010[0-9]{3,4}[0-9]{4}$/;
 
-		if (waitingTel.length === 0 && telInput.current !== null) {
-			alert('전화번호 11자리를 입력해주세요.');
-			telInput.current.focus();
-			return;
-		} else if (waitingTel.length === 11 && !telRule.test(waitingTel.toString()) && telInput.current !== null) {
-			alert('전화번호 형식에 맞게 입력해주세요.');
-			telInput.current.focus();
-			return;
-		} else if (waitingTel.length !== 11 && telInput.current !== null) {
-			alert('전화번호 11자리를 모두 입력해주세요.');
-			telInput.current.focus();
-			return;
+		if (telInput.current !== null) {
+			if (waitingTel.length !== 0 && !telRule.test(waitingTel.toString())) {
+				setInputError(true);
+				setMsg('전화번호 형식에 맞게 입력해주세요.');
+				telInput.current.focus();
+				return;
+			} else if (waitingTel.length === 0 || waitingTel.length !== 11) {
+				setInputError(true);
+				setMsg('전화번호 11자리를 입력해주세요.');
+				telInput.current.focus();
+				return;
+			}
 		}
 
-		await addDoc(waitingCollection, {
-			name: waitingName,
-			tel: waitingTel,
-			date: new Date().getTime(),
-			personNum: waitingPersonNum,
-			no: currentWaitingNum + 1,
-			status: 'waiting',
-		});
+		try {
+			await addDoc(waitingCollection, {
+				name: waitingName,
+				tel: waitingTel,
+				date: new Date().getTime(),
+				personNum: waitingPersonNum,
+				no: currentWaitingNum + 1,
+				status: 'waiting',
+			});
 
-		window.alert('대기 신청을 완료하였습니다.');
+			setModalType('try');
+		} catch (error) {
+			setModalType('error');
+			console.error(error);
+		}
 
-		//? 방금 대기 신청한 대기 번호 -> 대기 완료 페이지로 넘기기
-		navigate('/waitingcheck', {
-			state: {
-				userWaitingNum: currentWaitingNum + 1,
-			},
-		});
+		// 대기 신청 클릭시 모달 준비, 페이지 이동 준비
+		setIsOpenModal(true);
+		setIsNavigate(true);
 	};
 
 	return (
 		<WaitingWrapper>
 			{isWaitingAvailable ? (
 				<>
+					{isOpenModal && <WaitingApplyModal closeModal={closeModal} />}
 					<WaitingHeaderText>
 						{filteredWaitingNum} 팀이 <p> 대기중이에요</p>
 					</WaitingHeaderText>
@@ -159,6 +195,7 @@ function Waiting() {
 								}}
 								required
 							/>
+							{inputError ? <h1>{msg}</h1> : <h1>&nbsp;</h1>}
 						</InputBoxWrapper>
 						<ApplicationButtnoWrapper>
 							<ApplicationBtn
@@ -205,6 +242,7 @@ const WaitingWrapper = styled.div`
 	display: flex;
 	align-items: center;
 	flex-flow: column nowrap;
+	position: relative;
 `;
 
 const WaitingHeaderText = styled.h1`
@@ -279,6 +317,13 @@ const PlusBtn = styled.button`
 
 const InputBoxWrapper = styled.div`
 	width: 400px;
+	height: 220px;
+
+	h1 {
+		padding-left: 5px;
+		font-size: ${({ theme }) => theme.fontSize.lg};
+		color: ${({ theme }) => (theme.lightColor ? theme.lightColor.pink.point : theme.darkColor?.point)};
+	}
 `;
 const InputBox = styled.input`
 	width: 400px;

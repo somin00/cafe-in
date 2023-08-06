@@ -1,25 +1,24 @@
 import React from 'react';
 import { styled } from 'styled-components';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
-import { modalState, modalTypeState, modalUpdateState } from '../../state/ModalState';
+import { modalState, modalTypeState, modalUpdateState, notificationUserState } from '../../state/ModalState';
+import { ModalProps } from '../../types/ModalProps';
 
-type modalProps = {
-	closeModal?: () => void;
-};
-
-function WaitingModal({ closeModal }: modalProps) {
+function WaitingModal({ closeModal }: ModalProps) {
 	const [isOpenModal, setIsOpenModal] = useRecoilState<boolean>(modalState);
 
 	const modalType = useRecoilValue<string>(modalTypeState);
 
 	const setModalUpdate = useSetRecoilState<boolean>(modalUpdateState);
 
+	const notificationUser = useRecoilValue<string>(notificationUserState);
+
 	return (
 		<>
 			{isOpenModal && <WaitingModalBackground onClick={closeModal} />}
 			<WaitingModalWrapper>
 				{modalType === 'notification' ? (
-					<h1>알림을 보내시겠습니까?</h1>
+					<h1>{notificationUser} 님에게 알림을 보내시겠습니까?</h1>
 				) : modalType === 'cancel' ? (
 					<h1>대기를 취소하시겠습니까?</h1>
 				) : (
