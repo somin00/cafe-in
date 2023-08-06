@@ -14,6 +14,10 @@ function MenuList() {
 					<MenuItem />
 				</MenuListLayout>
 				<SelectedItemContainer />
+
+			
+				<SeletedItemContainer />
+
 			</Main>
 		</Layout>
 	);
