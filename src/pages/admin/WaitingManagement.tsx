@@ -5,7 +5,7 @@ import { useRecoilState } from 'recoil';
 import { modalState } from '../../state/ModalState';
 import { isWaitingAvailableState } from '../../state/WaitingState';
 
-import WaitingHeader from '../../components/waitingManagement/WaitingHeader';
+import ManagementHeader from '../../components/adminMode/ManagementHeader';
 import WaitingTableBox from '../../components/waitingManagement/WaitingTableBox';
 import WaitingModal from '../../components/waitingManagement/WaitingModal';
 
@@ -44,7 +44,7 @@ const WaitingManagement = () => {
 	return (
 		<WaitingManagementWrapper>
 			{isOpenModal && <WaitingModal closeModal={closeModal} />}
-			<WaitingHeader />
+			<ManagementHeader headerText="대기 관리" />
 			<WaitingTableWrapper>
 				<TableMenu>
 					<ListWrapper>
