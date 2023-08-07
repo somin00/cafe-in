@@ -22,7 +22,7 @@ function OptionMenu({ selected, onClickToggleModal }: OptionMenuProps) {
 			if (optionsSnapshot.docs.length > 0) {
 				const fetchedOptions = optionsSnapshot.docs[0].data() as { [key: string]: Option[] };
 
-				const customOrder = ['음료선택', '추가선택', '농도선택'];
+				const customOrder = ['추가선택', '농도선택'];
 				const orderedOptions: { [key: string]: Option[] } = {};
 				customOrder.forEach((key) => {
 					if (key in fetchedOptions) {
