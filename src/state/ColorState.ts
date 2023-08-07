@@ -3,5 +3,5 @@ import { SelectedColorType } from '../style/theme';
 
 export const selectedColorState = atom<SelectedColorType>({
 	key: 'selectedColor',
-	default: 'pink',
+	default: 'yellow',
 });
