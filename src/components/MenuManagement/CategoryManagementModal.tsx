@@ -4,13 +4,14 @@ import CategoryItem from './CategoryItem';
 import { ModalDefaultType } from '../../types/ModalOpenTypes';
 import { db } from '../../firebase/firebaseConfig';
 import { addDoc, collection } from 'firebase/firestore';
-import { useRecoilValue } from 'recoil';
-import { categoryListState } from '../../state/CategoryList';
+import { useRecoilValue, useSetRecoilState } from 'recoil';
+import { categoryListState, selectedCategoryState } from '../../state/CategoryList';
 function CategoryManagementModal({ onClickToggleModal }: ModalDefaultType) {
 	const [categoryName, setCategoryName] = useState<string>('');
 	const [isDuplicate, setIsDuplicate] = useState<boolean>(false);
 	const categoryListRef = collection(db, 'categoryList');
 	const categoryList = useRecoilValue(categoryListState);
+	const setSelectedCategory = useSetRecoilState(selectedCategoryState);
 
 	const checkDuplicate = useCallback(
 		(categoryName: string) => {
@@ -30,10 +31,11 @@ function CategoryManagementModal({ onClickToggleModal }: ModalDefaultType) {
 
 	const handleAddCategory = useCallback(async () => {
 		if (categoryName.trim()) {
-			addDoc(categoryListRef, { id: Date.now(), category: categoryName });
+			await addDoc(categoryListRef, { id: Date.now(), category: categoryName });
+			setSelectedCategory(categoryName);
 			setCategoryName('');
 		}
-	}, [categoryListRef, categoryName]);
+	}, [categoryListRef, categoryName, setSelectedCategory]);
 
 	return (
 		<CategoryManagementWrapper>
