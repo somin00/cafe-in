@@ -1,12 +1,17 @@
 import React from 'react';
 import { styled } from 'styled-components';
 import ManagementHeader from '../../components/adminMode/ManagementHeader';
+import { useSetRecoilState } from 'recoil';
+import { selectedColorState } from '../../state/ColorState';
+import { SelectedColorType } from '../../style/theme';
 
 interface ThemeManagementProps {
 	setIsDarkmode: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 function ThemeManagement({ setIsDarkmode }: ThemeManagementProps) {
+	const setSelectedColor = useSetRecoilState<SelectedColorType>(selectedColorState);
+
 	return (
 		<ThemeManagementWrapper>
 			<ManagementHeader headerText="테마 및 색상 설정" />
@@ -14,19 +19,39 @@ function ThemeManagement({ setIsDarkmode }: ThemeManagementProps) {
 				<ColorWrapper>
 					<h2>색상 변경</h2>
 					<Colors>
-						<button>
+						<button
+							onClick={() => {
+								setSelectedColor('yellow');
+							}}
+						>
 							<img src={process.env.PUBLIC_URL + '/assets/admin/yellowColor.svg'} alt="노랑색" />
 						</button>
-						<button>
+						<button
+							onClick={() => {
+								setSelectedColor('pink');
+							}}
+						>
 							<img src={process.env.PUBLIC_URL + '/assets/admin/pinkColor.svg'} alt="분홍색" />
 						</button>
-						<button>
+						<button
+							onClick={() => {
+								setSelectedColor('blue');
+							}}
+						>
 							<img src={process.env.PUBLIC_URL + '/assets/admin/blueColor.svg'} alt="파랑색" />
 						</button>
-						<button>
+						<button
+							onClick={() => {
+								setSelectedColor('green');
+							}}
+						>
 							<img src={process.env.PUBLIC_URL + '/assets/admin/greenColor.svg'} alt="초록색" />
 						</button>
-						<button>
+						<button
+							onClick={() => {
+								setSelectedColor('navy');
+							}}
+						>
 							<img src={process.env.PUBLIC_URL + '/assets/admin/navyColor.svg'} alt="남색" />
 						</button>
 					</Colors>

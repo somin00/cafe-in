@@ -1,5 +1,7 @@
 import { DefaultTheme } from 'styled-components';
 
+export type SelectedColorType = 'pink' | 'yellow' | 'blue' | 'green' | 'navy';
+
 export const defaultTheme: DefaultTheme = {
 	lightColor: {
 		pink: {

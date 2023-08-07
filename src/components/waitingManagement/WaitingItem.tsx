@@ -11,13 +11,21 @@ import {
 import { WaitingDataType } from '../../types/waitingDataType';
 import { db } from '../../firebase/firebaseConfig';
 import { updateDoc, doc } from 'firebase/firestore';
+import { SelectedColorType } from '../../style/theme';
+import { selectedColorState } from '../../state/ColorState';
 
 type WaitingItemProps = {
 	waitingInfo: WaitingDataType[];
 	waitingDataStatus: string;
 };
 
+type ColorProps = {
+	$selectedColor: SelectedColorType;
+};
+
 const WaitingItem = (props: WaitingItemProps) => {
+	const selectedColor = useRecoilValue<SelectedColorType>(selectedColorState);
+
 	const { waitingInfo, waitingDataStatus } = props;
 	const setIsOpenModal = useSetRecoilState<boolean>(modalState);
 	const [modalType, setModalType] = useRecoilState<string>(modalTypeState);
@@ -58,10 +66,11 @@ const WaitingItem = (props: WaitingItemProps) => {
 					<td width={'110px'}>{value.name}</td>
 					<td width={'120px'}>{value.personNum}명</td>
 					<td width={'250px'}>{formatTel(value.tel)}</td>
-					<WatingBtnWrapper width={'300px'}>
+					<WatingBtnWrapper $selectedColor={selectedColor} width={'300px'}>
 						{waitingDataStatus === 'waiting' ? (
 							<>
 								<ShortBtn
+									$selectedColor={selectedColor}
 									onClick={() => {
 										setIsOpenModal(true);
 										setModalType('notification');
@@ -72,6 +81,7 @@ const WaitingItem = (props: WaitingItemProps) => {
 									알림
 								</ShortBtn>
 								<ShortBtn
+									$selectedColor={selectedColor}
 									onClick={() => {
 										setIsOpenModal(true);
 										setModalType('cancel');
@@ -123,7 +133,7 @@ const WaitingItemWrapper = styled.tr`
 	}
 `;
 
-const WatingBtnWrapper = styled.td`
+const WatingBtnWrapper = styled.td<ColorProps>`
 	width: 300px;
 	height: 48px;
 	color: ${({ theme }) => (theme.lightColor ? theme.textColor.black : theme.textColor.white)};
@@ -133,11 +143,12 @@ const WatingBtnWrapper = styled.td`
 	align-items: center;
 
 	span {
-		color: ${({ theme }) => (theme.lightColor ? theme.lightColor.yellow.point : theme.darkColor?.point)};
+		color: ${({ theme, $selectedColor }) =>
+			theme.lightColor ? theme.lightColor[$selectedColor]?.point : theme.darkColor?.point};
 	}
 `;
 
-const ShortBtn = styled.button`
+const ShortBtn = styled.button<ColorProps>`
 	width: 65px;
 	height: 48px;
 	margin-right: 14px;

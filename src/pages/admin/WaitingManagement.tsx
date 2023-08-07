@@ -1,23 +1,28 @@
 import React, { useEffect, useState } from 'react';
 import { styled, useTheme } from 'styled-components';
 import { Routes, Route, NavLink } from 'react-router-dom';
-import { useRecoilState } from 'recoil';
+import { useRecoilState, useRecoilValue } from 'recoil';
 import { modalState } from '../../state/ModalState';
 import { isWaitingAvailableState } from '../../state/WaitingState';
 
 import ManagementHeader from '../../components/adminMode/ManagementHeader';
 import WaitingTableBox from '../../components/waitingManagement/WaitingTableBox';
 import WaitingModal from '../../components/waitingManagement/WaitingModal';
+import { SelectedColorType } from '../../style/theme';
+import { selectedColorState } from '../../state/ColorState';
 
 type DataStatusProps = {
 	$isWaiting: boolean;
 };
 
-type IsAvailableProps = {
+type styleProps = {
 	$isWaitingAvailable: boolean;
+	$selectedColor: SelectedColorType;
 };
 
 const WaitingManagement = () => {
+	const selectedColor = useRecoilValue<SelectedColorType>(selectedColorState);
+
 	const [isOpenModal, setIsOpenModal] = useRecoilState<boolean>(modalState);
 
 	const closeModal = () => {
@@ -92,10 +97,18 @@ const WaitingManagement = () => {
 						</WaitedList>
 					</ListWrapper>
 					<WaitingBtnWrapper>
-						<WaitingAbleBtn $isWaitingAvailable={isWaitingAvailable} onClick={() => setIsWaitingAvailable(true)}>
+						<WaitingAbleBtn
+							$isWaitingAvailable={isWaitingAvailable}
+							$selectedColor={selectedColor}
+							onClick={() => setIsWaitingAvailable(true)}
+						>
 							대기 가능
 						</WaitingAbleBtn>
-						<WaitingDisableBtn $isWaitingAvailable={isWaitingAvailable} onClick={() => setIsWaitingAvailable(false)}>
+						<WaitingDisableBtn
+							$isWaitingAvailable={isWaitingAvailable}
+							$selectedColor={selectedColor}
+							onClick={() => setIsWaitingAvailable(false)}
+						>
 							대기 마감
 						</WaitingDisableBtn>
 					</WaitingBtnWrapper>
@@ -176,11 +189,15 @@ const WaitingBtnWrapper = styled.div`
 	font-weight: ${({ theme }) => theme.fontWeight.bold};
 `;
 
-const WaitingAbleBtn = styled.button<IsAvailableProps>`
+const WaitingAbleBtn = styled.button<styleProps>`
 	width: 137px;
 	height: 54px;
-	background-color: ${({ theme, $isWaitingAvailable }) =>
-		$isWaitingAvailable ? (theme.lightColor ? theme.lightColor?.yellow.point : theme.textColor.darkgray) : 'none'};
+	background-color: ${({ theme, $isWaitingAvailable, $selectedColor }) =>
+		$isWaitingAvailable
+			? theme.lightColor
+				? theme.lightColor[$selectedColor]?.point
+				: theme.textColor.darkgray
+			: 'none'};
 	color: ${({ theme, $isWaitingAvailable }) =>
 		$isWaitingAvailable
 			? theme.textColor.white
@@ -197,7 +214,7 @@ const WaitingAbleBtn = styled.button<IsAvailableProps>`
 	margin-right: 8px;
 `;
 
-const WaitingDisableBtn = styled.button<IsAvailableProps>`
+const WaitingDisableBtn = styled.button<styleProps>`
 	width: 137px;
 	height: 54px;
 	border-radius: 10px;
