@@ -28,7 +28,7 @@ declare module 'styled-components' {
 				sub: string;
 				point: string;
 			};
-			navy: {
+			purple: {
 				background: string;
 				main: string;
 				sub: string;

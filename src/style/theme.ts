@@ -1,6 +1,6 @@
 import { DefaultTheme } from 'styled-components';
 
-export type SelectedColorType = 'pink' | 'yellow' | 'blue' | 'green' | 'navy';
+export type SelectedColorType = 'pink' | 'yellow' | 'blue' | 'green' | 'purple';
 
 export const defaultTheme: DefaultTheme = {
 	lightColor: {
@@ -18,9 +18,9 @@ export const defaultTheme: DefaultTheme = {
 		},
 		blue: {
 			background: '#D1EFFE',
-			main: '#4B9AD3',
-			sub: ' #0070c0',
+			main: ' #0070c0',
 			point: '#00b0f0',
+			sub: '#4B9AD3',
 		},
 		green: {
 			background: '#F7FFE5',
@@ -28,11 +28,11 @@ export const defaultTheme: DefaultTheme = {
 			sub: '#C4D7B2',
 			point: '#A0C49D',
 		},
-		navy: {
-			background: '#F9F5EB',
-			main: '#E4DCCF',
-			sub: '#002B5B',
-			point: '#EA5455',
+		purple: {
+			background: '#EDE4FF',
+			main: '#A076F9',
+			sub: '#D7BBF5',
+			point: '#7A49ED',
 		},
 	},
 	textColor: {
