@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom';
 import { RecoilRoot } from 'recoil';
 
@@ -18,9 +18,11 @@ import { defaultTheme, darkTheme } from './style/theme';
 import { GlobalStyles } from './style/global';
 
 function App() {
+	const [isDarkmode, setIsDarkmode] = useState<boolean>(false);
+
 	return (
 		<RecoilRoot>
-			<ThemeProvider theme={defaultTheme}>
+			<ThemeProvider theme={isDarkmode ? darkTheme : defaultTheme}>
 				<GlobalStyles />
 				<BrowserRouter>
 					<Routes>
@@ -36,7 +38,7 @@ function App() {
 						<Route path="/admin" element={<Navigate replace to="/admin/main" />} />
 						<Route path="/admin/menu" element={<MenuManagement />} />
 						<Route path="/admin/waiting/*" element={<WaitingManagement />} />
-						<Route path="/admin/theme" element={<ThemeManagement />} />
+						<Route path="/admin/theme" element={<ThemeManagement setIsDarkmode={setIsDarkmode} />} />
 					</Routes>
 				</BrowserRouter>
 			</ThemeProvider>

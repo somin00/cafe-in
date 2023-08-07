@@ -2,7 +2,11 @@ import React from 'react';
 import { styled } from 'styled-components';
 import ManagementHeader from '../../components/adminMode/ManagementHeader';
 
-function ThemeManagement() {
+interface ThemeManagementProps {
+	setIsDarkmode: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+function ThemeManagement({ setIsDarkmode }: ThemeManagementProps) {
 	return (
 		<ThemeManagementWrapper>
 			<ManagementHeader headerText="테마 및 색상 설정" />
@@ -33,10 +37,18 @@ function ThemeManagement() {
 						<h2>다크 모드</h2>
 					</ModeHeader>
 					<ModeBox>
-						<LightMode>
+						<LightMode
+							onClick={() => {
+								setIsDarkmode(false);
+							}}
+						>
 							<img alt="라이트 모드" />
 						</LightMode>
-						<DarkMode>
+						<DarkMode
+							onClick={() => {
+								setIsDarkmode(true);
+							}}
+						>
 							<img alt="다크 모드" />
 						</DarkMode>
 					</ModeBox>
@@ -114,12 +126,12 @@ const ModeBox = styled.div`
 const LightMode = styled.button`
 	img {
 		content: ${({ theme }) =>
-			theme.lightColor ? 'url(/assets/admin/sun-selected_light.svg)' : 'url(/assets/admin/sun-selected_dark.svg)'};
+			theme.lightColor ? 'url(/assets/admin/sun-selected_light.svg)' : 'url(/assets/admin/sun_dark.svg)'};
 	}
 `;
 const DarkMode = styled.button`
 	img {
 		content: ${({ theme }) =>
-			theme.lightColor ? 'url(/assets/admin/moon_light.svg)' : 'url(/assets/admin/moon_dark.svg)'};
+			theme.lightColor ? 'url(/assets/admin/moon_light.svg)' : 'url(/assets/admin/moon-selected_dark.svg)'};
 	}
 `;
