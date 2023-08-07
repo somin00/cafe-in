@@ -3,14 +3,21 @@ import { styled } from 'styled-components';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import { modalState, modalTypeState, modalUpdateState, notificationUserState } from '../../state/ModalState';
 import { ModalProps } from '../../types/ModalProps';
+import { SelectedColorType } from '../../style/theme';
+import { selectedColorState } from '../../state/ColorState';
+import { useSelectedColor } from '../../hooks/useSelectedColor';
+
+type ColorProps = {
+	$selectedColor: SelectedColorType;
+};
 
 function WaitingModal({ closeModal }: ModalProps) {
+	const selectedColor = useRecoilValue<SelectedColorType>(selectedColorState);
+	useSelectedColor();
+
 	const [isOpenModal, setIsOpenModal] = useRecoilState<boolean>(modalState);
-
 	const modalType = useRecoilValue<string>(modalTypeState);
-
 	const setModalUpdate = useSetRecoilState<boolean>(modalUpdateState);
-
 	const notificationUser = useRecoilValue<string>(notificationUserState);
 
 	return (
@@ -26,6 +33,7 @@ function WaitingModal({ closeModal }: ModalProps) {
 				)}
 				<ModalBtnWrapper>
 					<ModalBtn
+						$selectedColor={selectedColor}
 						onClick={() => {
 							setIsOpenModal(false);
 							setModalUpdate(true);
@@ -34,6 +42,7 @@ function WaitingModal({ closeModal }: ModalProps) {
 						예
 					</ModalBtn>
 					<ModalBtn
+						$selectedColor={selectedColor}
 						onClick={() => {
 							setIsOpenModal(false);
 							setModalUpdate(false);
@@ -85,10 +94,11 @@ const ModalBtnWrapper = styled.div`
 	justify-content: space-between;
 `;
 
-const ModalBtn = styled.button`
+const ModalBtn = styled.button<ColorProps>`
 	width: 110px;
 	height: 65px;
-	background-color: ${({ theme }) => (theme.lightColor ? theme.lightColor?.yellow.sub : theme.darkColor?.main)};
+	background-color: ${({ theme, $selectedColor }) =>
+		theme.lightColor ? theme.lightColor[$selectedColor].sub : theme.darkColor?.main};
 	border-radius: 10px;
 	color: ${({ theme }) => theme.textColor.white};
 	font-size: ${({ theme }) => theme.fontSize['3xl']};

@@ -12,6 +12,11 @@ interface ThemeManagementProps {
 function ThemeManagement({ setIsDarkmode }: ThemeManagementProps) {
 	const setSelectedColor = useSetRecoilState<SelectedColorType>(selectedColorState);
 
+	const handleColorSelected = (color: SelectedColorType) => {
+		setSelectedColor(color);
+		localStorage.setItem('selectedColor', color);
+	};
+
 	return (
 		<ThemeManagementWrapper>
 			<ManagementHeader headerText="테마 및 색상 설정" />
@@ -21,38 +26,38 @@ function ThemeManagement({ setIsDarkmode }: ThemeManagementProps) {
 					<Colors>
 						<button
 							onClick={() => {
-								setSelectedColor('yellow');
+								handleColorSelected('yellow');
 							}}
 						>
 							<img src={process.env.PUBLIC_URL + '/assets/admin/yellowColor.svg'} alt="노랑색" />
 						</button>
 						<button
 							onClick={() => {
-								setSelectedColor('pink');
+								handleColorSelected('pink');
 							}}
 						>
 							<img src={process.env.PUBLIC_URL + '/assets/admin/pinkColor.svg'} alt="분홍색" />
 						</button>
 						<button
 							onClick={() => {
-								setSelectedColor('blue');
+								handleColorSelected('blue');
 							}}
 						>
 							<img src={process.env.PUBLIC_URL + '/assets/admin/blueColor.svg'} alt="파랑색" />
 						</button>
 						<button
 							onClick={() => {
-								setSelectedColor('green');
+								handleColorSelected('green');
 							}}
 						>
 							<img src={process.env.PUBLIC_URL + '/assets/admin/greenColor.svg'} alt="초록색" />
 						</button>
 						<button
 							onClick={() => {
-								setSelectedColor('navy');
+								handleColorSelected('purple');
 							}}
 						>
-							<img src={process.env.PUBLIC_URL + '/assets/admin/navyColor.svg'} alt="남색" />
+							<img src={process.env.PUBLIC_URL + '/assets/admin/purpleColor.svg'} alt="남색" />
 						</button>
 					</Colors>
 				</ColorWrapper>

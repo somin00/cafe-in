@@ -9,20 +9,28 @@ import { WaitingDataType } from '../../types/waitingDataType';
 import { filterTodayWaiting } from '../../utils/filter';
 import { modalState, modalTypeState } from '../../state/ModalState';
 import WaitingApplyModal from '../../components/waitingManagement/WaitingApplyModal';
+import { SelectedColorType } from '../../style/theme';
+import { selectedColorState } from '../../state/ColorState';
+import { useSelectedColor } from '../../hooks/useSelectedColor';
 
 type DecreaseProps = {
 	$decreaseDisable: boolean;
 };
 
+type ColorProps = {
+	$selectedColor: SelectedColorType;
+};
+
 function Waiting() {
+	const selectedColor = useRecoilValue<SelectedColorType>(selectedColorState);
+	useSelectedColor();
+
 	const navigate = useNavigate();
 	const isWaitingAvailable = useRecoilValue<boolean>(isWaitingAvailableState);
 
 	//* 대기 신청 확인 모달
 	const [isOpenModal, setIsOpenModal] = useRecoilState<boolean>(modalState);
-
 	const [modalType, setModalType] = useRecoilState<string>(modalTypeState);
-
 	const [isNavigate, setIsNavigate] = useState<boolean>(false);
 
 	//* 기존 대기 데이터
@@ -42,7 +50,6 @@ function Waiting() {
 	//* 유효성 검사 시 필요한  useRef
 	const nameInput = useRef<HTMLInputElement>(null);
 	const telInput = useRef<HTMLInputElement>(null);
-
 	const [msg, setMsg] = useState<string>('');
 	const [inputError, setInputError] = useState<boolean>(false);
 
@@ -55,7 +62,6 @@ function Waiting() {
 	const onIncrease = () => {
 		setWaitingPersonNum((prevNum) => prevNum + 1);
 	};
-
 	const onDecrease = () => {
 		if (!decreaseDisable) {
 			setWaitingPersonNum((prevNum) => prevNum - 1);
@@ -158,7 +164,7 @@ function Waiting() {
 	};
 
 	return (
-		<WaitingWrapper>
+		<WaitingWrapper $selectedColor={selectedColor}>
 			{isWaitingAvailable ? (
 				<>
 					{isOpenModal && <WaitingApplyModal closeModal={closeModal} />}
@@ -199,13 +205,15 @@ function Waiting() {
 						</InputBoxWrapper>
 						<ApplicationButtnoWrapper>
 							<ApplicationBtn
+								$selectedColor={selectedColor}
 								onClick={() => {
-									navigate(-1);
+									navigate('/home');
 								}}
 							>
 								취소
 							</ApplicationBtn>
 							<ApplicationBtn
+								$selectedColor={selectedColor}
 								onClick={() => {
 									applyWaiting();
 								}}
@@ -219,6 +227,7 @@ function Waiting() {
 				<WaitingDisableMessage>
 					대기가 마감되었습니다.
 					<BackHomeBtn
+						$selectedColor={selectedColor}
 						onClick={() => {
 							navigate('/home');
 						}}
@@ -233,11 +242,11 @@ function Waiting() {
 
 export default Waiting;
 
-const WaitingWrapper = styled.div`
+const WaitingWrapper = styled.div<ColorProps>`
 	width: 1194px;
 	height: 834px;
-	background-color: ${({ theme }) =>
-		theme.lightColor ? theme.lightColor?.yellow.background : theme.darkColor?.background};
+	background-color: ${({ theme, $selectedColor }) =>
+		theme.lightColor ? theme.lightColor[$selectedColor].background : theme.darkColor?.background};
 	user-select: none;
 	display: flex;
 	align-items: center;
@@ -349,13 +358,14 @@ const ApplicationButtnoWrapper = styled.div`
 	margin-bottom: 20px;
 `;
 
-const ApplicationBtn = styled.button`
+const ApplicationBtn = styled.button<ColorProps>`
 	width: 168px;
 	height: 64px;
 	border-radius: 10px;
 	color: ${({ theme }) => theme.textColor.white};
 
-	background-color: ${({ theme }) => (theme.lightColor ? theme.textColor.darkbrown : theme.textColor.darkgray)};
+	background-color: ${({ theme, $selectedColor }) =>
+		theme.lightColor ? theme.lightColor[$selectedColor].point : theme.textColor.darkgray};
 	font-size: ${({ theme }) => theme.fontSize['2xl']};
 	font-weight: ${({ theme }) => theme.fontWeight.semibold};
 `;
@@ -372,11 +382,12 @@ const WaitingDisableMessage = styled.div`
 	color: ${({ theme }) => (theme.lightColor ? theme.textColor.black : theme.textColor.white)};
 `;
 
-const BackHomeBtn = styled.button`
+const BackHomeBtn = styled.button<ColorProps>`
 	width: 225px;
 	height: 75px;
 	border-radius: 10px;
-	background-color: ${({ theme }) => (theme.lightColor ? theme.lightColor?.yellow.main : theme.darkColor?.main)};
+	background-color: ${({ theme, $selectedColor }) =>
+		theme.lightColor ? theme.lightColor[$selectedColor].main : theme.darkColor?.main};
 	color: ${({ theme }) => (theme.lightColor ? theme.textColor.black : theme.textColor.white)};
 	font-size: ${({ theme }) => theme.fontSize['2xl']};
 	font-weight: ${({ theme }) => theme.fontWeight.semibold};

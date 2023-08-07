@@ -2,10 +2,20 @@ import { styled } from 'styled-components';
 import { modalState, modalTypeState } from '../../state/ModalState';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { ModalProps } from '../../types/ModalProps';
+import { SelectedColorType } from '../../style/theme';
+import { useSelectedColor } from '../../hooks/useSelectedColor';
+import { selectedColorState } from '../../state/ColorState';
+
+type ColorProps = {
+	$selectedColor: SelectedColorType;
+};
 
 function WaitingApplyModal({ closeModal }: ModalProps) {
 	const [isOpenModal, setIsOpenModal] = useRecoilState<boolean>(modalState);
 	const modalType = useRecoilValue<string>(modalTypeState);
+
+	const selectedColor = useRecoilValue<SelectedColorType>(selectedColorState);
+	useSelectedColor();
 
 	return (
 		<>
@@ -13,6 +23,7 @@ function WaitingApplyModal({ closeModal }: ModalProps) {
 			<WaitingApplyWrapper>
 				{modalType === 'error' ? <h1>대기 신청을 실패하였습니다.</h1> : <h1>대기 신청이 완료되었습니다.</h1>}
 				<ApplyModalBtn
+					$selectedColor={selectedColor}
 					onClick={() => {
 						setIsOpenModal(false);
 					}}
@@ -56,10 +67,11 @@ const WaitingApplyWrapper = styled.div`
 	}
 `;
 
-const ApplyModalBtn = styled.button`
+const ApplyModalBtn = styled.button<ColorProps>`
 	width: 90px;
 	height: 55px;
-	background-color: ${({ theme }) => (theme.lightColor ? theme.lightColor?.yellow.sub : theme.darkColor?.main)};
+	background-color: ${({ theme, $selectedColor }) =>
+		theme.lightColor ? theme.lightColor[$selectedColor].sub : theme.darkColor?.main};
 	border-radius: 10px;
 	color: ${({ theme }) => theme.textColor.white};
 	font-size: ${({ theme }) => theme.fontSize['2xl']};

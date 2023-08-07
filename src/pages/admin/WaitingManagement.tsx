@@ -10,6 +10,7 @@ import WaitingTableBox from '../../components/waitingManagement/WaitingTableBox'
 import WaitingModal from '../../components/waitingManagement/WaitingModal';
 import { SelectedColorType } from '../../style/theme';
 import { selectedColorState } from '../../state/ColorState';
+import { useSelectedColor } from '../../hooks/useSelectedColor';
 
 type DataStatusProps = {
 	$isWaiting: boolean;
@@ -22,6 +23,7 @@ type styleProps = {
 
 const WaitingManagement = () => {
 	const selectedColor = useRecoilValue<SelectedColorType>(selectedColorState);
+	useSelectedColor();
 
 	const [isOpenModal, setIsOpenModal] = useRecoilState<boolean>(modalState);
 
@@ -198,17 +200,17 @@ const WaitingAbleBtn = styled.button<styleProps>`
 				? theme.lightColor[$selectedColor]?.point
 				: theme.textColor.darkgray
 			: 'none'};
-	color: ${({ theme, $isWaitingAvailable }) =>
+	color: ${({ theme, $isWaitingAvailable, $selectedColor }) =>
 		$isWaitingAvailable
 			? theme.textColor.white
 			: theme.lightColor
-			? theme.lightColor?.yellow.point
+			? theme.lightColor[$selectedColor]?.point
 			: theme.textColor.darkgray};
-	border: ${({ theme, $isWaitingAvailable }) =>
+	border: ${({ theme, $isWaitingAvailable, $selectedColor }) =>
 		$isWaitingAvailable
 			? 'none'
 			: theme.lightColor
-			? `2px solid ${theme.lightColor?.yellow.point}`
+			? `2px solid ${theme.lightColor[$selectedColor]?.point}`
 			: `2px solid ${theme.textColor.darkgray}`};
 	border-radius: 10px;
 	margin-right: 8px;
@@ -218,14 +220,20 @@ const WaitingDisableBtn = styled.button<styleProps>`
 	width: 137px;
 	height: 54px;
 	border-radius: 10px;
-	background-color: ${({ theme, $isWaitingAvailable }) =>
-		$isWaitingAvailable ? 'none' : theme.lightColor ? theme.lightColor?.yellow.point : theme.textColor.darkgray};
-	border: ${({ theme }) =>
-		theme.lightColor ? `2px solid ${theme.lightColor?.yellow.point}` : `2px solid ${theme.textColor.darkgray}`};
-	color: ${({ theme, $isWaitingAvailable }) =>
+	background-color: ${({ theme, $isWaitingAvailable, $selectedColor }) =>
+		$isWaitingAvailable
+			? 'none'
+			: theme.lightColor
+			? theme.lightColor[$selectedColor]?.point
+			: theme.textColor.darkgray};
+	border: ${({ theme, $selectedColor }) =>
+		theme.lightColor
+			? `2px solid ${theme.lightColor[$selectedColor]?.point}`
+			: `2px solid ${theme.textColor.darkgray}`};
+	color: ${({ theme, $isWaitingAvailable, $selectedColor }) =>
 		$isWaitingAvailable
 			? theme.lightColor
-				? theme.lightColor?.yellow.point
+				? theme.lightColor[$selectedColor].point
 				: theme.textColor.darkgray
 			: theme.textColor.white};
 `;

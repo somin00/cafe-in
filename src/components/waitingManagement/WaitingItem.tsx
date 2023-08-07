@@ -13,6 +13,7 @@ import { db } from '../../firebase/firebaseConfig';
 import { updateDoc, doc } from 'firebase/firestore';
 import { SelectedColorType } from '../../style/theme';
 import { selectedColorState } from '../../state/ColorState';
+import { useSelectedColor } from '../../hooks/useSelectedColor';
 
 type WaitingItemProps = {
 	waitingInfo: WaitingDataType[];
@@ -25,13 +26,14 @@ type ColorProps = {
 
 const WaitingItem = (props: WaitingItemProps) => {
 	const selectedColor = useRecoilValue<SelectedColorType>(selectedColorState);
+	useSelectedColor();
 
 	const { waitingInfo, waitingDataStatus } = props;
 	const setIsOpenModal = useSetRecoilState<boolean>(modalState);
 	const [modalType, setModalType] = useRecoilState<string>(modalTypeState);
 	const [itemId, setItemId] = useRecoilState<string | undefined>(modalItemId);
 	const modalUpdate = useRecoilValue<boolean>(modalUpdateState);
-	const [notificationUser, setNotificationUser] = useRecoilState<string>(notificationUserState);
+	const setNotificationUser = useSetRecoilState<string>(notificationUserState);
 
 	// 모달창에서 예를 클릭했을 때 업데이트 (취소, 착석완료만)
 	const updateStatus = async (id: string, type: string) => {
@@ -91,6 +93,7 @@ const WaitingItem = (props: WaitingItemProps) => {
 									취소
 								</ShortBtn>
 								<LongBtn
+									$selectedColor={selectedColor}
 									onClick={() => {
 										setIsOpenModal(true);
 										setModalType('seated');
@@ -136,7 +139,12 @@ const WaitingItemWrapper = styled.tr`
 const WatingBtnWrapper = styled.td<ColorProps>`
 	width: 300px;
 	height: 48px;
-	color: ${({ theme }) => (theme.lightColor ? theme.textColor.black : theme.textColor.white)};
+	color: ${({ theme, $selectedColor }) =>
+		theme.lightColor
+			? $selectedColor === 'pink'
+				? theme.textColor.white
+				: theme.textColor.black
+			: theme.textColor.white};
 	font-weight: ${({ theme }) => theme.fontWeight.semibold};
 	display: flex;
 	justify-content: center;
@@ -153,12 +161,14 @@ const ShortBtn = styled.button<ColorProps>`
 	height: 48px;
 	margin-right: 14px;
 	border-radius: 10px;
-	background-color: ${({ theme }) => (theme.lightColor ? theme.lightColor?.yellow.sub : theme.darkColor?.main)};
+	background-color: ${({ theme, $selectedColor }) =>
+		theme.lightColor ? theme.lightColor[$selectedColor].sub : theme.darkColor?.main};
 `;
 
-const LongBtn = styled.button`
+const LongBtn = styled.button<ColorProps>`
 	width: 113px;
 	height: 48px;
 	border-radius: 10px;
-	background-color: ${({ theme }) => (theme.lightColor ? theme.lightColor?.yellow.sub : theme.darkColor?.main)};
+	background-color: ${({ theme, $selectedColor }) =>
+		theme.lightColor ? theme.lightColor[$selectedColor].sub : theme.darkColor?.main};
 `;
