@@ -30,7 +30,7 @@ function AdminLogin() {
 
 	return (
 		<AdminLoginWrapper>
-			<img src="/assets/logo.png" alt="카페인 로고" width="100" height="100" />
+			<img alt="카페인 로고" width="100" height="100" />
 			<div>
 				<h1>관리자 로그인</h1>
 				<FormWrapper>
@@ -67,16 +67,19 @@ const AdminLoginWrapper = styled.div`
 	justify-content: center;
 	width: 1194px;
 	height: 100vh;
-	background-color: ${({ theme }) => theme.textColor.white};
+	background-color: ${({ theme }) => (theme.lightColor ? theme.textColor.white : theme.darkColor?.background)};
 
 	img {
 		position: absolute;
 		top: 10px;
 		left: 10px;
+		content: ${({ theme }) => (theme.lightColor ? 'url(/assets/logo.png)' : 'url(/assets/logo_dark.png)')};
 	}
 	h1 {
 		font-size: ${({ theme }) => theme.fontSize['4xl']};
 		font-weight: ${({ theme }) => theme.fontWeight.semibold};
+		color: ${({ theme }) => (theme.lightColor ? theme.textColor.black : theme.textColor.white)};
+
 		margin-bottom: 20px;
 	}
 `;
@@ -125,7 +128,7 @@ const FormWrapper = styled.div`
 	button {
 		width: 175px;
 		height: 54px;
-		background-color: ${({ theme }) => theme.lightColor?.yellow.main};
+		background-color: ${({ theme }) => (theme.lightColor ? theme.lightColor?.yellow.main : theme.darkColor?.main)};
 		border-radius: 20px;
 		color: ${({ theme }) => theme.textColor.white};
 		font-size: ${({ theme }) => theme.fontSize['2xl']};
