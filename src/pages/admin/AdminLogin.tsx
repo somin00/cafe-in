@@ -1,18 +1,57 @@
-import React from 'react';
+import { collection, getDocs, query, where } from 'firebase/firestore';
+import React, { useRef, useState } from 'react';
 import styled from 'styled-components';
+import { db } from '../../firebase/firebaseConfig';
+import { useNavigate } from 'react-router-dom';
 
 function AdminLogin() {
+	const navigate = useNavigate();
+
+	const passwordRef = useRef<HTMLInputElement>(null);
+	const [errorMesage, setErrorMessage] = useState('');
+
+	const handleLogin = async () => {
+		setErrorMessage('');
+		const useInputPwd = passwordRef.current?.value;
+
+		if (!useInputPwd) return;
+
+		const adminPwdRef = collection(db, 'adminPassword');
+		const adminPwd = await getDocs(query(adminPwdRef, where('password', '==', useInputPwd)));
+		if (adminPwd.docs.length === 0) {
+			setErrorMessage('비밀번호가 일치하지 않습니다.');
+			passwordRef.current.value = '';
+			return;
+		}
+		passwordRef.current.value = '';
+		localStorage.setItem('mode', 'admin');
+		navigate('/admin/main');
+	};
+
 	return (
 		<AdminLoginWrapper>
 			<img src="/assets/logo.png" alt="카페인 로고" width="100" height="100" />
 			<div>
 				<h1>관리자 로그인</h1>
 				<FormWrapper>
-					<form>
+					<form
+						onSubmit={(e) => {
+							e.preventDefault();
+						}}
+					>
 						<label htmlFor="password">비밀번호</label>
-						<input type="password" id="password" placeholder="비밀번호를 입력해주세요." />
+						<input
+							type="password"
+							id="password"
+							ref={passwordRef}
+							placeholder="비밀번호를 입력해주세요."
+							autoComplete="autoComplete"
+						/>
 					</form>
-					<button type="button">로그인하기</button>
+					{errorMesage && <p>{errorMesage}</p>}
+					<button type="button" onClick={handleLogin}>
+						로그인하기
+					</button>
 				</FormWrapper>
 			</div>
 		</AdminLoginWrapper>
@@ -74,6 +113,13 @@ const FormWrapper = styled.div`
 			font-size: ${({ theme }) => theme.fontSize['2xl']};
 			font-weight: ${({ theme }) => theme.fontWeight.bold};
 		}
+	}
+
+	p {
+		font-size: ${({ theme }) => theme.fontSize['lg']};
+		font-weight: ${({ theme }) => theme.fontWeight.regular};
+		color: red;
+		margin-bottom: 26px;
 	}
 
 	button {
