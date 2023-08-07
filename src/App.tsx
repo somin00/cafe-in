@@ -1,7 +1,6 @@
 import React from 'react';
 import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom';
 import { RecoilRoot } from 'recoil';
-
 import Home from './pages/Home';
 import MenuList from './pages/user/MenuList';
 import AdminLogin from './pages/admin/AdminLogin';
@@ -15,6 +14,7 @@ import NotFound from './pages/NotFound';
 import { ThemeProvider } from 'styled-components';
 import { defaultTheme, darkTheme } from './style/theme';
 import { GlobalStyles } from './style/global';
+import OrderHistory from './pages/admin/OrderHistory';
 
 function App() {
 	return (
@@ -35,6 +35,7 @@ function App() {
 						<Route path="/admin" element={<Navigate replace to="/admin/main" />} />
 						<Route path="/admin/menu" element={<MenuManagement />} />
 						<Route path="/admin/waiting/*" element={<WaitingManagement />} />
+						<Route path="/admin/orderhistory" element={<OrderHistory />} />
 					</Routes>
 				</BrowserRouter>
 			</ThemeProvider>
