@@ -20,6 +20,18 @@ export const defaultTheme: DefaultTheme = {
 			sub: ' #0070c0',
 			point: '#00b0f0',
 		},
+		green: {
+			background: '#F7FFE5',
+			main: '#E1ECC8',
+			sub: '#C4D7B2',
+			point: '#A0C49D',
+		},
+		navy: {
+			background: '#F9F5EB',
+			main: '#E4DCCF',
+			sub: '#002B5B',
+			point: '#EA5455',
+		},
 	},
 	textColor: {
 		black: '#000000',
