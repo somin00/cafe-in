@@ -1,7 +1,6 @@
 import React from 'react';
 import { styled } from 'styled-components';
 import ManagementHeader from '../../components/adminMode/ManagementHeader';
-import { url } from 'inspector';
 
 function ThemeManagement() {
 	return (
