@@ -10,6 +10,7 @@ function AdminMenu() {
 			<div className="button">
 				<Button onClick={() => navigate('/admin/menu')}>메뉴 관리 클릭 💕 </Button>
 				<Button onClick={() => navigate('/admin/waiting')}>대기 관리 클릭 💫</Button>
+				<Button onClick={() => navigate('/admin/theme')}>테마 관리 클릭 🎠</Button>
 			</div>
 		</div>
 	);

@@ -7,6 +7,7 @@ import MenuList from './pages/user/MenuList';
 import AdminLogin from './pages/admin/AdminLogin';
 import AdminMenu from './pages/admin/AdminMenu';
 import WaitingManagement from './pages/admin/WaitingManagement';
+import ThemeManagement from './pages/admin/ThemeManagement';
 import Waiting from './pages/user/Waiting';
 import WaitingCheck from './pages/user/WaitingCheck';
 import MenuManagement from './pages/admin/MenuManagement';
@@ -35,6 +36,7 @@ function App() {
 						<Route path="/admin" element={<Navigate replace to="/admin/main" />} />
 						<Route path="/admin/menu" element={<MenuManagement />} />
 						<Route path="/admin/waiting/*" element={<WaitingManagement />} />
+						<Route path="/admin/theme" element={<ThemeManagement />} />
 					</Routes>
 				</BrowserRouter>
 			</ThemeProvider>
