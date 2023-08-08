@@ -11,19 +11,29 @@ import {
 import { WaitingDataType } from '../../types/waitingDataType';
 import { db } from '../../firebase/firebaseConfig';
 import { updateDoc, doc } from 'firebase/firestore';
+import { SelectedColorType } from '../../style/theme';
+import { selectedColorState } from '../../state/ColorState';
+import { useSelectedColor } from '../../hooks/useSelectedColor';
 
 type WaitingItemProps = {
 	waitingInfo: WaitingDataType[];
 	waitingDataStatus: string;
 };
 
+type ColorProps = {
+	$selectedColor: SelectedColorType;
+};
+
 const WaitingItem = (props: WaitingItemProps) => {
+	const selectedColor = useRecoilValue<SelectedColorType>(selectedColorState);
+	useSelectedColor();
+
 	const { waitingInfo, waitingDataStatus } = props;
 	const setIsOpenModal = useSetRecoilState<boolean>(modalState);
 	const [modalType, setModalType] = useRecoilState<string>(modalTypeState);
 	const [itemId, setItemId] = useRecoilState<string | undefined>(modalItemId);
 	const modalUpdate = useRecoilValue<boolean>(modalUpdateState);
-	const [notificationUser, setNotificationUser] = useRecoilState<string>(notificationUserState);
+	const setNotificationUser = useSetRecoilState<string>(notificationUserState);
 
 	// 모달창에서 예를 클릭했을 때 업데이트 (취소, 착석완료만)
 	const updateStatus = async (id: string, type: string) => {
@@ -58,10 +68,11 @@ const WaitingItem = (props: WaitingItemProps) => {
 					<td width={'110px'}>{value.name}</td>
 					<td width={'120px'}>{value.personNum}명</td>
 					<td width={'250px'}>{formatTel(value.tel)}</td>
-					<WatingBtnWrapper width={'300px'}>
+					<WatingBtnWrapper $selectedColor={selectedColor} width={'300px'}>
 						{waitingDataStatus === 'waiting' ? (
 							<>
 								<ShortBtn
+									$selectedColor={selectedColor}
 									onClick={() => {
 										setIsOpenModal(true);
 										setModalType('notification');
@@ -72,6 +83,7 @@ const WaitingItem = (props: WaitingItemProps) => {
 									알림
 								</ShortBtn>
 								<ShortBtn
+									$selectedColor={selectedColor}
 									onClick={() => {
 										setIsOpenModal(true);
 										setModalType('cancel');
@@ -81,6 +93,7 @@ const WaitingItem = (props: WaitingItemProps) => {
 									취소
 								</ShortBtn>
 								<LongBtn
+									$selectedColor={selectedColor}
 									onClick={() => {
 										setIsOpenModal(true);
 										setModalType('seated');
@@ -123,31 +136,39 @@ const WaitingItemWrapper = styled.tr`
 	}
 `;
 
-const WatingBtnWrapper = styled.td`
+const WatingBtnWrapper = styled.td<ColorProps>`
 	width: 300px;
 	height: 48px;
-	color: ${({ theme }) => (theme.lightColor ? theme.textColor.black : theme.textColor.white)};
+	color: ${({ theme, $selectedColor }) =>
+		theme.lightColor
+			? $selectedColor === 'pink'
+				? theme.textColor.white
+				: theme.textColor.black
+			: theme.textColor.white};
 	font-weight: ${({ theme }) => theme.fontWeight.semibold};
 	display: flex;
 	justify-content: center;
 	align-items: center;
 
 	span {
-		color: ${({ theme }) => (theme.lightColor ? theme.lightColor.yellow.point : theme.darkColor?.point)};
+		color: ${({ theme, $selectedColor }) =>
+			theme.lightColor ? theme.lightColor[$selectedColor]?.point : theme.darkColor?.point};
 	}
 `;
 
-const ShortBtn = styled.button`
+const ShortBtn = styled.button<ColorProps>`
 	width: 65px;
 	height: 48px;
 	margin-right: 14px;
 	border-radius: 10px;
-	background-color: ${({ theme }) => (theme.lightColor ? theme.lightColor?.yellow.sub : theme.darkColor?.main)};
+	background-color: ${({ theme, $selectedColor }) =>
+		theme.lightColor ? theme.lightColor[$selectedColor].sub : theme.darkColor?.main};
 `;
 
-const LongBtn = styled.button`
+const LongBtn = styled.button<ColorProps>`
 	width: 113px;
 	height: 48px;
 	border-radius: 10px;
-	background-color: ${({ theme }) => (theme.lightColor ? theme.lightColor?.yellow.sub : theme.darkColor?.main)};
+	background-color: ${({ theme, $selectedColor }) =>
+		theme.lightColor ? theme.lightColor[$selectedColor].sub : theme.darkColor?.main};
 `;

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom';
 import { RecoilRoot } from 'recoil';
 import Home from './pages/Home';
@@ -6,6 +6,7 @@ import MenuList from './pages/user/MenuList';
 import AdminLogin from './pages/admin/AdminLogin';
 import AdminMenu from './pages/admin/AdminMenu';
 import WaitingManagement from './pages/admin/WaitingManagement';
+import ThemeManagement from './pages/admin/ThemeManagement';
 import Waiting from './pages/user/Waiting';
 import WaitingCheck from './pages/user/WaitingCheck';
 import MenuManagement from './pages/admin/MenuManagement';
@@ -17,9 +18,11 @@ import { GlobalStyles } from './style/global';
 import OrderHistory from './pages/admin/OrderHistory';
 
 function App() {
+	const [isDarkmode, setIsDarkmode] = useState<boolean>(false);
+
 	return (
 		<RecoilRoot>
-			<ThemeProvider theme={defaultTheme}>
+			<ThemeProvider theme={isDarkmode ? darkTheme : defaultTheme}>
 				<GlobalStyles />
 				<BrowserRouter>
 					<Routes>
@@ -36,6 +39,7 @@ function App() {
 						<Route path="/admin/menu" element={<MenuManagement />} />
 						<Route path="/admin/waiting/*" element={<WaitingManagement />} />
 						<Route path="/admin/orderhistory" element={<OrderHistory />} />
+						<Route path="/admin/theme" element={<ThemeManagement setIsDarkmode={setIsDarkmode} />} />
 					</Routes>
 				</BrowserRouter>
 			</ThemeProvider>

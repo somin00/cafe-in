@@ -1,7 +1,14 @@
 import React from 'react';
 import { styled } from 'styled-components';
 import { useNavigate } from 'react-router-dom';
-function WaitingHeader() {
+
+type HeaderTextProps = {
+	headerText: string;
+};
+
+function ManagementHeader(props: HeaderTextProps) {
+	const { headerText } = props;
+
 	const navigate = useNavigate();
 
 	const handleBackClick = () => {
@@ -10,18 +17,18 @@ function WaitingHeader() {
 	};
 
 	return (
-		<WaitingHeaderWrapper>
+		<ManagementHeaderWrapper>
 			<IconWrapper onClick={handleBackClick}>
 				<img alt="뒤로가기 버튼" />
 			</IconWrapper>
-			<HeaderTitle>대기 관리</HeaderTitle>
-		</WaitingHeaderWrapper>
+			<HeaderTitle>{headerText}</HeaderTitle>
+		</ManagementHeaderWrapper>
 	);
 }
 
-export default WaitingHeader;
+export default ManagementHeader;
 
-const WaitingHeaderWrapper = styled.div`
+const ManagementHeaderWrapper = styled.div`
 	height: 80px;
 	width: 1194px;
 	padding-left: 33px;
