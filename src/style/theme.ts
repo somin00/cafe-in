@@ -23,7 +23,7 @@ export const defaultTheme: DefaultTheme = {
 			sub: '#4B9AD3',
 		},
 		green: {
-			background: '#F7FFE5',
+			background: '#EEFBD2',
 			main: '#E1ECC8',
 			sub: '#C4D7B2',
 			point: '#A0C49D',
