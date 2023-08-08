@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import OrderItem from './OrderItem';
-import { OrderListType } from '../../types/orderHistoryType';
+import { OrderListItemType, OrderListType } from '../../types/orderHistoryType';
 import { collection, getDocs, query, updateDoc, where } from 'firebase/firestore';
 import { db } from '../../firebase/firebaseConfig';
 
@@ -10,14 +10,27 @@ interface OrderListPropType {
 	order: OrderListType;
 }
 function OrderList({ number, order }: OrderListPropType) {
+	const orderRef = collection(db, 'testOrderList');
+
 	const handleToggleComplete = async (id: number, checked: boolean) => {
-		const orderRef = collection(db, 'testOrderList');
 		const orderDocs = await getDocs(query(orderRef, where('id', '==', order.id)));
 		if (orderDocs.docs.length !== 0) {
 			const docData = orderDocs.docs[0].data();
 			docData.list[id].isComplete = checked;
 			await updateDoc(orderDocs.docs[0].ref, {
 				...docData,
+			});
+		}
+	};
+
+	const handleComplete = async () => {
+		const orderDocs = await getDocs(query(orderRef, where('id', '==', order.id)));
+		if (orderDocs.docs.length !== 0) {
+			const docData = orderDocs.docs[0].data();
+			docData.list.map((item: OrderListItemType) => (item.isComplete = true));
+			await updateDoc(orderDocs.docs[0].ref, {
+				...docData,
+				progress: '완료주문',
 			});
 		}
 	};
@@ -34,7 +47,9 @@ function OrderList({ number, order }: OrderListPropType) {
 						<OrderItem key={`${order.id}${idx}`} idx={idx} itemInfo={item} toggleComplete={handleToggleComplete} />
 					))}
 				</ItemWrapper>
-				<button type="button">제조완료</button>
+				<button type="button" onClick={handleComplete}>
+					제조완료
+				</button>
 			</OrderListWrapper>
 		</>
 	);
