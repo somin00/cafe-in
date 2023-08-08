@@ -1,8 +1,19 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { styled } from 'styled-components';
+import { SelectedColorType } from '../../style/theme';
+import { selectedColorState } from '../../state/ColorState';
+import { useRecoilValue } from 'recoil';
+import { useSelectedColor } from '../../hooks/useSelectedColor';
+
+type ColorProps = {
+	$selectedColor: SelectedColorType;
+};
 
 function WaitingCheck() {
+	const selectedColor = useRecoilValue<SelectedColorType>(selectedColorState);
+	useSelectedColor();
+
 	const navigate = useNavigate();
 	const location = useLocation();
 
@@ -36,7 +47,7 @@ function WaitingCheck() {
 			<WaitingCheckHeaderText>
 				신청 완료! <p>순서가 되면 알림으로 알려드립니다.</p>
 			</WaitingCheckHeaderText>
-			<WaitingNumWrapper>
+			<WaitingNumWrapper $selectedColor={selectedColor}>
 				<LeftFireworks />
 				<WaitingNumText>{userWaitingNum}번</WaitingNumText>
 				<RightFireworks />
@@ -79,11 +90,12 @@ const WaitingCheckHeaderText = styled.h1`
 	}
 `;
 
-const WaitingNumWrapper = styled.div`
+const WaitingNumWrapper = styled.div<ColorProps>`
 	width: 324px;
 	height: 308px;
 	border-radius: 50%;
-	background-color: ${({ theme }) => (theme.lightColor ? theme.lightColor?.yellow.main : theme.darkColor?.main)};
+	background-color: ${({ theme, $selectedColor }) =>
+		theme.lightColor ? theme.lightColor[$selectedColor].sub : theme.darkColor?.main};
 	color: ${({ theme }) => theme.textColor.white};
 	font-size: ${({ theme }) => theme.fontSize['7xl']};
 	font-weight: ${({ theme }) => theme.fontWeight.semibold};

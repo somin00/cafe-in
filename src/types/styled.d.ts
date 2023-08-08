@@ -22,6 +22,18 @@ declare module 'styled-components' {
 				sub: string;
 				point: string;
 			};
+			green: {
+				background: string;
+				main: string;
+				sub: string;
+				point: string;
+			};
+			purple: {
+				background: string;
+				main: string;
+				sub: string;
+				point: string;
+			};
 		};
 		darkColor?: {
 			background: string;
