@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useRecoilState, useRecoilValue } from 'recoil';
-import { styled } from 'styled-components';
+import { styled, useTheme } from 'styled-components';
 import { isWaitingAvailableState } from '../../state/WaitingState';
 import { collection, getDocs, addDoc } from 'firebase/firestore';
 import { db } from '../../firebase/firebaseConfig';
@@ -12,6 +12,8 @@ import WaitingApplyModal from '../../components/waitingManagement/WaitingApplyMo
 import { SelectedColorType } from '../../style/theme';
 import { selectedColorState } from '../../state/ColorState';
 import { useSelectedColor } from '../../hooks/useSelectedColor';
+import RenderMinusIcon from '../../components/customSVG/RenderMinusIcon';
+import RenderPlusIcon from '../../components/customSVG/RenderPlusIcon';
 
 type DecreaseProps = {
 	$decreaseDisable: boolean;
@@ -24,6 +26,8 @@ type ColorProps = {
 function Waiting() {
 	const selectedColor = useRecoilValue<SelectedColorType>(selectedColorState);
 	useSelectedColor();
+
+	const theme = useTheme();
 
 	const navigate = useNavigate();
 	const isWaitingAvailable = useRecoilValue<boolean>(isWaitingAvailableState);
@@ -175,11 +179,11 @@ function Waiting() {
 						<ApplicationHeaderText>대기를 원하시면 번호를 입력해주세요.</ApplicationHeaderText>
 						<NumCheckBox>
 							<MinusBtn onClick={onDecrease} $decreaseDisable={decreaseDisable}>
-								<img alt="1 빼기 버튼" aria-label="1 빼기" />
+								<RenderMinusIcon theme={theme} decreaseDisable={decreaseDisable} />
 							</MinusBtn>
 							{waitingPersonNum}
 							<PlusBtn onClick={onIncrease}>
-								<img alt="1 더하기 버튼" aria-label="1 더하기" />
+								<RenderPlusIcon theme={theme} />
 							</PlusBtn>
 						</NumCheckBox>
 						<InputBoxWrapper>
@@ -305,24 +309,10 @@ const NumCheckBox = styled.div`
 `;
 
 const MinusBtn = styled.button<DecreaseProps>`
-	img {
-		content: ${({ theme, $decreaseDisable }) =>
-			$decreaseDisable
-				? 'url(/assets/user/minusIcon_disable.svg)'
-				: theme.lightColor
-				? 'url(/assets/user/minusIcon_able_light.svg)'
-				: 'url(/assets/user/minusIcon_dark.svg)'};
-	}
-
 	cursor: ${({ $decreaseDisable }) => ($decreaseDisable ? 'not-allowed' : 'pointer')};
 `;
 
-const PlusBtn = styled.button`
-	img {
-		content: ${({ theme }) =>
-			theme.lightColor ? 'url(/assets/user/plusIcon_light.svg)' : 'url(/assets/user/plusIcon_dark.svg)'};
-	}
-`;
+const PlusBtn = styled.button``;
 
 const InputBoxWrapper = styled.div`
 	width: 400px;
