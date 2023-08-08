@@ -12,6 +12,7 @@ interface Order {
 		menu: string;
 		quantity: number;
 		options: string;
+		isComplete: boolean;
 	}[];
 	totalPrice: number;
 	takeout: boolean;
@@ -96,7 +97,7 @@ function OrderCheck() {
 											<p>{item.menu}</p>
 										</div>
 										<p>{item.quantity}</p>
-										<p>{order.totalPrice.toLocaleString()}원</p>{' '}
+										<p>{order.totalPrice.toLocaleString()}원</p>
 									</OrderMenuItem>
 								))}
 							</div>

@@ -79,7 +79,7 @@ function SelectedItemContainer() {
 			const newOrder = {
 				id: Date.now(),
 				date: Date(),
-				list: [{ menu: item.name, quantity: item.quantity, options: item.options }],
+				list: [{ menu: item.name, quantity: item.quantity, options: item.options, isComplete: false }],
 				progress: '완료주문',
 				totalPrice: item.totalPrice * item.quantity,
 				tackOut: true,

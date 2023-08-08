@@ -83,6 +83,16 @@ function OptionMenu({ selected, onClickToggleModal }: OptionMenuProps) {
 				: '없음';
 		const q = query(itemsCollection, where('name', '==', selected.name), where('options', '==', selectedOptionsStr));
 
+		// 가격이 500인 옵션만
+		const selectedOptionsTotalPrice = selectedItemOptions.reduce((total, option) => {
+			if (option.price === 500) {
+				return total + option.price;
+			}
+			return total;
+		}, 0);
+
+		const itemTotalPrice = selected.price + selectedOptionsTotalPrice;
+
 		const matchingDocs = await getDocs(q);
 
 		if (!matchingDocs.empty) {
@@ -99,7 +109,7 @@ function OptionMenu({ selected, onClickToggleModal }: OptionMenuProps) {
 				data: new Date(),
 				quantity: 1,
 				options: selectedOptionsStr,
-				totalPrice: selected.price,
+				totalPrice: itemTotalPrice,
 			};
 
 			await addDoc(itemsCollection, itemToBeAdded);
