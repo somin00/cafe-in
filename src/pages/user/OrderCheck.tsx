@@ -7,9 +7,14 @@ import { darkTheme, defaultTheme } from '../../style/theme';
 import { collection, getDocs, writeBatch } from 'firebase/firestore';
 import { db } from '../../firebase/firebaseConfig';
 interface Order {
-	name: string;
-	quantity: number;
+	id: string;
+	list: {
+		menu: string;
+		quantity: number;
+		options: string;
+	}[];
 	totalPrice: number;
+	takeout: boolean;
 }
 function OrderCheck() {
 	const navigate = useNavigate();
@@ -32,9 +37,9 @@ function OrderCheck() {
 				const data = doc.data();
 				return {
 					id: doc.id,
-					name: data.name ?? '',
-					quantity: data.quantity ?? 1,
-					totalPrice: data.totalPrice ?? 0,
+					list: data.list,
+					totalPrice: data.totalPrice,
+					takeout: data.takeout,
 				};
 			});
 			setOrderList(orderListData);
@@ -42,7 +47,7 @@ function OrderCheck() {
 		getOrderList();
 	}, []);
 
-	const totalOrderAmount = orderList.reduce((acc, order) => acc + order.totalPrice * order.quantity, 0);
+	const totalOrderAmount = orderList.reduce((acc, order) => acc + order.totalPrice, 0);
 	const handleDeleteAll = async () => {
 		const selectedItemsCol = collection(db, 'orderList');
 		const snapshot = await getDocs(selectedItemsCol);
@@ -82,15 +87,19 @@ function OrderCheck() {
 						<li>주문금액 </li>
 					</TableHead>
 					<Tbody>
-						{orderList.map((order, index) => (
-							<OrderMenuItem key={index}>
-								<div className="products-name">
-									<img src="/assets/user/IceCoffee.svg" alt="제품이미지" width={42} />
-									<p>{order.name}</p>
-								</div>
-								<p>{order.quantity}</p>
-								<p>{order.totalPrice}원</p>
-							</OrderMenuItem>
+						{orderList.map((order) => (
+							<div key={order.id}>
+								{order.list.map((item, index) => (
+									<OrderMenuItem key={index}>
+										<div className="products-name">
+											<img src="/assets/user/IceCoffee.svg" alt="제품이미지" width={42} />
+											<p>{item.menu}</p>
+										</div>
+										<p>{item.quantity}</p>
+										<p>{order.totalPrice.toLocaleString()}원</p>{' '}
+									</OrderMenuItem>
+								))}
+							</div>
 						))}
 					</Tbody>
 				</OrderList>
