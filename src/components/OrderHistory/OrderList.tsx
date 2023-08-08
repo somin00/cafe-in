@@ -2,27 +2,40 @@ import React from 'react';
 import styled from 'styled-components';
 import OrderItem from './OrderItem';
 import { OrderListType } from '../../types/orderHistoryType';
+import { collection, getDocs, query, updateDoc, where } from 'firebase/firestore';
+import { db } from '../../firebase/firebaseConfig';
 
 interface OrderListPropType {
-	orderList: OrderListType[];
+	number: number;
+	order: OrderListType;
 }
-function OrderList({ orderList }: OrderListPropType) {
+function OrderList({ number, order }: OrderListPropType) {
+	const handleToggleComplete = async (id: number, checked: boolean) => {
+		const orderRef = collection(db, 'testOrderList');
+		const orderDocs = await getDocs(query(orderRef, where('id', '==', order.id)));
+		if (orderDocs.docs.length !== 0) {
+			const docData = orderDocs.docs[0].data();
+			docData.list[id].isComplete = checked;
+			await updateDoc(orderDocs.docs[0].ref, {
+				...docData,
+			});
+		}
+	};
+
 	return (
 		<>
-			{orderList.map(({ id, list, takeout }, idx) => (
-				<OrderListWrapper key={id}>
-					<OrderInfo>
-						<span>{`#${idx + 1}`}</span>
-						<span>{takeout ? '포장' : '매장'}</span>
-					</OrderInfo>
-					<ItemWrapper>
-						{list.map((item, idx) => (
-							<OrderItem key={`${id}${idx}`} itemInfo={item} />
-						))}
-					</ItemWrapper>
-					<button type="button">제조완료</button>
-				</OrderListWrapper>
-			))}
+			<OrderListWrapper key={order.id}>
+				<OrderInfo>
+					<span>{`#${number + 1}`}</span>
+					<span>{order.takeout ? '포장' : '매장'}</span>
+				</OrderInfo>
+				<ItemWrapper>
+					{order.list.map((item, idx) => (
+						<OrderItem key={`${order.id}${idx}`} idx={idx} itemInfo={item} toggleComplete={handleToggleComplete} />
+					))}
+				</ItemWrapper>
+				<button type="button">제조완료</button>
+			</OrderListWrapper>
 		</>
 	);
 }

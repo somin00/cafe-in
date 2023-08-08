@@ -45,7 +45,19 @@ function OrderListContainer({ isProgressMode }: ContainerPropType) {
 
 	return (
 		<OrderListContainerWrapper>
-			{isProgressMode ? <OrderList orderList={inProgressList} /> : <OrderList orderList={completeList} />}
+			{isProgressMode ? (
+				<>
+					{inProgressList.map((item, idx) => (
+						<OrderList key={item.id} number={idx} order={item} />
+					))}
+				</>
+			) : (
+				<>
+					{completeList.map((item, idx) => (
+						<OrderList key={item.id} number={idx} order={item} />
+					))}
+				</>
+			)}
 		</OrderListContainerWrapper>
 	);
 }
