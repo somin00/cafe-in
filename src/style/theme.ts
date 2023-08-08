@@ -24,9 +24,9 @@ export const defaultTheme: DefaultTheme = {
 		},
 		green: {
 			background: '#EEFBD2',
-			main: '#E1ECC8',
-			sub: '#C4D7B2',
-			point: '#A0C49D',
+			main: '#CDE88F',
+			sub: '#7CBE76',
+			point: '#7CBF3C',
 		},
 		purple: {
 			background: '#EDE4FF',

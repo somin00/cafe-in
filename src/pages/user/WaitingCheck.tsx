@@ -95,7 +95,7 @@ const WaitingNumWrapper = styled.div<ColorProps>`
 	height: 308px;
 	border-radius: 50%;
 	background-color: ${({ theme, $selectedColor }) =>
-		theme.lightColor ? theme.lightColor[$selectedColor].main : theme.darkColor?.main};
+		theme.lightColor ? theme.lightColor[$selectedColor].sub : theme.darkColor?.main};
 	color: ${({ theme }) => theme.textColor.white};
 	font-size: ${({ theme }) => theme.fontSize['7xl']};
 	font-weight: ${({ theme }) => theme.fontWeight.semibold};
