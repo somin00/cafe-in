@@ -1,25 +1,35 @@
 import React from 'react';
 import styled from 'styled-components';
 import OrderItem from './OrderItem';
+import { OrderListType } from '../../types/orderHistoryType';
 
-function OrderList() {
+interface OrderListPropType {
+	orderList: OrderListType[];
+}
+function OrderList({ orderList }: OrderListPropType) {
 	return (
-		<OrderListWrapper>
-			<OrderInfo>
-				<span>#1</span>
-				<span>매장</span>
-			</OrderInfo>
-			<ItemWrapper>
-				<OrderItem />
-			</ItemWrapper>
-			<button type="button">제조완료</button>
-		</OrderListWrapper>
+		<>
+			{orderList.map(({ id, list, takeout }, idx) => (
+				<OrderListWrapper key={id}>
+					<OrderInfo>
+						<span>{`#${idx + 1}`}</span>
+						<span>{takeout ? '포장' : '매장'}</span>
+					</OrderInfo>
+					<ItemWrapper>
+						{list.map((item, idx) => (
+							<OrderItem key={`${id}${idx}`} itemInfo={item} />
+						))}
+					</ItemWrapper>
+					<button type="button">제조완료</button>
+				</OrderListWrapper>
+			))}
+		</>
 	);
 }
 
 export default OrderList;
 
-const OrderListWrapper = styled.div`
+const OrderListWrapper = styled.li`
 	background-color: ${({ theme }) =>
 		theme.lightColor ? theme.lightColor?.yellow.background : theme.darkColor?.background};
 	width: 350px;
@@ -33,10 +43,10 @@ const OrderListWrapper = styled.div`
 		height: 50px;
 		border-radius: 10px;
 		background-color: ${({ theme }) => (theme.lightColor ? theme.lightColor?.yellow.main : theme.darkColor?.main)};
-		font-size: ${({ theme }) => theme.fontSize['3xl']};
+		font-size: ${({ theme }) => theme.fontSize['2xl']};
 		font-weight: ${({ theme }) => theme.fontWeight.semibold};
 		margin-left: 90px;
-		color: ${({ theme }) => (theme.lightColor ? theme.textColor.black : theme.textColor.white)};
+		color: ${({ theme }) => theme.textColor.white};
 	}
 `;
 
@@ -54,7 +64,7 @@ const OrderInfo = styled.div`
 		font-weight: ${({ theme }) => theme.fontWeight.semibold};
 	}
 `;
-const ItemWrapper = styled.div`
+const ItemWrapper = styled.ul`
 	width: 318px;
 	height: 376px;
 	margin-bottom: 19px;
