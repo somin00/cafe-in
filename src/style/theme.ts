@@ -8,7 +8,7 @@ export const defaultTheme: DefaultTheme = {
 			background: '#FFF2F2',
 			main: ' #EF9F9F',
 			sub: ' #F47C7C',
-			point: '#eb4d4b',
+			point: '#EF6968',
 		},
 		yellow: {
 			background: '#FFF1DD',
