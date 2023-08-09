@@ -16,10 +16,9 @@ function OrderListContainer({ isProgressMode }: ContainerPropType) {
 
 	const orderListRef = collection(db, 'testOrderList'); //orderList로 수정
 
-	const fetchInProgress = async () => {
-		const numberToday = Number(new Date(today.year, today.month, today.date));
+	const fetchInProgress = async (today: number) => {
 		const unsub = onSnapshot(
-			query(orderListRef, where('progress', '==', '진행중'), where('id', '>', numberToday), orderBy('id')),
+			query(orderListRef, where('progress', '==', '진행중'), where('id', '>', today), orderBy('id')),
 			(snapshot) => {
 				const inProgress: OrderListType[] = [];
 				snapshot.docs.map((doc) => {
@@ -32,10 +31,9 @@ function OrderListContainer({ isProgressMode }: ContainerPropType) {
 		return unsub;
 	};
 
-	const fetchComplete = async () => {
-		const numberToday = Number(new Date(today.year, today.month, today.date));
+	const fetchComplete = async (today: number) => {
 		const unsub = onSnapshot(
-			query(orderListRef, where('progress', '==', '완료주문'), where('id', '>', numberToday), orderBy('id')),
+			query(orderListRef, where('progress', '==', '완료주문'), where('id', '>', today), orderBy('id')),
 			(snapshot) => {
 				const complete: OrderListType[] = [];
 				snapshot.docs.map((doc) => {
@@ -49,13 +47,12 @@ function OrderListContainer({ isProgressMode }: ContainerPropType) {
 	};
 
 	useEffect(() => {
-		fetchInProgress();
-		fetchComplete();
-	}, []);
-
-	useEffect(() => {
 		const { year, month, date } = changeDateFormat(Date.now());
 		setToday({ year, month, date });
+
+		const todayDate = Number(new Date(year, month, date));
+		fetchInProgress(todayDate);
+		fetchComplete(todayDate);
 	}, []);
 
 	return (
