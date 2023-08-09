@@ -16,7 +16,9 @@ import {
 	increment,
 	getDocs,
 } from 'firebase/firestore';
-
+type StyledProps = {
+	quantity: number;
+};
 function SelectedItemContainer() {
 	const navigate = useNavigate();
 
@@ -93,14 +95,11 @@ function SelectedItemContainer() {
 			<Layout>
 				<MenuSelectedContainer>
 					{selectedItems.map((item) => (
-						<SelectedItem key={item.id}>
+						<SelectedItem as="li" key={item.id} quantity={item.quantity}>
 							<div className="first">
 								<p>{item.name}</p>
 								<div className="counter">
-									<button
-										className={item.quantity > 1 ? 'minus active' : 'minus'}
-										onClick={() => handleDecreaseCount(item.name)}
-									>
+									<button className="minus" disabled={item.quantity <= 1} onClick={() => handleDecreaseCount(item.id)}>
 										-
 									</button>
 									<p>x{item.quantity}</p>
@@ -165,7 +164,7 @@ const MenuSelectedContainer = styled.ul`
 	/* Firefox */
 	scrollbar-width: none;
 `;
-const SelectedItem = styled.li`
+const SelectedItem = styled.li<StyledProps>`
 	display: flex;
 	width: 359px;
 	flex-direction: column;
@@ -201,8 +200,16 @@ const SelectedItem = styled.li`
 				theme === defaultTheme ? defaultTheme.lightColor?.yellow.main : darkTheme.darkColor?.sub};
 		}
 		.minus {
-			background-color: ${({ theme }) =>
-				theme === defaultTheme ? defaultTheme.textColor.lightgray : darkTheme.textColor.darkgray};
+			background-color: ${({ theme, quantity }) => {
+				if (theme === defaultTheme) {
+					return quantity > 1 ? theme.lightColor?.yellow.main : defaultTheme.textColor.lightgray;
+				} else {
+					return quantity > 1 ? darkTheme.darkColor?.main : darkTheme.textColor.darkgray;
+				}
+			}};
+			&:disabled {
+				pointer-events: none;
+			}
 		}
 	}
 	.price {

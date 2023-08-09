@@ -8,6 +8,7 @@ export interface OptionMenuProps {
 	selected: Item;
 	onClickToggleModal: () => void;
 }
+
 function OptionMenu({ selected, onClickToggleModal }: OptionMenuProps) {
 	const [options, setOptions] = useState<{ [key: string]: Option[] }>({});
 	const [activeOptions, setActiveOptions] = useState<string[]>([]);
@@ -38,26 +39,6 @@ function OptionMenu({ selected, onClickToggleModal }: OptionMenuProps) {
 
 	const handleOptionClick = (e: React.MouseEvent, option: Option) => {
 		e.preventDefault();
-
-		const selectedInCategory = selectedItemOptions.filter(
-			(selectedOption) => selectedOption.category === option.category,
-		);
-
-		if (option.category === '음료선택') {
-			if (selectedInCategory.length >= 1) {
-				setSelectedItemOptions((oldSelectedOptions) =>
-					oldSelectedOptions.filter((selectedOption) => selectedOption.category !== option.category).concat(option),
-				);
-				setActiveOptions((oldActiveOptions) => {
-					const newActiveOptions = oldActiveOptions.filter(
-						(activeOption) => activeOption !== selectedInCategory[0].name,
-					);
-					newActiveOptions.push(option.name);
-					return newActiveOptions;
-				});
-				return;
-			}
-		}
 
 		if (selectedItemOptions.some((selectedOption) => selectedOption.name === option.name)) {
 			setSelectedItemOptions((oldSelectedOptions) =>
