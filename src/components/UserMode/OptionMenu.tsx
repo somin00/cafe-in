@@ -8,6 +8,7 @@ export interface OptionMenuProps {
 	selected: Item;
 	onClickToggleModal: () => void;
 }
+
 function OptionMenu({ selected, onClickToggleModal }: OptionMenuProps) {
 	const [options, setOptions] = useState<{ [key: string]: Option[] }>({});
 	const [activeOptions, setActiveOptions] = useState<string[]>([]);
@@ -39,26 +40,6 @@ function OptionMenu({ selected, onClickToggleModal }: OptionMenuProps) {
 	const handleOptionClick = (e: React.MouseEvent, option: Option) => {
 		e.preventDefault();
 
-		const selectedInCategory = selectedItemOptions.filter(
-			(selectedOption) => selectedOption.category === option.category,
-		);
-
-		if (option.category === '음료선택') {
-			if (selectedInCategory.length >= 1) {
-				setSelectedItemOptions((oldSelectedOptions) =>
-					oldSelectedOptions.filter((selectedOption) => selectedOption.category !== option.category).concat(option),
-				);
-				setActiveOptions((oldActiveOptions) => {
-					const newActiveOptions = oldActiveOptions.filter(
-						(activeOption) => activeOption !== selectedInCategory[0].name,
-					);
-					newActiveOptions.push(option.name);
-					return newActiveOptions;
-				});
-				return;
-			}
-		}
-
 		if (selectedItemOptions.some((selectedOption) => selectedOption.name === option.name)) {
 			setSelectedItemOptions((oldSelectedOptions) =>
 				oldSelectedOptions.filter((selectedOption) => selectedOption.name !== option.name),
@@ -83,6 +64,16 @@ function OptionMenu({ selected, onClickToggleModal }: OptionMenuProps) {
 				: '없음';
 		const q = query(itemsCollection, where('name', '==', selected.name), where('options', '==', selectedOptionsStr));
 
+		// 가격이 500인 옵션만
+		const selectedOptionsTotalPrice = selectedItemOptions.reduce((total, option) => {
+			if (option.price === 500) {
+				return total + option.price;
+			}
+			return total;
+		}, 0);
+
+		const itemTotalPrice = selected.price + selectedOptionsTotalPrice;
+
 		const matchingDocs = await getDocs(q);
 
 		if (!matchingDocs.empty) {
@@ -99,7 +90,7 @@ function OptionMenu({ selected, onClickToggleModal }: OptionMenuProps) {
 				data: new Date(),
 				quantity: 1,
 				options: selectedOptionsStr,
-				totalPrice: selected.price,
+				totalPrice: itemTotalPrice,
 			};
 
 			await addDoc(itemsCollection, itemToBeAdded);
