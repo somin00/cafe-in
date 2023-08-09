@@ -5,14 +5,11 @@ import { useRecoilState } from 'recoil';
 import { selectedColorState } from '../../state/ColorState';
 import { SelectedColorType } from '../../style/theme';
 import { useSelectedColor } from '../../hooks/useSelectedColor';
+import { ColorProps } from '../../types/ColorProps';
 
 interface ThemeManagementProps {
 	setIsDarkmode: React.Dispatch<React.SetStateAction<boolean>>;
 }
-
-type ColorProps = {
-	$selectedColor: SelectedColorType;
-};
 
 function ThemeManagement({ setIsDarkmode }: ThemeManagementProps) {
 	const [selectedColor, setSelectedColor] = useRecoilState<SelectedColorType>(selectedColorState);

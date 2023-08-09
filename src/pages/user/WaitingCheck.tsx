@@ -5,10 +5,7 @@ import { SelectedColorType } from '../../style/theme';
 import { selectedColorState } from '../../state/ColorState';
 import { useRecoilValue } from 'recoil';
 import { useSelectedColor } from '../../hooks/useSelectedColor';
-
-type ColorProps = {
-	$selectedColor: SelectedColorType;
-};
+import { ColorProps } from '../../types/ColorProps';
 
 function WaitingCheck() {
 	const selectedColor = useRecoilValue<SelectedColorType>(selectedColorState);
@@ -36,10 +33,13 @@ function WaitingCheck() {
 		}
 
 		return () => clearTimeout(timeoutId);
+
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [remainingTime]);
 
 	const goToHome = useCallback(() => {
 		navigate('/home');
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
 	return (

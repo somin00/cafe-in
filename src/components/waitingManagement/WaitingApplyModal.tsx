@@ -5,10 +5,7 @@ import { ModalProps } from '../../types/ModalProps';
 import { SelectedColorType } from '../../style/theme';
 import { useSelectedColor } from '../../hooks/useSelectedColor';
 import { selectedColorState } from '../../state/ColorState';
-
-type ColorProps = {
-	$selectedColor: SelectedColorType;
-};
+import { ColorProps } from '../../types/ColorProps';
 
 function WaitingApplyModal({ closeModal }: ModalProps) {
 	const [isOpenModal, setIsOpenModal] = useRecoilState<boolean>(modalState);

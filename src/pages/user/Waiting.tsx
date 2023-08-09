@@ -2,25 +2,22 @@ import { useState, useEffect, useRef, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { styled, useTheme } from 'styled-components';
-import { isWaitingAvailableState } from '../../state/WaitingState';
 import { collection, getDocs, addDoc } from 'firebase/firestore';
 import { db } from '../../firebase/firebaseConfig';
+import { SelectedColorType } from '../../style/theme';
 import { WaitingDataType } from '../../types/waitingDataType';
 import { filterTodayWaiting } from '../../utils/filter';
+import { isWaitingAvailableState } from '../../state/WaitingState';
 import { modalState, modalTypeState } from '../../state/ModalState';
-import WaitingApplyModal from '../../components/waitingManagement/WaitingApplyModal';
-import { SelectedColorType } from '../../style/theme';
 import { selectedColorState } from '../../state/ColorState';
 import { useSelectedColor } from '../../hooks/useSelectedColor';
+import WaitingApplyModal from '../../components/waitingManagement/WaitingApplyModal';
 import RenderMinusIcon from '../../components/customSVG/RenderMinusIcon';
 import RenderPlusIcon from '../../components/customSVG/RenderPlusIcon';
+import { ColorProps } from '../../types/ColorProps';
 
 type DecreaseProps = {
 	$decreaseDisable: boolean;
-};
-
-type ColorProps = {
-	$selectedColor: SelectedColorType;
 };
 
 function Waiting() {
@@ -112,6 +109,7 @@ function Waiting() {
 				},
 			});
 		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [isOpenModal, isNavigate, modalType]);
 
 	//* 대기 신청하기

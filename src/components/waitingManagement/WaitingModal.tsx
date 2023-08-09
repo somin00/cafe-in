@@ -6,10 +6,7 @@ import { ModalProps } from '../../types/ModalProps';
 import { SelectedColorType } from '../../style/theme';
 import { selectedColorState } from '../../state/ColorState';
 import { useSelectedColor } from '../../hooks/useSelectedColor';
-
-type ColorProps = {
-	$selectedColor: SelectedColorType;
-};
+import { ColorProps } from '../../types/ColorProps';
 
 function WaitingModal({ closeModal }: ModalProps) {
 	const selectedColor = useRecoilValue<SelectedColorType>(selectedColorState);

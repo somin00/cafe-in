@@ -10,6 +10,7 @@ import { isWaitingAvailableState } from '../../state/WaitingState';
 import { SelectedColorType } from '../../style/theme';
 import { selectedColorState } from '../../state/ColorState';
 import { useSelectedColor } from '../../hooks/useSelectedColor';
+import { ColorProps } from '../../types/ColorProps';
 
 interface ThProps {
 	width?: string;
@@ -17,10 +18,6 @@ interface ThProps {
 
 type waitingDataProps = {
 	waitingDataStatus: string;
-};
-
-type ColorProps = {
-	$selectedColor: SelectedColorType;
 };
 
 const WaitingTableBox = (props: waitingDataProps) => {

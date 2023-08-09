@@ -14,14 +14,11 @@ import { updateDoc, doc } from 'firebase/firestore';
 import { SelectedColorType } from '../../style/theme';
 import { selectedColorState } from '../../state/ColorState';
 import { useSelectedColor } from '../../hooks/useSelectedColor';
+import { ColorProps } from '../../types/ColorProps';
 
 type WaitingItemProps = {
 	waitingInfo: WaitingDataType[];
 	waitingDataStatus: string;
-};
-
-type ColorProps = {
-	$selectedColor: SelectedColorType;
 };
 
 const WaitingItem = (props: WaitingItemProps) => {
