@@ -4,13 +4,18 @@ import OrderItem from './OrderItem';
 import { OrderListItemType, OrderListType } from '../../types/orderHistoryType';
 import { collection, getDocs, query, updateDoc, where } from 'firebase/firestore';
 import { db } from '../../firebase/firebaseConfig';
+import { changeDateFormat } from '../../utils/changeDateFormat';
 
 interface OrderListPropType {
-	number: number;
 	order: OrderListType;
 }
-function OrderList({ number, order }: OrderListPropType) {
-	const orderRef = collection(db, 'testOrderList');
+function OrderList({ order }: OrderListPropType) {
+	const orderRef = collection(db, 'testOrderList'); //orderList로 수정
+
+	const timeFormat = (id: number) => {
+		const { hour, minute, sec } = changeDateFormat(id);
+		return `${hour}:${minute}:${sec}`;
+	};
 
 	const handleToggleComplete = async (id: number, checked: boolean) => {
 		const orderDocs = await getDocs(query(orderRef, where('id', '==', order.id)));
@@ -39,8 +44,8 @@ function OrderList({ number, order }: OrderListPropType) {
 		<>
 			<OrderListWrapper key={order.id}>
 				<OrderInfo>
-					<span>{`#${number + 1}`}</span>
 					<span>{order.takeout ? '포장' : '매장'}</span>
+					<span>{timeFormat(order.id)}</span>
 				</OrderInfo>
 				<ItemWrapper>
 					{order.list.map((item, idx) => (
@@ -82,14 +87,17 @@ const OrderInfo = styled.div`
 	margin-bottom: 20px;
 	font-size: ${({ theme }) => theme.fontSize['4xl']};
 	color: ${({ theme }) => (theme.lightColor ? 'none' : theme.textColor.white)};
+	display: flex;
+	align-items: center;
 
 	span:first-child {
-		font-weight: ${({ theme }) => theme.fontWeight.regular};
+		font-weight: ${({ theme }) => theme.fontWeight.semibold};
 		margin-right: 11px;
 	}
 
 	span:last-child {
-		font-weight: ${({ theme }) => theme.fontWeight.semibold};
+		font-size: ${({ theme }) => theme.fontSize['xl']};
+		font-weight: ${({ theme }) => theme.fontWeight.regular};
 	}
 `;
 const ItemWrapper = styled.ul`

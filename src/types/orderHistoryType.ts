@@ -11,3 +11,9 @@ export interface OrderListItemType {
 	quantity: number;
 	totalPrice: number;
 }
+
+export interface TodayDateType {
+	year: number;
+	month: number;
+	date: number;
+}
