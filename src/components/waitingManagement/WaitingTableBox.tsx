@@ -1,16 +1,16 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { styled } from 'styled-components';
-import WaitingItem from './WaitingItem';
-import { WaitingDataType } from '../../types/waitingDataType';
 import { db } from '../../firebase/firebaseConfig';
 import { collection, onSnapshot } from 'firebase/firestore';
-import { filterTodayWaiting } from '../../utils/filter';
 import { useRecoilValue } from 'recoil';
-import { isWaitingAvailableState } from '../../state/WaitingState';
+import WaitingItem from './WaitingItem';
 import { SelectedColorType } from '../../style/theme';
-import { selectedColorState } from '../../state/ColorState';
-import { useSelectedColor } from '../../hooks/useSelectedColor';
+import { WaitingDataType } from '../../types/waitingDataType';
 import { ColorProps } from '../../types/ColorProps';
+import { filterTodayWaiting } from '../../utils/filter';
+import { useSelectedColor } from '../../hooks/useSelectedColor';
+import { isWaitingAvailableState } from '../../state/WaitingState';
+import { selectedColorState } from '../../state/ColorState';
 
 interface ThProps {
 	width?: string;
@@ -23,7 +23,6 @@ type waitingDataProps = {
 const WaitingTableBox = (props: waitingDataProps) => {
 	const selectedColor = useRecoilValue<SelectedColorType>(selectedColorState);
 	useSelectedColor();
-
 	const { waitingDataStatus } = props;
 	const [waitingList, setWaitingList] = useState<WaitingDataType[]>([]);
 	const isWaitingAvailable = useRecoilValue<boolean>(isWaitingAvailableState);
@@ -43,10 +42,7 @@ const WaitingTableBox = (props: waitingDataProps) => {
 		return () => getWaitingList();
 	}, []);
 
-	//* 당일 날짜 + 선택한 status(waitingDataStatus)에 따라 해당 status의 data만 저장해서 리턴하는 함수
-
 	const waitingInfo = filterTodayWaiting(waitingList, waitingDataStatus);
-
 	const todayWaitingNum = waitingInfo.length;
 
 	return (

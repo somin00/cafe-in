@@ -1,23 +1,22 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { styled } from 'styled-components';
+import { useRecoilValue } from 'recoil';
 import { SelectedColorType } from '../../style/theme';
 import { selectedColorState } from '../../state/ColorState';
-import { useRecoilValue } from 'recoil';
 import { useSelectedColor } from '../../hooks/useSelectedColor';
 import { ColorProps } from '../../types/ColorProps';
 
 function WaitingCheck() {
 	const selectedColor = useRecoilValue<SelectedColorType>(selectedColorState);
-	useSelectedColor();
-
 	const navigate = useNavigate();
 	const location = useLocation();
+	const [remainingTime, setRemainingTime] = useState<number>(20);
+
+	useSelectedColor();
 
 	//? 대기 신청 페이지에서 넘겨 받은 대기 번호
 	const { userWaitingNum } = location.state;
-
-	const [remainingTime, setRemainingTime] = useState<number>(20);
 
 	const RemainingTimeText = ({ remainingTime }: { remainingTime: number }) => {
 		return <p>{remainingTime}초 뒤에 자동으로 홈 화면으로 이동합니다.</p>;

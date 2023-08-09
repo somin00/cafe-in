@@ -10,7 +10,6 @@ import { ColorProps } from '../../types/ColorProps';
 function WaitingApplyModal({ closeModal }: ModalProps) {
 	const [isOpenModal, setIsOpenModal] = useRecoilState<boolean>(modalState);
 	const modalType = useRecoilValue<string>(modalTypeState);
-
 	const selectedColor = useRecoilValue<SelectedColorType>(selectedColorState);
 	useSelectedColor();
 

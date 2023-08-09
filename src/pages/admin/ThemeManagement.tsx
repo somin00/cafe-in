@@ -14,7 +14,6 @@ interface ThemeManagementProps {
 function ThemeManagement({ setIsDarkmode }: ThemeManagementProps) {
 	const [selectedColor, setSelectedColor] = useRecoilState<SelectedColorType>(selectedColorState);
 	useSelectedColor();
-
 	const handleColorSelected = (color: SelectedColorType) => {
 		setSelectedColor(color);
 		localStorage.setItem('selectedColor', color);
@@ -60,7 +59,7 @@ function ThemeManagement({ setIsDarkmode }: ThemeManagementProps) {
 								handleColorSelected('purple');
 							}}
 						>
-							<img src={process.env.PUBLIC_URL + '/assets/admin/purpleColor.svg'} alt="남색" />
+							<img src={process.env.PUBLIC_URL + '/assets/admin/purpleColor.svg'} alt="보라색" />
 						</button>
 					</Colors>
 				</ColorWrapper>

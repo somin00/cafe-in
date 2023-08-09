@@ -1,17 +1,15 @@
-import React from 'react';
 import { styled } from 'styled-components';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
-import { modalState, modalTypeState, modalUpdateState, notificationUserState } from '../../state/ModalState';
 import { ModalProps } from '../../types/ModalProps';
+import { ColorProps } from '../../types/ColorProps';
 import { SelectedColorType } from '../../style/theme';
+import { modalState, modalTypeState, modalUpdateState, notificationUserState } from '../../state/ModalState';
 import { selectedColorState } from '../../state/ColorState';
 import { useSelectedColor } from '../../hooks/useSelectedColor';
-import { ColorProps } from '../../types/ColorProps';
 
 function WaitingModal({ closeModal }: ModalProps) {
 	const selectedColor = useRecoilValue<SelectedColorType>(selectedColorState);
 	useSelectedColor();
-
 	const [isOpenModal, setIsOpenModal] = useRecoilState<boolean>(modalState);
 	const modalType = useRecoilValue<string>(modalTypeState);
 	const setModalUpdate = useSetRecoilState<boolean>(modalUpdateState);
