@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { styled } from 'styled-components';
 import { defaultTheme, darkTheme } from '../../style/theme';
@@ -58,12 +58,10 @@ function SelectedItemContainer() {
 	};
 
 	const totalPrice = selectedItems.reduce((acc, item) => acc + item.totalPrice * item.quantity, 0);
-
-	const handleDeleteAll = async () => {
+	const handleDeleteAll = useCallback(async () => {
 		const selectedItemsCol = collection(db, 'selectedItem');
 		const snapshot = await getDocs(selectedItemsCol);
 
-		//모든 작업을 한번에 단일요청할때 writeBatch
 		const batch = writeBatch(db);
 
 		snapshot.docs.forEach((doc) => {
@@ -73,8 +71,7 @@ function SelectedItemContainer() {
 		await batch.commit();
 
 		setSelectedItems([]);
-	};
-
+	}, [db]);
 	const handleAddOrderMoveTo = async () => {
 		navigate('/order');
 		selectedItems.forEach(async (item) => {
@@ -90,6 +87,36 @@ function SelectedItemContainer() {
 			await addDoc(collection(db, 'orderList'), newOrder);
 		});
 	};
+
+	useEffect(() => {
+		let lastInteraction = Date.now();
+		const timeoutDuration = 10000; // 10초
+		let timeoutRef: string | number | NodeJS.Timeout | undefined;
+
+		const handleUserInteraction = () => {
+			lastInteraction = Date.now();
+
+			if (timeoutRef) {
+				clearTimeout(timeoutRef);
+			}
+
+			timeoutRef = setTimeout(() => {
+				const currentTime = Date.now();
+				if (currentTime - lastInteraction > timeoutDuration) {
+					handleDeleteAll();
+				}
+			}, timeoutDuration);
+		};
+
+		window.addEventListener('click', handleUserInteraction);
+
+		return () => {
+			window.removeEventListener('click', handleUserInteraction);
+			if (timeoutRef) {
+				clearTimeout(timeoutRef);
+			}
+		};
+	}, [handleDeleteAll]);
 	return (
 		<Background>
 			<Layout>
@@ -171,6 +198,7 @@ const SelectedItem = styled.li<StyledProps>`
 	align-items: flex-end;
 	margin: 10px;
 	padding: 15px 10px;
+
 	font-weight: ${({ theme }) => theme.fontWeight?.bold};
 	border: 1px solid ${({ theme }) => theme.textColor?.lightbrown};
 	background-color: ${({ theme }) => theme.textColor?.white};
@@ -180,6 +208,13 @@ const SelectedItem = styled.li<StyledProps>`
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+	.counter,
+	.price {
+		overflow: hidden;
+		text-overflow: ellipsis;
 	}
 
 	.counter {
@@ -232,6 +267,8 @@ const SelectedItem = styled.li<StyledProps>`
 const OptionsSelected = styled.div<{ $noOptions: boolean }>`
 	display: flex;
 	width: 100%;
+	overflow: hidden;
+	text-overflow: ellipsis;
 	justify-content: start;
 	margin-top: ${({ $noOptions }) => ($noOptions ? '0' : '10px')};
 	padding-top: ${({ $noOptions }) => ($noOptions ? '0' : '6px')};
