@@ -4,7 +4,7 @@ import { ModalDefaultType } from '../../types/ModalOpenTypes';
 import PointAddCheckModal from '../UserMode/PointAddCheckModal';
 import { darkTheme, defaultTheme } from '../../style/theme';
 import Dark_PointAddCheckModal from '../darkThemeModal/Dark_PointAddCheckModal';
-import { addDoc, collection } from 'firebase/firestore';
+import { addDoc, collection, doc, getDocs, query, updateDoc, where } from 'firebase/firestore';
 import { db } from '../../firebase/firebaseConfig';
 function AddPointModal({ onClickToggleModal }: ModalDefaultType) {
 	const theme = useTheme();
@@ -14,11 +14,32 @@ function AddPointModal({ onClickToggleModal }: ModalDefaultType) {
 		onClickToggleModal();
 	};
 	const [isOpenModal, setModalOpen] = useState<boolean>(false);
-
 	const onClickOpenModal = useCallback(async () => {
 		setModalOpen(true);
+
 		const pointsCollection = collection(db, 'point');
-		await addDoc(pointsCollection, { date: Date.now(), phoneNumber: phoneNumber });
+		const q = query(pointsCollection, where('phoneNumber', '==', phoneNumber));
+
+		const matchingDocs = await getDocs(q);
+
+		if (!matchingDocs.empty) {
+			// 이미 존재하는 문서에 포인트를 500 증가
+			const existingDoc = matchingDocs.docs[0];
+			const docRef = doc(db, 'point', existingDoc.id);
+			const currentPoints = existingDoc.data().point || 0;
+			await updateDoc(docRef, {
+				point: currentPoints + 500,
+			});
+		} else {
+			// 존재하지 않는 경우 새로운 문서를 추가하고 포인트를 1000으로 설정
+			const userToBeAdded = {
+				date: Date.now(),
+				phoneNumber: phoneNumber,
+				point: 1000,
+			};
+
+			await addDoc(pointsCollection, userToBeAdded);
+		}
 
 		setTimeout(() => {
 			setModalOpen(true);
