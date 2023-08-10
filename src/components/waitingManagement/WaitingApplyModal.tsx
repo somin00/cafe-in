@@ -20,6 +20,7 @@ function WaitingApplyModal({ closeModal }: ModalProps) {
 				{modalType === 'error' ? <h1>대기 신청을 실패하였습니다.</h1> : <h1>대기 신청이 완료되었습니다.</h1>}
 				<ApplyModalBtn
 					$selectedColor={selectedColor}
+					aria-label="대기 신청 상태 확인"
 					onClick={() => {
 						setIsOpenModal(false);
 					}}

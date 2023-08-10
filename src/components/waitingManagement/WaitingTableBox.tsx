@@ -117,6 +117,12 @@ const TableHeader = styled.tr<ColorProps>`
 	background-color: ${({ theme, $selectedColor }) =>
 		theme.lightColor ? theme.lightColor[$selectedColor].main : theme.textColor.white};
 	border: ${({ theme }) => (theme.lightColor ? 'none' : '1px solid white')};
+	color: ${({ theme, $selectedColor }) =>
+		theme.lightColor
+			? $selectedColor === 'blue'
+				? theme.textColor.white
+				: theme.textColor.black
+			: theme.textColor.black};
 `;
 
 const WaitingItemList = styled.tbody`
