@@ -1,13 +1,14 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
 import { styled } from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 
 type HeaderTextProps = {
 	headerText: string;
+	children?: ReactNode;
 };
 
 function ManagementHeader(props: HeaderTextProps) {
-	const { headerText } = props;
+	const { headerText, children } = props;
 
 	const navigate = useNavigate();
 
@@ -21,7 +22,8 @@ function ManagementHeader(props: HeaderTextProps) {
 			<IconWrapper onClick={handleBackClick}>
 				<img alt="뒤로가기 버튼" />
 			</IconWrapper>
-			<HeaderTitle>{headerText}</HeaderTitle>
+			<HeaderTitle className={children ? 'has-button' : ''}>{headerText}</HeaderTitle>
+			{children}
 		</ManagementHeaderWrapper>
 	);
 }
@@ -34,7 +36,7 @@ const ManagementHeaderWrapper = styled.div`
 	padding-left: 33px;
 	padding-right: 33px;
 	display: flex;
-	justify-content: center;
+	justify-content: space-between;
 	align-items: center;
 	font-size: ${({ theme }) => theme.fontSize['4xl']};
 	font-weight: ${({ theme }) => theme.fontWeight.semibold};
@@ -54,4 +56,7 @@ const HeaderTitle = styled.h1`
 	padding-right: 25px;
 	display: flex;
 	justify-content: center;
+	&.has-button {
+		padding-left: 280px;
+	}
 `;
