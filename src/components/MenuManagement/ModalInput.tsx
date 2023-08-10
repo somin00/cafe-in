@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useRef, useState } from 'react';
+import React, { ChangeEvent, useRef, useState, KeyboardEvent } from 'react';
 import styled from 'styled-components';
 import { ModalInputPropType } from '../../types/menuMangementType';
 import { useRecoilValue } from 'recoil';
@@ -11,6 +11,7 @@ function ModalInput({ menuInfo, setMenuState, setFile }: ModalInputPropType) {
 
 	const instockRef = useRef<HTMLButtonElement>(null);
 	const soldoutRef = useRef<HTMLButtonElement>(null);
+	const imageInputRef = useRef<HTMLInputElement>(null);
 
 	const handleChangeInput = (e: ChangeEvent<HTMLInputElement> | ChangeEvent<HTMLSelectElement>) => {
 		const { name, value } = e.target;
@@ -42,6 +43,13 @@ function ModalInput({ menuInfo, setMenuState, setFile }: ModalInputPropType) {
 				soldout: true,
 			};
 		});
+	};
+
+	const handleKeyDown = (e: KeyboardEvent<HTMLLabelElement>) => {
+		if (e.key === 'Enter') {
+			const fileInput = imageInputRef.current;
+			fileInput?.click();
+		}
 	};
 
 	const handleRegisterImage = (e: ChangeEvent<HTMLInputElement>) => {
@@ -89,9 +97,18 @@ function ModalInput({ menuInfo, setMenuState, setFile }: ModalInputPropType) {
 				<legend>about Beverage</legend>
 				{imgSrc ? (
 					<ImageContainer>
-						<img src={imgSrc} alt="음료 이미지" />
-						<label htmlFor="file">이미지 변경하기</label>
-						<input type="file" name="file" accept="image/*" id="file" onChange={handleRegisterImage}></input>
+						<img src={imgSrc} alt={`${menuInfo.name} 이미지`} />
+						<label htmlFor="file" tabIndex={0} onKeyDown={handleKeyDown}>
+							이미지 변경하기
+						</label>
+						<input
+							type="file"
+							ref={imageInputRef}
+							name="file"
+							accept="image/*"
+							id="file"
+							onChange={handleRegisterImage}
+						></input>
 						<CloseButton type="button" onClick={deleteImage}>
 							<img src="/assets/admin/close_light.svg" alt="닫기" />
 						</CloseButton>
@@ -99,8 +116,17 @@ function ModalInput({ menuInfo, setMenuState, setFile }: ModalInputPropType) {
 				) : (
 					<ImageContainer>
 						<div>이미지 없음</div>
-						<label htmlFor="file">이미지 등록하기</label>
-						<input type="file" name="file" accept="image/*" id="file" onChange={handleRegisterImage}></input>
+						<label htmlFor="file" tabIndex={0} onKeyDown={handleKeyDown}>
+							이미지 등록하기
+						</label>
+						<input
+							type="file"
+							ref={imageInputRef}
+							name="file"
+							accept="image/*"
+							id="file"
+							onChange={handleRegisterImage}
+						></input>
 					</ImageContainer>
 				)}
 				<InputList>
