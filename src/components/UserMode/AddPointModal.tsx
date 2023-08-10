@@ -9,11 +9,13 @@ import { db } from '../../firebase/firebaseConfig';
 function AddPointModal({ onClickToggleModal }: ModalDefaultType) {
 	const theme = useTheme();
 	const [phoneNumber, setPhoneNumber] = useState('');
+	const [isOpenModal, setModalOpen] = useState<boolean>(false);
+	const [isNewUser, setIsNewUser] = useState<boolean | null>(null);
+
 	const handleCloseBtnClick = (e: React.MouseEvent) => {
 		e.stopPropagation();
 		onClickToggleModal();
 	};
-	const [isOpenModal, setModalOpen] = useState<boolean>(false);
 	const onClickOpenModal = useCallback(async () => {
 		setModalOpen(true);
 
@@ -27,11 +29,13 @@ function AddPointModal({ onClickToggleModal }: ModalDefaultType) {
 			const existingDoc = matchingDocs.docs[0];
 			const docRef = doc(db, 'point', existingDoc.id);
 			const currentPoints = existingDoc.data().point || 0;
+			setIsNewUser(false);
 			await updateDoc(docRef, {
 				point: currentPoints + 500,
 			});
 		} else {
 			// 존재하지 않는 경우 새로운 문서를 추가하고 포인트를 1000으로 설정
+			setIsNewUser(true);
 			const userToBeAdded = {
 				date: Date.now(),
 				phoneNumber: phoneNumber,
@@ -72,7 +76,12 @@ function AddPointModal({ onClickToggleModal }: ModalDefaultType) {
 			</DialogBox>
 			{isOpenModal &&
 				(theme === defaultTheme ? (
-					<PointAddCheckModal onClickOpenModal={onClickOpenModal} isOpenModal={isOpenModal} />
+					<PointAddCheckModal
+						onClickOpenModal={onClickOpenModal}
+						isOpenModal={isOpenModal}
+						phoneNumber={phoneNumber}
+						isNewUser={isNewUser}
+					/>
 				) : (
 					<Dark_PointAddCheckModal onClickOpenModal={onClickOpenModal} isOpenModal={isOpenModal} />
 				))}

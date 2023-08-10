@@ -3,15 +3,19 @@ import { styled } from 'styled-components';
 import { ModalAndModalType } from '../../types/ModalOpenTypes';
 interface PointAddCheckModalProps extends ModalAndModalType {
 	isOpenModal: boolean;
+	phoneNumber: string;
+	isNewUser: boolean | null;
 }
 
-function PointAddCheckModal({ isOpenModal, onClickOpenModal }: PointAddCheckModalProps) {
+function PointAddCheckModal({ isOpenModal, onClickOpenModal, phoneNumber, isNewUser }: PointAddCheckModalProps) {
 	return isOpenModal ? (
 		<ModalContainer onClick={onClickOpenModal}>
 			<DialogBox onClick={(e) => e.stopPropagation()}>
 				<img className="phone-light" src="/assets/user/phonehuman_light.svg" alt="폰" width={226} />
 				<div className="ment">
-					<p> 0 0 0 0 님, 환영합니다 !</p>
+					<p>
+						{phoneNumber.slice(-4)} 님,{isNewUser ? '환영합니다 !' : '적립되었습니다!'}
+					</p>
 					<p>포인트를 적립하여 혜택을 받아보세요 ! </p>
 				</div>
 				<img className="rocket-light" src="/assets/user/rocket_light.svg" alt="로켓" width={332} />
