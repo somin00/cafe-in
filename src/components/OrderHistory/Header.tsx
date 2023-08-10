@@ -1,10 +1,27 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 
-function Header() {
+interface HeaderPropType {
+	setIsProgress: () => void;
+	setIsComplete: () => void;
+}
+function Header({ setIsProgress, setIsComplete }: HeaderPropType) {
 	const navigate = useNavigate();
+	const progressRef = useRef<HTMLButtonElement>(null);
+	const completeRef = useRef<HTMLButtonElement>(null);
 
+	const handleClickProgress = () => {
+		completeRef.current?.classList.remove('is-selected');
+		progressRef.current?.classList.add('is-selected');
+		setIsProgress();
+	};
+
+	const handleClickComplete = () => {
+		progressRef.current?.classList.remove('is-selected');
+		completeRef.current?.classList.add('is-selected');
+		setIsComplete();
+	};
 	return (
 		<>
 			<HeadWrapper>
@@ -17,10 +34,12 @@ function Header() {
 				</ImageContainer>
 				<h1>주문 내역</h1>
 				<ButtonContainer>
-					<button type="button" className="is-selected">
+					<button type="button" className="is-selected" ref={progressRef} onClick={handleClickProgress}>
 						진행중
 					</button>
-					<button type="button">완료주문</button>
+					<button type="button" ref={completeRef} onClick={handleClickComplete}>
+						완료주문
+					</button>
 				</ButtonContainer>
 			</HeadWrapper>
 		</>
