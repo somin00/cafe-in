@@ -4,6 +4,7 @@ import CategoryManagementModal from './CategoryManagementModal';
 import ModalPortal from '../ModalPortal';
 import AddMenuModal from './AddMenuModal';
 import ManagementHeader from '../adminMode/ManagementHeader';
+import HeaderButton from '../adminMode/HeaderButton';
 
 function Header() {
 	const [isCategoryModalOpen, setIsCategoryModalOpen] = useState<boolean>(false);
@@ -22,12 +23,8 @@ function Header() {
 			<HeadWrapper>
 				<ManagementHeader headerText="메뉴 추가">
 					<ButtonContainer>
-						<button type="button" onClick={handleOpenCategoryModal}>
-							카테고리 관리
-						</button>
-						<button type="button" onClick={handleOpenAddMenuModal}>
-							메뉴 추가
-						</button>
+						<HeaderButton text="카테고리" decorate="is-selected" onClick={handleOpenCategoryModal} />
+						<HeaderButton text="메뉴추가" decorate="is-selected" onClick={handleOpenCategoryModal} />
 					</ButtonContainer>
 				</ManagementHeader>
 			</HeadWrapper>
@@ -54,15 +51,4 @@ const HeadWrapper = styled.header`
 
 const ButtonContainer = styled.div`
 	display: flex;
-	button {
-		width: 140px;
-		height: 56px;
-		background-color: ${({ theme }) => (theme.lightColor ? theme.lightColor?.yellow.point : theme.textColor.white)};
-		border-radius: 10px;
-		font-size: ${({ theme }) => theme.fontSize['xl']};
-		color: ${({ theme }) => (theme.lightColor ? theme.textColor.white : theme.textColor.black)};
-		&:first-child {
-			margin-right: 6px;
-		}
-	}
 `;

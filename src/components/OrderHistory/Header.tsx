@@ -1,6 +1,7 @@
 import React, { useRef } from 'react';
 import styled from 'styled-components';
 import ManagementHeader from '../adminMode/ManagementHeader';
+import HeaderButton from '../adminMode/HeaderButton';
 
 interface HeaderPropType {
 	setIsProgress: () => void;
@@ -26,12 +27,8 @@ function Header({ setIsProgress, setIsComplete }: HeaderPropType) {
 			<HeadWrapper>
 				<ManagementHeader headerText="주문 내역">
 					<ButtonContainer>
-						<button type="button" className="is-selected" ref={progressRef} onClick={handleClickProgress}>
-							진행중
-						</button>
-						<button type="button" ref={completeRef} onClick={handleClickComplete}>
-							완료주문
-						</button>
+						<HeaderButton text="진행중" decorate="is-selected" ref={progressRef} onClick={handleClickProgress} />
+						<HeaderButton text="완료주문" ref={completeRef} onClick={handleClickComplete} />
 					</ButtonContainer>
 				</ManagementHeader>
 			</HeadWrapper>
@@ -48,23 +45,4 @@ const HeadWrapper = styled.div`
 
 const ButtonContainer = styled.div`
 	display: flex;
-	button {
-		width: 140px;
-		height: 56px;
-		border-radius: 10px;
-		font-size: ${({ theme }) => theme.fontSize['2xl']};
-		font-weight: ${({ theme }) => theme.fontWeight.medium};
-		background-color: ${({ theme }) => (theme.lightColor ? theme.textColor.white : theme.darkColor?.background)};
-		border: ${({ theme }) => (theme.lightColor ? theme.lightColor?.yellow.point : theme.textColor.darkgray)} 1px solid;
-		color: ${({ theme }) => (theme.lightColor ? theme.lightColor?.yellow.point : theme.textColor.darkgray)};
-
-		&:first-child {
-			margin-right: 6px;
-		}
-
-		&.is-selected {
-			background-color: ${({ theme }) => (theme.lightColor ? theme.lightColor?.yellow.point : theme.textColor.white)};
-			color: ${({ theme }) => (theme.lightColor ? theme.textColor.white : theme.textColor.black)};
-		}
-	}
 `;
