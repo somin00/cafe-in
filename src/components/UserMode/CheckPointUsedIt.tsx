@@ -8,18 +8,28 @@ interface CheckPointUsedIt extends ModalAndModalType {
 	onClickOpenModal: () => void;
 	isOpenModal: boolean;
 	points: number | null;
+	onUsePoints: (usedPoints: number) => Promise<void>;
 }
-function CheckPointUsedIt({ isOpenModal, onClickOpenModal, points }: CheckPointUsedIt) {
+function CheckPointUsedIt({ isOpenModal, onClickOpenModal, points, onUsePoints }: CheckPointUsedIt) {
 	const theme = useTheme();
 	const [point, setPoint] = useState('');
 
-	const handleCloseBtnClick = (e: React.ChangeEvent<HTMLInputElement>) => {
-		e.stopPropagation();
-		setPoint(e.target.value);
-		onClickOpenModal();
-		console.log(points);
+	const handleConfirmClick = async () => {
+		try {
+			const enteredPoints = parseInt(point, 10);
+			if (points && enteredPoints >= 1000 && enteredPoints <= points) {
+				await onUsePoints(enteredPoints);
+				onClickOpenModal();
+			} else {
+				alert('포인트를 확인하세요');
+			}
+		} catch (error) {
+			console.error('err:', error);
+		}
 	};
-
+	const handlePointChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		setPoint(e.target.value);
+	};
 	return isOpenModal ? (
 		<ModalContainer onClick={onClickOpenModal}>
 			<DialogBox onClick={(e) => e.stopPropagation()}>
@@ -38,11 +48,18 @@ function CheckPointUsedIt({ isOpenModal, onClickOpenModal, points }: CheckPointU
 				</div>
 				<InputExplain>
 					<label htmlFor="point" hidden />
-					<input type="number" id="point" name="point" value={point} placeholder="숫자만 입력해주세요"></input>
+					<input
+						type="number"
+						id="point"
+						name="point"
+						value={point}
+						placeholder="숫자만 입력해주세요"
+						onChange={handlePointChange}
+					></input>
 					<p>1,000 포인트 이상 사용 가능합니다. </p>
 				</InputExplain>
 				<BtnContainer>
-					<CloseBtn onClick={() => handleCloseBtnClick}>확인</CloseBtn>
+					<CloseBtn onClick={() => handleConfirmClick()}>확인</CloseBtn>
 				</BtnContainer>
 			</DialogBox>
 		</ModalContainer>

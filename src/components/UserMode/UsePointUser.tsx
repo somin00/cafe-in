@@ -3,12 +3,11 @@ import { ModalDefaultType } from '../../types/ModalOpenTypes';
 import { styled } from 'styled-components';
 import CheckPointUsedIt from './CheckPointUsedIt';
 import { darkTheme, defaultTheme } from '../../style/theme';
-import { collection, query, where, getDocs } from 'firebase/firestore';
+import { collection, query, where, getDocs, doc, updateDoc } from 'firebase/firestore';
 import { db } from '../../firebase/firebaseConfig';
 
 function UsePointUser({ onClickToggleModal }: ModalDefaultType) {
 	const [isOpenModal, setModalOpen] = useState<boolean>(false);
-
 	const [phoneNumber, setPhoneNumber] = useState('');
 	const [userPoints, setUserPoints] = useState<number | null>(null);
 
@@ -26,21 +25,35 @@ function UsePointUser({ onClickToggleModal }: ModalDefaultType) {
 		const q = query(pointsCollection, where('phoneNumber', '==', phoneNumber));
 
 		const matchingDocs = await getDocs(q);
-
 		if (!matchingDocs.empty) {
-			// 일치하는 번호가 있는 경우
 			const existingDoc = matchingDocs.docs[0];
 			const points = existingDoc.data().point || 0;
 			setUserPoints(points);
 			setModalOpen(true);
 		} else {
-			// 일치하는 번호가 없는 경우
-			alert('회원만 포인트 사용이 가능합니다! ');
-			setModalOpen(false); // 모달을 닫습니다.
+			alert('회원만 포인트 사용이 가능합니다!');
+			setModalOpen(false);
 			onClickToggleModal();
 		}
 	}, [phoneNumber]);
 
+	const handleUsePoints = async (usedPoints: number) => {
+		if (userPoints !== null && userPoints >= usedPoints) {
+			const remainingPoints = userPoints - usedPoints;
+			setUserPoints(remainingPoints);
+
+			const pointsCollection = collection(db, 'point');
+			const q = query(pointsCollection, where('phoneNumber', '==', phoneNumber));
+			const matchingDocs = await getDocs(q);
+			if (!matchingDocs.empty) {
+				const existingDoc = matchingDocs.docs[0];
+				const docRef = doc(db, 'point', existingDoc.id);
+				await updateDoc(docRef, { point: remainingPoints });
+			}
+		} else {
+			alert('포인트가 부족합니다.');
+		}
+	};
 	return (
 		<ModalContainer onClick={onClickToggleModal}>
 			<DialogBox onClick={(e) => e.stopPropagation()}>
@@ -65,7 +78,12 @@ function UsePointUser({ onClickToggleModal }: ModalDefaultType) {
 				</BtnContainer>
 			</DialogBox>
 			{isOpenModal && (
-				<CheckPointUsedIt onClickOpenModal={onClickToggleModal} isOpenModal={isOpenModal} points={userPoints} />
+				<CheckPointUsedIt
+					onClickOpenModal={onClickToggleModal}
+					isOpenModal={isOpenModal}
+					points={userPoints}
+					onUsePoints={handleUsePoints}
+				/>
 			)}
 			<Backdrop
 				onClick={(e: React.MouseEvent) => {
