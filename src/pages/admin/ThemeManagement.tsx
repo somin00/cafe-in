@@ -9,6 +9,7 @@ import { ColorProps } from '../../types/ColorProps';
 
 interface ThemeManagementProps {
 	setIsDarkmode: React.Dispatch<React.SetStateAction<boolean>>;
+	isDarkmode: boolean;
 }
 
 function ThemeManagement({ setIsDarkmode }: ThemeManagementProps) {
@@ -17,6 +18,11 @@ function ThemeManagement({ setIsDarkmode }: ThemeManagementProps) {
 	const handleColorSelected = (color: SelectedColorType) => {
 		setSelectedColor(color);
 		localStorage.setItem('selectedColor', color);
+	};
+
+	const handleDarkmode = (isDarkmode: boolean) => {
+		setIsDarkmode(isDarkmode);
+		localStorage.setItem('isDarkmode', JSON.stringify(isDarkmode));
 	};
 
 	return (
@@ -71,14 +77,14 @@ function ThemeManagement({ setIsDarkmode }: ThemeManagementProps) {
 					<ModeBox>
 						<LightMode
 							onClick={() => {
-								setIsDarkmode(false);
+								handleDarkmode(false);
 							}}
 						>
 							<img alt="라이트 모드" />
 						</LightMode>
 						<DarkMode
 							onClick={() => {
-								setIsDarkmode(true);
+								handleDarkmode(true);
 							}}
 						>
 							<img alt="다크 모드" />
