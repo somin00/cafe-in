@@ -6,6 +6,8 @@ import UsePointUser from '../../components/UserMode/UsePointUser';
 import { darkTheme, defaultTheme } from '../../style/theme';
 import { collection, getDocs, writeBatch } from 'firebase/firestore';
 import { db } from '../../firebase/firebaseConfig';
+import { useRecoilValue } from 'recoil';
+import { usedPointsState } from '../../state/PointState';
 interface Order {
 	id: string;
 	list: {
@@ -20,6 +22,7 @@ interface Order {
 function OrderCheck() {
 	const navigate = useNavigate();
 	const theme = useTheme();
+	const usedPoints = useRecoilValue(usedPointsState);
 	const [isOpenAddPointModal, setAddPointModalOpen] = useState<boolean>(false);
 	const [isOpenUsePointUserModal, setUsePointUserModalOpen] = useState<boolean>(false);
 	const [orderList, setOrderList] = useState<Order[]>([]);
@@ -63,6 +66,7 @@ function OrderCheck() {
 
 		setOrderList([]);
 	};
+	const TotalOrderPrice = totalOrderAmount - (usedPoints || 0);
 	return (
 		<Layout>
 			<Header>
@@ -112,11 +116,11 @@ function OrderCheck() {
 						</div>
 						<div>
 							<h2>포인트 사용</h2>
-							<p>- 2131223123원</p>
+							<p>- {usedPoints?.toLocaleString() ?? '0'}원</p>
 						</div>
 						<div>
 							<h2>총 결제 금액</h2>
-							<p>2131223123원</p>
+							<p>{TotalOrderPrice.toLocaleString()}원</p>
 						</div>
 					</TotalPrice>
 

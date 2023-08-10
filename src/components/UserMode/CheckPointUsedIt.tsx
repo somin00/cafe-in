@@ -4,6 +4,8 @@ import { ModalContainer } from './UsePointUser';
 import { CloseBtn, PointInput } from './AddPointModal';
 import { darkTheme, defaultTheme } from '../../style/theme';
 import { ModalAndModalType } from '../../types/ModalOpenTypes';
+import { useSetRecoilState } from 'recoil';
+import { usedPointsState } from '../../state/PointState';
 interface CheckPointUsedIt extends ModalAndModalType {
 	onClickOpenModal: () => void;
 	isOpenModal: boolean;
@@ -12,6 +14,8 @@ interface CheckPointUsedIt extends ModalAndModalType {
 	phoneNumber: string;
 }
 function CheckPointUsedIt({ isOpenModal, onClickOpenModal, points, onUsePoints, phoneNumber }: CheckPointUsedIt) {
+	const setUsedPoints = useSetRecoilState(usedPointsState);
+
 	const theme = useTheme();
 	const [point, setPoint] = useState('');
 
@@ -28,8 +32,11 @@ function CheckPointUsedIt({ isOpenModal, onClickOpenModal, points, onUsePoints, 
 			console.error('err:', error);
 		}
 	};
+
 	const handlePointChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		const value = e.target.value ? parseInt(e.target.value, 10) : null;
 		setPoint(e.target.value);
+		setUsedPoints(value);
 	};
 	const handlePointClick = () => {
 		setPoint(points?.toString() ?? '');
