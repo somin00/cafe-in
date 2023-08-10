@@ -32,7 +32,7 @@ export const defaultTheme: DefaultTheme = {
 			background: '#EDE4FF',
 			main: '#A076F9',
 			sub: '#D7BBF5',
-			point: '#7A49ED',
+			point: '#645CAA',
 		},
 	},
 	textColor: {
