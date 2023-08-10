@@ -42,7 +42,15 @@ function CategoryManagementModal({ onClickToggleModal }: ModalDefaultType) {
 			<CategoryModalContent>
 				<GuidText>* 이미 존재하는 카테고리는 추가 불가능합니다.</GuidText>
 				<AddContainer>
-					<input type="text" value={categoryName} onChange={handleChangeCategoryName} />
+					<form
+						onSubmit={(e) => {
+							e.preventDefault();
+						}}
+					>
+						<label htmlFor="categoryName">
+							<input type="text" id="categoryName" value={categoryName} onChange={handleChangeCategoryName} />
+						</label>
+					</form>
 					<button type="button" onClick={handleAddCategory} disabled={!categoryName || isDuplicate ? true : false}>
 						추가
 					</button>
