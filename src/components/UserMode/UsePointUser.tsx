@@ -10,6 +10,8 @@ function UsePointUser({ onClickToggleModal }: ModalDefaultType) {
 	const [isOpenModal, setModalOpen] = useState<boolean>(false);
 
 	const [phoneNumber, setPhoneNumber] = useState('');
+	const [userPoints, setUserPoints] = useState<number | null>(null);
+
 	const handlePhoneNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		setPhoneNumber(e.target.value);
 	};
@@ -29,8 +31,8 @@ function UsePointUser({ onClickToggleModal }: ModalDefaultType) {
 		if (!matchingDocs.empty) {
 			// 일치하는 번호가 있는 경우
 			const existingDoc = matchingDocs.docs[0];
-			const userPoints = existingDoc.data().point || 0;
-			console.log(`포인트 ${userPoints}`);
+			const points = existingDoc.data().point || 0;
+			setUserPoints(points);
 		} else {
 			// 일치하는 번호가 없는 경우
 			alert('회원만 포인트 사용이 가능합니다! ');
@@ -60,7 +62,9 @@ function UsePointUser({ onClickToggleModal }: ModalDefaultType) {
 					<CloseBtn onClick={onClickOpenModal}>확인</CloseBtn>
 				</BtnContainer>
 			</DialogBox>
-			{isOpenModal && <CheckPointUsedIt onClickOpenModal={onClickToggleModal} isOpenModal={isOpenModal} />}
+			{isOpenModal && (
+				<CheckPointUsedIt onClickOpenModal={onClickToggleModal} isOpenModal={isOpenModal} points={userPoints} />
+			)}
 			<Backdrop
 				onClick={(e: React.MouseEvent) => {
 					e.preventDefault();

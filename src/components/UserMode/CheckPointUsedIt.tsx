@@ -7,8 +7,9 @@ import { ModalAndModalType } from '../../types/ModalOpenTypes';
 interface CheckPointUsedIt extends ModalAndModalType {
 	onClickOpenModal: () => void;
 	isOpenModal: boolean;
+	points: number | null;
 }
-function CheckPointUsedIt({ isOpenModal, onClickOpenModal }: CheckPointUsedIt) {
+function CheckPointUsedIt({ isOpenModal, onClickOpenModal, points }: CheckPointUsedIt) {
 	const theme = useTheme();
 	const handleCloseBtnClick = (e: React.MouseEvent) => {
 		e.stopPropagation();
@@ -28,7 +29,7 @@ function CheckPointUsedIt({ isOpenModal, onClickOpenModal }: CheckPointUsedIt) {
 				</div>
 				<div className="point-check-allBtn">
 					<button>전액</button>
-					<p>잔여 : 3000 point</p>
+					<p>잔여 : {points} point</p>
 				</div>
 				<InputExplain>
 					<label htmlFor="phone-number" hidden />
