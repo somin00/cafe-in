@@ -42,6 +42,7 @@ export const defaultTheme: DefaultTheme = {
 		darkgray: '#808080',
 		lightbrown: '#eeeeee',
 		darkbrown: '#726868',
+		lightBeige: '#FFF9F0',
 	},
 
 	fontWeight: {
@@ -81,6 +82,7 @@ export const darkTheme: DefaultTheme = {
 		darkgray: '#808080',
 		lightbrown: '#eeeeee',
 		darkbrown: '#726868',
+		lightBeige: '#FFF9F0',
 	},
 
 	fontWeight: {
