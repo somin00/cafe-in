@@ -63,8 +63,7 @@ function OrderList({ order }: OrderListPropType) {
 export default OrderList;
 
 const OrderListWrapper = styled.li`
-	background-color: ${({ theme }) =>
-		theme.lightColor ? theme.lightColor?.yellow.background : theme.darkColor?.background};
+	background-color: ${({ theme }) => (theme.lightColor ? theme.lightColor.background : theme.darkColor.background)};
 	width: 350px;
 	height: 560px;
 	border-radius: 10px;
@@ -75,7 +74,7 @@ const OrderListWrapper = styled.li`
 		width: 130px;
 		height: 50px;
 		border-radius: 10px;
-		background-color: ${({ theme }) => (theme.lightColor ? theme.lightColor?.yellow.main : theme.darkColor?.main)};
+		background-color: ${({ theme }) => (theme.lightColor ? theme.lightColor.main : theme.darkColor.main)};
 		font-size: ${({ theme }) => theme.fontSize['2xl']};
 		font-weight: ${({ theme }) => theme.fontWeight.semibold};
 		margin-left: 90px;

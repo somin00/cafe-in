@@ -102,7 +102,7 @@ const AddModalContent = styled.div`
 	align-items: center;
 	width: 896px;
 	height: 586px;
-	background-color: ${({ theme }) => (theme.lightColor ? theme.lightColor?.yellow.background : theme.textColor.black)};
+	background-color: ${({ theme }) => (theme.lightColor ? theme.lightColor.background : theme.textColor.black)};
 	padding-top: 58px;
 	border-radius: 10px;
 `;
@@ -123,7 +123,7 @@ const Button = styled.button`
 	font-size: ${({ theme }) => theme.fontSize['3xl']};
 	font-weight: ${({ theme }) => theme.fontWeight.regular};
 	color: ${({ theme }) => theme.textColor.white};
-	background-color: ${({ theme }) => (theme.lightColor ? theme.lightColor?.yellow.sub : theme.darkColor?.main)};
+	background-color: ${({ theme }) => (theme.lightColor ? theme.lightColor.sub : theme.darkColor.main)};
 
 	&:first-child {
 		margin-right: 24px;

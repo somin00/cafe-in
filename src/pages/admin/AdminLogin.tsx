@@ -67,8 +67,7 @@ const AdminLoginWrapper = styled.div`
 	justify-content: center;
 	width: 1194px;
 	height: 100vh;
-	background-color: ${({ theme }) => (theme.lightColor ? theme.textColor.white : theme.darkColor?.background)};
-
+	background-color: ${({ theme }) => (theme.lightColor ? theme.textColor.white : theme.darkColor.background)};
 	img {
 		position: absolute;
 		top: 10px;
@@ -87,8 +86,7 @@ const AdminLoginWrapper = styled.div`
 const FormWrapper = styled.div`
 	width: 567px;
 	height: 333px;
-	background-color: ${({ theme }) =>
-		theme.lightColor ? theme.lightColor.yellow.background : theme.darkColor?.background};
+	background-color: ${({ theme }) => (theme.lightColor ? theme.lightColor.background : theme.darkColor.background)};
 	border-radius: 15px;
 	border: ${({ theme }) => theme.textColor.lightgray} 1px solid;
 	display: flex;
@@ -128,7 +126,7 @@ const FormWrapper = styled.div`
 	button {
 		width: 175px;
 		height: 54px;
-		background-color: ${({ theme }) => (theme.lightColor ? theme.lightColor?.yellow.main : theme.darkColor?.main)};
+		background-color: ${({ theme }) => (theme.lightColor ? theme.lightColor.main : theme.darkColor.main)};
 		border-radius: 20px;
 		color: ${({ theme }) => theme.textColor.white};
 		font-size: ${({ theme }) => theme.fontSize['2xl']};
