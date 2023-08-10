@@ -3,23 +3,54 @@ import { ModalDefaultType } from '../../types/ModalOpenTypes';
 import { styled } from 'styled-components';
 import CheckPointUsedIt from './CheckPointUsedIt';
 import { darkTheme, defaultTheme } from '../../style/theme';
+import { collection, query, where, getDocs } from 'firebase/firestore';
+import { db } from '../../firebase/firebaseConfig';
 
 function UsePointUser({ onClickToggleModal }: ModalDefaultType) {
 	const [isOpenModal, setModalOpen] = useState<boolean>(false);
+
+	const [phoneNumber, setPhoneNumber] = useState('');
+	const handlePhoneNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		setPhoneNumber(e.target.value);
+	};
+
 	const handleCloseBtnClick = (e: React.MouseEvent) => {
 		e.stopPropagation();
 		onClickToggleModal();
 	};
-	const onClickOpenModal = useCallback(() => {
+
+	const onClickOpenModal = useCallback(async () => {
 		setModalOpen(true);
-	}, []);
+		const pointsCollection = collection(db, 'point');
+		const q = query(pointsCollection, where('phoneNumber', '==', phoneNumber));
+
+		const matchingDocs = await getDocs(q);
+
+		if (!matchingDocs.empty) {
+			// 일치하는 번호가 있는 경우
+			const existingDoc = matchingDocs.docs[0];
+			const userPoints = existingDoc.data().point || 0;
+			console.log(`포인트 ${userPoints}`);
+		} else {
+			// 일치하는 번호가 없는 경우
+			alert('회원만 포인트 사용이 가능합니다! ');
+		}
+	}, [phoneNumber]);
+
 	return (
 		<ModalContainer onClick={onClickToggleModal}>
 			<DialogBox onClick={(e) => e.stopPropagation()}>
 				<p>핸드폰 번호 뒷자리 4자리를 입력해주세요 </p>
 				<PointInput>
 					<label htmlFor="phone-number" hidden />
-					<input type="number" id="phone-number" name="phonnumber" placeholder="숫자만 입력해주세요"></input>
+					<input
+						type="number"
+						id="phone-number"
+						name="phonnumber"
+						value={phoneNumber}
+						placeholder="숫자만 입력해주세요"
+						onChange={handlePhoneNumberChange}
+					></input>
 					<button>
 						<img src="/assets/user/BackBtn_light.svg" alt="지우기" width={45} />
 					</button>
