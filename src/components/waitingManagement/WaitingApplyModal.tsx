@@ -5,15 +5,11 @@ import { ModalProps } from '../../types/ModalProps';
 import { SelectedColorType } from '../../style/theme';
 import { useSelectedColor } from '../../hooks/useSelectedColor';
 import { selectedColorState } from '../../state/ColorState';
-
-type ColorProps = {
-	$selectedColor: SelectedColorType;
-};
+import { ColorProps } from '../../types/ColorProps';
 
 function WaitingApplyModal({ closeModal }: ModalProps) {
 	const [isOpenModal, setIsOpenModal] = useRecoilState<boolean>(modalState);
 	const modalType = useRecoilValue<string>(modalTypeState);
-
 	const selectedColor = useRecoilValue<SelectedColorType>(selectedColorState);
 	useSelectedColor();
 
@@ -24,6 +20,7 @@ function WaitingApplyModal({ closeModal }: ModalProps) {
 				{modalType === 'error' ? <h1>대기 신청을 실패하였습니다.</h1> : <h1>대기 신청이 완료되었습니다.</h1>}
 				<ApplyModalBtn
 					$selectedColor={selectedColor}
+					aria-label="대기 신청 상태 확인"
 					onClick={() => {
 						setIsOpenModal(false);
 					}}

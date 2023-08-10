@@ -1,16 +1,15 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { styled, useTheme } from 'styled-components';
 import { Routes, Route, NavLink } from 'react-router-dom';
 import { useRecoilState, useRecoilValue } from 'recoil';
-import { modalState } from '../../state/ModalState';
-import { isWaitingAvailableState } from '../../state/WaitingState';
-
 import ManagementHeader from '../../components/adminMode/ManagementHeader';
 import WaitingTableBox from '../../components/waitingManagement/WaitingTableBox';
 import WaitingModal from '../../components/waitingManagement/WaitingModal';
-import { SelectedColorType } from '../../style/theme';
+import { isWaitingAvailableState } from '../../state/WaitingState';
+import { modalState } from '../../state/ModalState';
 import { selectedColorState } from '../../state/ColorState';
 import { useSelectedColor } from '../../hooks/useSelectedColor';
+import { SelectedColorType } from '../../style/theme';
 
 type DataStatusProps = {
 	$isWaiting: boolean;
@@ -23,23 +22,24 @@ type styleProps = {
 
 const WaitingManagement = () => {
 	const selectedColor = useRecoilValue<SelectedColorType>(selectedColorState);
-	useSelectedColor();
-
 	const [isOpenModal, setIsOpenModal] = useRecoilState<boolean>(modalState);
+	const theme = useTheme();
+	const [isWaiting, setIsWaiting] = useState<boolean>(true);
+	const [isWaitingAvailable, setIsWaitingAvailable] = useRecoilState<boolean>(isWaitingAvailableState);
+
+	useSelectedColor();
 
 	const closeModal = () => {
 		setIsOpenModal(false);
 	};
-	const theme = useTheme();
-
-	const [isWaiting, setIsWaiting] = useState<boolean>(true);
-	const [isWaitingAvailable, setIsWaitingAvailable] = useRecoilState<boolean>(isWaitingAvailableState);
 
 	useEffect(() => {
 		const storedIsWaiting = localStorage.getItem('isWaiting');
+
 		if (storedIsWaiting != null) {
 			setIsWaiting(JSON.parse(storedIsWaiting));
 		}
+
 		localStorage.setItem('isWaitingAvailable', isWaitingAvailable.toString());
 	}, [isWaiting, isWaitingAvailable, setIsWaiting]);
 
@@ -66,7 +66,7 @@ const WaitingManagement = () => {
 							}}
 						>
 							<img
-								alt="선택된 체크 버튼"
+								alt="대기 중 명단 선택 상태 안내"
 								src={
 									isWaiting
 										? process.env.PUBLIC_URL +
@@ -93,7 +93,7 @@ const WaitingManagement = () => {
 										: process.env.PUBLIC_URL +
 										  (theme.lightColor ? '/assets/admin/check-able_light.svg' : '/assets/admin/check-able_dark.svg')
 								}
-								alt="선택되지 않은 체크 버튼"
+								alt="대기 완료 명단 선택 상태 안내"
 							/>
 							대기 완료 명단
 						</WaitedList>

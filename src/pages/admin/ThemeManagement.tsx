@@ -5,22 +5,24 @@ import { useRecoilState } from 'recoil';
 import { selectedColorState } from '../../state/ColorState';
 import { SelectedColorType } from '../../style/theme';
 import { useSelectedColor } from '../../hooks/useSelectedColor';
+import { ColorProps } from '../../types/ColorProps';
 
 interface ThemeManagementProps {
 	setIsDarkmode: React.Dispatch<React.SetStateAction<boolean>>;
+	isDarkmode: boolean;
 }
-
-type ColorProps = {
-	$selectedColor: SelectedColorType;
-};
 
 function ThemeManagement({ setIsDarkmode }: ThemeManagementProps) {
 	const [selectedColor, setSelectedColor] = useRecoilState<SelectedColorType>(selectedColorState);
 	useSelectedColor();
-
 	const handleColorSelected = (color: SelectedColorType) => {
 		setSelectedColor(color);
 		localStorage.setItem('selectedColor', color);
+	};
+
+	const handleDarkmode = (isDarkmode: boolean) => {
+		setIsDarkmode(isDarkmode);
+		localStorage.setItem('isDarkmode', JSON.stringify(isDarkmode));
 	};
 
 	return (
@@ -63,7 +65,7 @@ function ThemeManagement({ setIsDarkmode }: ThemeManagementProps) {
 								handleColorSelected('purple');
 							}}
 						>
-							<img src={process.env.PUBLIC_URL + '/assets/admin/purpleColor.svg'} alt="남색" />
+							<img src={process.env.PUBLIC_URL + '/assets/admin/purpleColor.svg'} alt="보라색" />
 						</button>
 					</Colors>
 				</ColorWrapper>
@@ -75,14 +77,14 @@ function ThemeManagement({ setIsDarkmode }: ThemeManagementProps) {
 					<ModeBox>
 						<LightMode
 							onClick={() => {
-								setIsDarkmode(false);
+								handleDarkmode(false);
 							}}
 						>
 							<img alt="라이트 모드" />
 						</LightMode>
 						<DarkMode
 							onClick={() => {
-								setIsDarkmode(true);
+								handleDarkmode(true);
 							}}
 						>
 							<img alt="다크 모드" />

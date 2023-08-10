@@ -2,35 +2,31 @@ import { useState, useEffect, useRef, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { styled, useTheme } from 'styled-components';
-import { isWaitingAvailableState } from '../../state/WaitingState';
 import { collection, getDocs, addDoc } from 'firebase/firestore';
 import { db } from '../../firebase/firebaseConfig';
-import { WaitingDataType } from '../../types/waitingDataType';
-import { filterTodayWaiting } from '../../utils/filter';
-import { modalState, modalTypeState } from '../../state/ModalState';
 import WaitingApplyModal from '../../components/waitingManagement/WaitingApplyModal';
-import { SelectedColorType } from '../../style/theme';
-import { selectedColorState } from '../../state/ColorState';
-import { useSelectedColor } from '../../hooks/useSelectedColor';
 import RenderMinusIcon from '../../components/customSVG/RenderMinusIcon';
 import RenderPlusIcon from '../../components/customSVG/RenderPlusIcon';
+import { SelectedColorType } from '../../style/theme';
+import { filterTodayWaiting } from '../../utils/filter';
+import { WaitingDataType } from '../../types/waitingDataType';
+import { ColorProps } from '../../types/ColorProps';
+import { isWaitingAvailableState } from '../../state/WaitingState';
+import { modalState, modalTypeState } from '../../state/ModalState';
+import { selectedColorState } from '../../state/ColorState';
+import { useSelectedColor } from '../../hooks/useSelectedColor';
 
 type DecreaseProps = {
 	$decreaseDisable: boolean;
 };
 
-type ColorProps = {
-	$selectedColor: SelectedColorType;
-};
-
 function Waiting() {
 	const selectedColor = useRecoilValue<SelectedColorType>(selectedColorState);
-	useSelectedColor();
-
 	const theme = useTheme();
-
 	const navigate = useNavigate();
 	const isWaitingAvailable = useRecoilValue<boolean>(isWaitingAvailableState);
+
+	useSelectedColor();
 
 	//* 대기 신청 확인 모달
 	const [isOpenModal, setIsOpenModal] = useRecoilState<boolean>(modalState);
@@ -39,6 +35,7 @@ function Waiting() {
 
 	//* 기존 대기 데이터
 	const [currentData, setCurrentData] = useState<WaitingDataType[]>([]);
+
 	//* 기존 대기 데이터 수
 	const [currentWaitingNum, setCurrentWaitingNum] = useState<number>(0);
 
@@ -51,18 +48,16 @@ function Waiting() {
 	const [waitingName, setWaitingName] = useState<string>('');
 	const [waitingTel, setWaitingTel] = useState<string>('');
 
-	//* 유효성 검사 시 필요한  useRef
+	//* 유효성 검사
 	const nameInput = useRef<HTMLInputElement>(null);
 	const telInput = useRef<HTMLInputElement>(null);
 	const [msg, setMsg] = useState<string>('');
 	const [inputError, setInputError] = useState<boolean>(false);
 
-	//* 모달 닫기 함수
 	const closeModal = () => {
 		setIsOpenModal(false);
 	};
 
-	//* 인원 수 더하기, 빼기 함수
 	const onIncrease = () => {
 		setWaitingPersonNum((prevNum) => prevNum + 1);
 	};
@@ -72,7 +67,6 @@ function Waiting() {
 		}
 	};
 
-	//* 기존 대기 데이터와 기존 전체 대기 팀 수를 업데이트
 	useEffect(() => {
 		const waitingCollection = collection(db, 'waitingList');
 		const getWaitingData = async () => {
@@ -93,9 +87,7 @@ function Waiting() {
 		getWaitingData();
 	}, []);
 
-	//* 인원 수를 선택하는 버튼의 활성/비활성 상태를 관리
 	useEffect(() => {
-		//* 인원 수 선택 버튼 disable 관리
 		if (waitingPersonNum === 1) {
 			setDecreaseDisable(true);
 		} else {
@@ -103,7 +95,6 @@ function Waiting() {
 		}
 	}, [waitingPersonNum]);
 
-	//* 모달이 닫혔고, 대기 신청을 선택했고, DB 저장에 성공했을 때 대기 완료 페이지로 이동
 	useEffect(() => {
 		if (!isOpenModal && isNavigate && modalType === 'try') {
 			navigate('/waitingcheck', {
@@ -112,17 +103,14 @@ function Waiting() {
 				},
 			});
 		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [isOpenModal, isNavigate, modalType]);
 
 	//* 대기 신청하기
-	// - 유효성 검사
-	// - 데이터 모아서 DB에 저장하기
-
 	const applyWaiting = async () => {
 		const waitingCollection = collection(db, 'waitingList');
 
 		// *유효성 검사
-		// - 필수 입력값 입력하지 않았을 때 입력창으로 focus
 		if (waitingName.length === 0 && nameInput.current != null) {
 			setInputError(true);
 			setMsg('이름을 입력해주세요.');
@@ -155,14 +143,12 @@ function Waiting() {
 				no: currentWaitingNum + 1,
 				status: 'waiting',
 			});
-
 			setModalType('try');
 		} catch (error) {
 			setModalType('error');
 			console.error(error);
 		}
 
-		// 대기 신청 클릭시 모달 준비, 페이지 이동 준비
 		setIsOpenModal(true);
 		setIsNavigate(true);
 	};

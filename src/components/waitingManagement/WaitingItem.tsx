@@ -1,6 +1,8 @@
 import React, { useEffect } from 'react';
 import { styled } from 'styled-components';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
+import { db } from '../../firebase/firebaseConfig';
+import { updateDoc, doc } from 'firebase/firestore';
 import {
 	modalItemId,
 	modalState,
@@ -9,8 +11,7 @@ import {
 	notificationUserState,
 } from '../../state/ModalState';
 import { WaitingDataType } from '../../types/waitingDataType';
-import { db } from '../../firebase/firebaseConfig';
-import { updateDoc, doc } from 'firebase/firestore';
+import { ColorProps } from '../../types/ColorProps';
 import { SelectedColorType } from '../../style/theme';
 import { selectedColorState } from '../../state/ColorState';
 import { useSelectedColor } from '../../hooks/useSelectedColor';
@@ -20,14 +21,9 @@ type WaitingItemProps = {
 	waitingDataStatus: string;
 };
 
-type ColorProps = {
-	$selectedColor: SelectedColorType;
-};
-
 const WaitingItem = (props: WaitingItemProps) => {
 	const selectedColor = useRecoilValue<SelectedColorType>(selectedColorState);
 	useSelectedColor();
-
 	const { waitingInfo, waitingDataStatus } = props;
 	const setIsOpenModal = useSetRecoilState<boolean>(modalState);
 	const [modalType, setModalType] = useRecoilState<string>(modalTypeState);
@@ -35,7 +31,6 @@ const WaitingItem = (props: WaitingItemProps) => {
 	const modalUpdate = useRecoilValue<boolean>(modalUpdateState);
 	const setNotificationUser = useSetRecoilState<string>(notificationUserState);
 
-	// 모달창에서 예를 클릭했을 때 업데이트 (취소, 착석완료만)
 	const updateStatus = async (id: string, type: string) => {
 		const statusDoc = doc(db, 'waitingList', id);
 		try {

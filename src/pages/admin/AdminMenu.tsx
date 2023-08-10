@@ -11,6 +11,9 @@ function AdminMenu() {
 				<Button onClick={() => navigate('/admin/menu')}>메뉴 관리 클릭 💕 </Button>
 				<Button onClick={() => navigate('/admin/waiting')}>대기 관리 클릭 💫</Button>
 				<Button onClick={() => navigate('/admin/theme')}>테마 관리 클릭 🎠</Button>
+				<Button onClick={() => navigate('/admin/orderhistory')}>주문 내역 관리 🍮</Button>
+				<Button onClick={() => navigate('/admin/sales')}>매출 내역 조회 👜</Button>
+				<Button onClick={() => navigate('/admin/point')}>포인트 내역 조회 🍒</Button>
 			</div>
 		</div>
 	);
