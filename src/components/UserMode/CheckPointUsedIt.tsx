@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { styled, useTheme } from 'styled-components';
 import { ModalContainer } from './UsePointUser';
 import { CloseBtn, PointInput } from './AddPointModal';
@@ -11,10 +11,15 @@ interface CheckPointUsedIt extends ModalAndModalType {
 }
 function CheckPointUsedIt({ isOpenModal, onClickOpenModal, points }: CheckPointUsedIt) {
 	const theme = useTheme();
-	const handleCloseBtnClick = (e: React.MouseEvent) => {
+	const [point, setPoint] = useState('');
+
+	const handleCloseBtnClick = (e: React.ChangeEvent<HTMLInputElement>) => {
 		e.stopPropagation();
+		setPoint(e.target.value);
 		onClickOpenModal();
+		console.log(points);
 	};
+
 	return isOpenModal ? (
 		<ModalContainer onClick={onClickOpenModal}>
 			<DialogBox onClick={(e) => e.stopPropagation()}>
@@ -28,16 +33,16 @@ function CheckPointUsedIt({ isOpenModal, onClickOpenModal, points }: CheckPointU
 					/>
 				</div>
 				<div className="point-check-allBtn">
-					<button>전액</button>
-					<p>잔여 : {points} point</p>
+					<button onClick={() => setPoint(point?.toString() ?? '')}>전액</button>
+					<p>잔여 : {points?.toLocaleString() ?? '0'} point</p>
 				</div>
 				<InputExplain>
-					<label htmlFor="phone-number" hidden />
-					<input type="number" id="phone-number" name="phonnumber" placeholder="숫자만 입력해주세요"></input>
+					<label htmlFor="point" hidden />
+					<input type="number" id="point" name="point" value={point} placeholder="숫자만 입력해주세요"></input>
 					<p>1,000 포인트 이상 사용 가능합니다. </p>
 				</InputExplain>
 				<BtnContainer>
-					<CloseBtn onClick={handleCloseBtnClick}>확인</CloseBtn>
+					<CloseBtn onClick={() => handleCloseBtnClick}>확인</CloseBtn>
 				</BtnContainer>
 			</DialogBox>
 		</ModalContainer>

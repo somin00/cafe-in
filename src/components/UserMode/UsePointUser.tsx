@@ -22,7 +22,6 @@ function UsePointUser({ onClickToggleModal }: ModalDefaultType) {
 	};
 
 	const onClickOpenModal = useCallback(async () => {
-		setModalOpen(true);
 		const pointsCollection = collection(db, 'point');
 		const q = query(pointsCollection, where('phoneNumber', '==', phoneNumber));
 
@@ -33,16 +32,19 @@ function UsePointUser({ onClickToggleModal }: ModalDefaultType) {
 			const existingDoc = matchingDocs.docs[0];
 			const points = existingDoc.data().point || 0;
 			setUserPoints(points);
+			setModalOpen(true);
 		} else {
 			// 일치하는 번호가 없는 경우
 			alert('회원만 포인트 사용이 가능합니다! ');
+			setModalOpen(false); // 모달을 닫습니다.
+			onClickToggleModal();
 		}
 	}, [phoneNumber]);
 
 	return (
 		<ModalContainer onClick={onClickToggleModal}>
 			<DialogBox onClick={(e) => e.stopPropagation()}>
-				<p>핸드폰 번호 뒷자리 4자리를 입력해주세요 </p>
+				<p>핸드폰 번호를 입력해주세요 </p>
 				<PointInput>
 					<label htmlFor="phone-number" hidden />
 					<input
