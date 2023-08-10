@@ -10,11 +10,15 @@ interface OrderListPropType {
 	order: OrderListType;
 }
 function OrderList({ order }: OrderListPropType) {
-	const orderRef = collection(db, 'testOrderList'); //orderList로 수정
+	const orderRef = collection(db, 'orderList');
 
 	const timeFormat = (id: number) => {
 		const { hour, minute, sec } = changeDateFormat(id);
-		return `${hour}:${minute}:${sec}`;
+		const strHour = hour.toString().padStart(2, '0');
+		const strMin = minute.toString().padStart(2, '0');
+		const strSec = sec.toString().padStart(2, '0');
+
+		return `${strHour}:${strMin}:${strSec}`;
 	};
 
 	const handleToggleComplete = async (id: number, checked: boolean) => {
