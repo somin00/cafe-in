@@ -30,6 +30,9 @@ function CheckPointUsedIt({ isOpenModal, onClickOpenModal, points, onUsePoints }
 	const handlePointChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		setPoint(e.target.value);
 	};
+	const handlePointClick = () => {
+		setPoint(points?.toString() ?? '');
+	};
 	return isOpenModal ? (
 		<ModalContainer onClick={onClickOpenModal}>
 			<DialogBox onClick={(e) => e.stopPropagation()}>
@@ -43,7 +46,7 @@ function CheckPointUsedIt({ isOpenModal, onClickOpenModal, points, onUsePoints }
 					/>
 				</div>
 				<div className="point-check-allBtn">
-					<button onClick={() => setPoint(point?.toString() ?? '')}>전액</button>
+					<button onClick={handlePointClick}>전액</button>
 					<p>잔여 : {points?.toLocaleString() ?? '0'} point</p>
 				</div>
 				<InputExplain>
