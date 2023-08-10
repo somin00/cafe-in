@@ -305,7 +305,7 @@ const InventoryButton = styled.button`
 	}
 
 	&.is-selected {
-		background-color: ${({ theme }) => (theme.lightColor ? theme.lightColor?.yellow.main : theme.darkColor?.main)};
+		background-color: ${({ theme }) => (theme.lightColor ? theme.lightColor.main : theme.darkColor.main)};
 		color: ${({ theme }) => (theme.lightColor ? theme.textColor.black : theme.textColor.white)};
 	}
 `;

@@ -73,6 +73,6 @@ export default MenuManagement;
 const MenuManagementWrapper = styled.div`
 	width: 1194px;
 	height: 100vh;
-	background-color: ${({ theme }) => (theme.lightColor ? '#f9f9f9' : theme.darkColor?.background)};
+	background-color: ${({ theme }) => (theme.lightColor ? '#f9f9f9' : theme.darkColor.background)};
 	overflow-y: auto;
 `;

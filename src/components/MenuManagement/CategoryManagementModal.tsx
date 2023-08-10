@@ -84,7 +84,7 @@ const CategoryManagementWrapper = styled.div`
 const CategoryModalContent = styled.div`
 	width: 492px;
 	height: 758px;
-	background-color: ${({ theme }) => (theme.lightColor ? theme.lightColor?.yellow.background : theme.textColor.black)};
+	background-color: ${({ theme }) => (theme.lightColor ? theme.lightColor.background : theme.textColor.black)};
 	border-radius: 10px;
 	display: flex;
 	flex-direction: column;
@@ -119,7 +119,7 @@ const AddContainer = styled.div`
 	button {
 		width: 97px;
 		height: 66px;
-		background-color: ${({ theme }) => (theme.lightColor ? theme.lightColor?.yellow.main : theme.darkColor?.main)};
+		background-color: ${({ theme }) => (theme.lightColor ? theme.lightColor.main : theme.darkColor.main)};
 		color: ${({ theme }) => theme.textColor.white};
 		border-radius: 10px;
 		font-size: ${({ theme }) => theme.fontSize['3xl']};
@@ -136,7 +136,7 @@ const CloseButton = styled.button`
 	margin-left: 115px;
 	width: 146px;
 	height: 57px;
-	background-color: ${({ theme }) => (theme.lightColor ? theme.lightColor?.yellow.main : theme.darkColor?.main)};
+	background-color: ${({ theme }) => (theme.lightColor ? theme.lightColor.main : theme.darkColor.main)};
 	color: ${({ theme }) => theme.textColor.white};
 	border-radius: 10px;
 	font-size: ${({ theme }) => theme.fontSize['3xl']};
