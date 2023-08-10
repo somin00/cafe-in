@@ -28,6 +28,11 @@ function UsePointUser({ onClickToggleModal }: ModalDefaultType) {
 		if (!matchingDocs.empty) {
 			const existingDoc = matchingDocs.docs[0];
 			const points = existingDoc.data().point || 0;
+			if (points === 0) {
+				alert('사용할 수 있는 포인트가 없습니다.');
+				onClickToggleModal();
+				return;
+			}
 			setUserPoints(points);
 			setModalOpen(true);
 		} else {
@@ -83,6 +88,7 @@ function UsePointUser({ onClickToggleModal }: ModalDefaultType) {
 					isOpenModal={isOpenModal}
 					points={userPoints}
 					onUsePoints={handleUsePoints}
+					phoneNumber={phoneNumber}
 				/>
 			)}
 			<Backdrop

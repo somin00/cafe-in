@@ -9,8 +9,9 @@ interface CheckPointUsedIt extends ModalAndModalType {
 	isOpenModal: boolean;
 	points: number | null;
 	onUsePoints: (usedPoints: number) => Promise<void>;
+	phoneNumber: string;
 }
-function CheckPointUsedIt({ isOpenModal, onClickOpenModal, points, onUsePoints }: CheckPointUsedIt) {
+function CheckPointUsedIt({ isOpenModal, onClickOpenModal, points, onUsePoints, phoneNumber }: CheckPointUsedIt) {
 	const theme = useTheme();
 	const [point, setPoint] = useState('');
 
@@ -33,11 +34,12 @@ function CheckPointUsedIt({ isOpenModal, onClickOpenModal, points, onUsePoints }
 	const handlePointClick = () => {
 		setPoint(points?.toString() ?? '');
 	};
+	const phoneLastFourDigits = phoneNumber.slice(-4);
 	return isOpenModal ? (
 		<ModalContainer onClick={onClickOpenModal}>
 			<DialogBox onClick={(e) => e.stopPropagation()}>
 				<div className="guide-ment">
-					<p>0 0 0 0 님, </p>
+					<p>{phoneLastFourDigits.slice(-4)} 님, </p>
 					<p>사용하실 포인트 입력 해주세요 </p>
 					<img
 						src={theme === defaultTheme ? '/assets/user/yellowcloud_light.svg' : '/assets/user/pinkcloud_dark.svg'}
