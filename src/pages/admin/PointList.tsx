@@ -1,12 +1,24 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { styled, useTheme } from 'styled-components';
 import { defaultTheme, darkTheme } from '../../style/theme';
 import { useNavigate } from 'react-router-dom';
-
+import { collection, getDocs } from 'firebase/firestore';
+import { db } from '../../firebase/firebaseConfig';
 function PointList() {
 	const theme = useTheme();
 	const navigate = useNavigate();
+	const [points, setPoints] = useState<any[]>([]);
 
+	useEffect(() => {
+		const fetchPoints = async () => {
+			const pointsCollection = collection(db, 'point');
+			const pointsSnapshot = await getDocs(pointsCollection);
+			const pointsData = pointsSnapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
+			setPoints(pointsData);
+		};
+
+		fetchPoints();
+	}, []);
 	return (
 		<Layout>
 			<Header>
@@ -23,25 +35,17 @@ function PointList() {
 					<h2>전체 회원수</h2>
 					<p>100명</p>
 				</TotalMember>
-
 				<Table>
 					<THead>
 						<p>전화 번호</p>
 						<p>포인트</p>
 					</THead>
-
-					<Item>
-						<p>010-2323-2323</p>
-						<p>1,000</p>
-					</Item>
-					<Item>
-						<p>010-2323-2323</p>
-						<p>1,000</p>
-					</Item>
-					<Item>
-						<p>010-2323-2323</p>
-						<p>1,000</p>
-					</Item>
+					{points.map((point) => (
+						<Item key={point.id}>
+							<p>{point.phoneNumber}</p>
+							<p>{point.point}</p>
+						</Item>
+					))}
 				</Table>
 			</Container>
 		</Layout>
