@@ -4,6 +4,15 @@ import { defaultTheme, darkTheme } from '../../style/theme';
 import { useNavigate } from 'react-router-dom';
 import { collection, getDocs } from 'firebase/firestore';
 import { db } from '../../firebase/firebaseConfig';
+function underBarPhoneNumber(phoneNumber: string): string {
+	const cleaned = ('' + phoneNumber).replace(/\D/g, ''); // 숫자만 남기기
+	const match = cleaned.match(/^(\d{3})(\d{4})(\d{4})$/); // 정규표현식 사용하여 매칭
+	if (match) {
+		return [match[1], match[2], match[3]].join('-');
+	}
+	return phoneNumber;
+}
+
 function PointList() {
 	const theme = useTheme();
 	const navigate = useNavigate();
@@ -19,6 +28,7 @@ function PointList() {
 
 		fetchPoints();
 	}, []);
+
 	return (
 		<Layout>
 			<Header>
@@ -42,7 +52,7 @@ function PointList() {
 					</THead>
 					{points.map((point) => (
 						<Item key={point.id}>
-							<p>{point.phoneNumber}</p>
+							<p>{underBarPhoneNumber(point.phoneNumber)}</p>
 							<p>{point.point}</p>
 						</Item>
 					))}
