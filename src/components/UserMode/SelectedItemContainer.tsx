@@ -17,7 +17,7 @@ import {
 	getDocs,
 } from 'firebase/firestore';
 type StyledProps = {
-	quantity: number;
+	$quantity: number;
 };
 function SelectedItemContainer() {
 	const navigate = useNavigate();
@@ -122,7 +122,7 @@ function SelectedItemContainer() {
 			<Layout>
 				<MenuSelectedContainer>
 					{selectedItems.map((item) => (
-						<SelectedItem as="li" key={item.id} quantity={item.quantity}>
+						<SelectedItem as="li" key={item.id} $quantity={item.quantity}>
 							<div className="first">
 								<p>{item.name}</p>
 								<div className="counter">
@@ -235,11 +235,11 @@ const SelectedItem = styled.li<StyledProps>`
 				theme === defaultTheme ? defaultTheme.lightColor?.yellow.main : darkTheme.darkColor?.sub};
 		}
 		.minus {
-			background-color: ${({ theme, quantity }) => {
+			background-color: ${({ theme, $quantity }) => {
 				if (theme === defaultTheme) {
-					return quantity > 1 ? theme.lightColor?.yellow.main : defaultTheme.textColor.lightgray;
+					return $quantity > 1 ? theme.lightColor?.yellow.main : defaultTheme.textColor.lightgray;
 				} else {
-					return quantity > 1 ? darkTheme.darkColor?.main : darkTheme.textColor.darkgray;
+					return $quantity > 1 ? darkTheme.darkColor?.main : darkTheme.textColor.darkgray;
 				}
 			}};
 			&:disabled {
@@ -285,7 +285,7 @@ const TotalPrice = styled.div`
 	margin-top: 20px;
 	height: 110px;
 	padding: 20px 10px 10px 10px;
-	color: ${({ theme }) => theme.lightColor?.yellow.point};
+	color: ${defaultTheme.lightColor.yellow.point};
 	background-color: ${({ theme }) => (theme === defaultTheme ? theme.textColor.lightbrown : darkTheme.textColor.black)};
 	border-top: ${({ theme }) => (theme === darkTheme ? '1px solid  darkTheme.textColor.lightgray' : 'none')};
 	font-size: ${({ theme }) => theme.fontSize['2xl']};

@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useSetRecoilState } from 'recoil';
 import { styled } from 'styled-components';
 import { selectedModeState } from '../state/Mode';
+import { defaultTheme } from '../style/theme';
 
 function Home() {
 	const navigate = useNavigate();
@@ -47,6 +48,6 @@ const Button = styled.button`
 	width: 200px;
 	height: 60px;
 	font-size: 20px;
-	background-color: ${({ theme }) => theme.lightColor?.blue.background};
+	background-color: ${({ theme }) => defaultTheme.lightColor.blue.background};
 	margin: 10px;
 `;

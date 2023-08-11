@@ -54,8 +54,20 @@ function MenuListHeader() {
 }
 //prettier-ignore
 const TabButton = styled.button<{ $isActive: boolean }>`
-	background-color: ${({ $isActive }) => ($isActive ? 'ghostwhite' : 'transparent')};
-	color: ${({ $isActive }) => ($isActive ? 'darkorange' : 'black')};
+	background-color: ${({ $isActive, theme }) => 
+		$isActive 
+			? (theme.mode === 'dark' 
+				? theme.textColor.lightgray 
+				: 'ghostwhite') 
+			: 'transparent'
+	};
+	color: ${({ $isActive, theme }) => 
+		$isActive 
+			? (theme.mode === 'dark' 
+				? theme.darkColor?.sub 
+				: theme.lightColor?.yellow.sub) 
+			: 'black'
+	};
 	font-size: ${({ theme }) => theme.fontSize['2xl']};
 	font-weight: ${({ theme }) => theme.fontWeight.semibold};
 	padding: 10px 30px;
@@ -63,8 +75,6 @@ const TabButton = styled.button<{ $isActive: boolean }>`
 	border: none;
 	border-radius: 10px;
 	cursor: pointer;
-	background-color: ${props => (props.$isActive ? props.theme.textColor.lightgray : "transparent")};
-	color: ${props => (props.$isActive ? (props.theme === defaultTheme ? props.theme.lightColor?.yellow.sub : darkTheme.darkColor?.sub) : "inherit")};
 `;
 const Layout = styled.ul`
 	display: flex;

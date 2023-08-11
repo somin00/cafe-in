@@ -1,6 +1,7 @@
 import React, { ReactNode } from 'react';
 import { styled } from 'styled-components';
 import { useNavigate } from 'react-router-dom';
+import { darkTheme } from '../../style/theme';
 
 type HeaderTextProps = {
 	headerText: string;
@@ -40,7 +41,7 @@ const ManagementHeaderWrapper = styled.div`
 	align-items: center;
 	font-size: ${({ theme }) => theme.fontSize['4xl']};
 	font-weight: ${({ theme }) => theme.fontWeight.semibold};
-	background-color: ${({ theme }) => (theme.lightColor ? theme.textColor.white : theme.darkColor?.background)};
+	background-color: ${({ theme }) => (theme.lightColor ? theme.textColor.white : darkTheme.darkColor.background)};
 	color: ${({ theme }) => (theme.lightColor ? theme.textColor.black : theme.textColor.white)};
 `;
 

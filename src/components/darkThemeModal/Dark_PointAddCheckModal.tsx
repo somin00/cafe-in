@@ -1,7 +1,7 @@
 import React from 'react';
 import { styled } from 'styled-components';
 import { ModalAndModalType } from '../../types/ModalOpenTypes';
-import { darkTheme } from '../../style/theme';
+import { darkTheme, defaultTheme } from '../../style/theme';
 interface Dark_PointAddCheckModal extends ModalAndModalType {
 	onClickOpenModal: () => void;
 	isOpenModal: boolean;
@@ -34,14 +34,14 @@ const DialogBox = styled.dialog`
 	flex-direction: column;
 	justify-content: center;
 	align-items: center;
-	background-color: ${({ theme }) => darkTheme.textColor.black};
+	background-color: ${darkTheme.textColor.black};
 	background-image: url('/assets/user/point_background_dark.svg');
 	border: none;
 	border-radius: 10px;
 	box-sizing: border-box;
 	z-index: 10000;
 	.ment {
-		background-color: ${({ theme }) => theme.textColor.lightgray};
+		background-color: ${defaultTheme.textColor.lightgray};
 		width: 450px;
 		display: flex;
 		flex-direction: column;
@@ -57,7 +57,7 @@ const DialogBox = styled.dialog`
 		p: last-child {
 			padding-top: 30px;
 			font-size: ${({ theme }) => theme.fontSize.base};
-			color: ${({ theme }) => darkTheme.textColor.lightbrown};
+			color: ${darkTheme.textColor.lightbrown};
 		}
 	}
 
