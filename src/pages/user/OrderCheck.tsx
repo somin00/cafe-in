@@ -149,7 +149,7 @@ const Layout = styled.div`
 	width: 1194px;
 	height: 100%;
 	position: relative;
-	background-color: ${({ theme }) => (theme === defaultTheme ? theme.textColor.white : darkTheme.textColor.black)};
+	background-color: ${({ theme }) => (theme === defaultTheme ? theme.textColor.white : darkTheme.darkColor.background)};
 	overflow-y: hidden;
 `;
 const Header = styled.div`
@@ -189,7 +189,7 @@ const TableHead = styled.ul`
 `;
 const Tbody = styled.ul`
 	background-color: ${({ theme }) => (theme === defaultTheme ? theme.lightColor?.yellow.background : 'none')};
-	border: ${({ theme }) => (theme === darkTheme ? '1px solid darkTheme.textColor.white' : 'none')};
+	border: ${({ theme }) => (theme === darkTheme ? 'none' : `1px solid ${darkTheme.textColor.white}`)};
 	border-radius: 10px;
 	height: 650px;
 	display: flex;
