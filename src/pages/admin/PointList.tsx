@@ -4,6 +4,7 @@ import { defaultTheme, darkTheme } from '../../style/theme';
 import { useNavigate } from 'react-router-dom';
 import { collection, getDocs } from 'firebase/firestore';
 import { db } from '../../firebase/firebaseConfig';
+
 function underBarPhoneNumber(phoneNumber: string): string {
 	const cleaned = ('' + phoneNumber).replace(/\D/g, ''); // 숫자만 남기기
 	const match = cleaned.match(/^(\d{3})(\d{4})(\d{4})$/); // 정규표현식 사용하여 매칭
@@ -17,6 +18,8 @@ function PointList() {
 	const theme = useTheme();
 	const navigate = useNavigate();
 	const [points, setPoints] = useState<any[]>([]);
+	const [currentPage, setCurrentPage] = useState(1);
+	const itemsPerPage = 6;
 
 	useEffect(() => {
 		const fetchPoints = async () => {
@@ -28,7 +31,11 @@ function PointList() {
 
 		fetchPoints();
 	}, []);
+	// 전체 페이지 수
+	const totalPages = Math.ceil(points.length / itemsPerPage);
 
+	// 현재 페이지의 항목 선택
+	const currentItems = points.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 	return (
 		<Layout>
 			<Header>
@@ -50,12 +57,22 @@ function PointList() {
 						<p>전화 번호</p>
 						<p>포인트</p>
 					</THead>
-					{points.map((point) => (
+					{currentItems.map((point) => (
 						<Item key={point.id}>
 							<p>{underBarPhoneNumber(point.phoneNumber)}</p>
-							<p>{point.point}</p>
+							<p>{point.point.toLocaleString()}</p>
 						</Item>
 					))}
+
+					<Pagination>
+						<button onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}>이전</button>
+						{Array.from({ length: totalPages }).map((_, index) => (
+							<button key={index} onClick={() => setCurrentPage(index + 1)}>
+								{index + 1}
+							</button>
+						))}
+						<button onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}>다음</button>
+					</Pagination>
 				</Table>
 			</Container>
 		</Layout>
@@ -65,7 +82,6 @@ const Layout = styled.div`
 	width: 1194px;
 	height: 834px;
 	background-color: ${({ theme }) => (theme === defaultTheme ? theme.textColor.white : darkTheme.darkColor.background)};
-	overflow-y: hidden;
 `;
 const Header = styled.div`
 	display: flex;
@@ -98,8 +114,9 @@ const TotalMember = styled.div`
 const Table = styled.div`
 	background-color: ${({ theme }) =>
 		theme === defaultTheme ? defaultTheme.lightColor.yellow.background : darkTheme.textColor.lightbrown};
-	height: 600px;
+	height: 580px;
 	border-radius: 10px;
+	position: relative;
 `;
 const THead = styled.div`
 	width: 100%;
@@ -107,7 +124,6 @@ const THead = styled.div`
 	margin-top: 30px;
 	justify-content: center;
 	font-size: ${({ theme }) => theme.fontSize['2xl']};
-
 	p {
 		padding: 20px 180px;
 	}
@@ -121,4 +137,18 @@ const Item = styled.li`
 	margin: 20px 50px;
 	background-color: ${({ theme }) => theme.textColor.white};
 `;
+const Pagination = styled.div`
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	position: absolute;
+	bottom: 15px;
+	left: 400px;
+	button {
+		margin: 0 5px;
+		padding: 5px 10px;
+		cursor: pointer;
+	}
+`;
+
 export default PointList;
