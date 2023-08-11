@@ -1,4 +1,3 @@
-import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { styled } from 'styled-components';
 
@@ -6,15 +5,25 @@ function Thumbnail() {
 	const navigate = useNavigate();
 	return (
 		<ThumbnailWrapper>
-			<h1>시작 페이지</h1>
-			<Button onClick={() => navigate('/start')}>매장 vs 테이크아웃</Button>
-			<Button
-				onClick={() => {
-					navigate('/admin/main');
-				}}
-			>
-				관리자 모드 🎈
-			</Button>
+			<AdminIcon>
+				<img
+					src={process.env.PUBLIC_URL + '/assets/paw_adminIcon.svg'}
+					alt="관리자 아이콘"
+					role="button"
+					aria-label="관리자 페이지로 이동하기"
+					onClick={() => {
+						navigate('/admin/main');
+					}}
+				/>
+				<div onClick={() => navigate('/start')}></div>
+			</AdminIcon>
+			<ThumbnailContent onClick={() => navigate('/start')}>
+				<Logo>
+					<img alt="서비스 로고" />
+				</Logo>
+				<p className="logoText">- 카페에 꼭 필요한 서비스 -</p>
+				<p className="thumbnailText">서비스 이용을 원하시면 화면을 클릭해주세요.</p>
+			</ThumbnailContent>
 		</ThumbnailWrapper>
 	);
 }
@@ -24,13 +33,50 @@ export default Thumbnail;
 const ThumbnailWrapper = styled.div`
 	width: 1194px;
 	height: 834px;
-	background-color: ${({ theme }) => theme.textColor.lightBeige};
+	background-color: ${({ theme }) => (theme.lightColor ? theme.textColor.lightBeige : theme.darkColor?.background)};
+	user-select: none;
+	cursor: pointer;
 `;
 
-const Button = styled.button`
-	width: 200px;
-	height: 60px;
-	font-size: 20px;
-	background-color: ${({ theme }) => theme.lightColor?.blue.background};
-	margin: 10px;
+const Logo = styled.div`
+	img {
+		content: ${({ theme }) => (theme.lightColor ? 'url(/assets/logo_beige.svg)' : 'url(/assets/logo_dark.png)')};
+	}
+`;
+
+const AdminIcon = styled.div`
+	display: flex;
+
+	img {
+		width: 50px;
+		height: 50px;
+		margin: 30px;
+	}
+
+	div {
+		width: 100%;
+	}
+`;
+
+const ThumbnailContent = styled.div`
+	height: 762px;
+	width: 1194px;
+	display: flex;
+	flex-flow: column nowrap;
+	justify-content: center;
+	align-items: center;
+
+	.logoText {
+		font-size: ${({ theme }) => theme.fontSize['2xl']};
+		color: ${({ theme }) => (theme.lightColor ? theme.textColor.black : theme.textColor.white)};
+		margin-top: 32px;
+	}
+
+	.thumbnailText {
+		font-size: ${({ theme }) => theme.fontSize['5xl']};
+		font-weight: ${({ theme }) => theme.fontWeight.semibold};
+		color: ${({ theme }) => (theme.lightColor ? theme.textColor.black : theme.textColor.white)};
+		margin-top: 132px;
+		margin-bottom: 132px;
+	}
 `;
