@@ -50,7 +50,7 @@ function PointList() {
 			<Container>
 				<TotalMember>
 					<h2>전체 회원수</h2>
-					<p>100명</p>
+					<p>{points.length}명</p>
 				</TotalMember>
 				<Table>
 					<THead>
