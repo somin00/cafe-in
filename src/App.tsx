@@ -4,7 +4,6 @@ import { RecoilRoot } from 'recoil';
 import { ThemeProvider } from 'styled-components';
 import { defaultTheme, darkTheme } from './style/theme';
 import { GlobalStyles } from './style/global';
-import Home from './pages/Home';
 import MenuList from './pages/user/MenuList';
 import AdminLogin from './pages/admin/AdminLogin';
 import AdminMenu from './pages/admin/AdminMenu';
@@ -37,7 +36,7 @@ function App() {
 				<GlobalStyles />
 				<BrowserRouter>
 					<Routes>
-						<Route path="/home/*" element={<Home />} />
+						<Route path="/home/*" element={<Thumbnail />} />
 						<Route path="/" element={<Thumbnail />} />
 						<Route path="/start" element={<Start />} />
 						<Route path="/*" element={<NotFound />} />
