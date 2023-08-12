@@ -1,8 +1,7 @@
 import React, { useCallback, useState } from 'react';
 import { styled } from 'styled-components';
 import OptionMenu from './UserMode/OptionMenu';
-import { useRecoilState, useRecoilValue } from 'recoil';
-import { selectedModeState } from '../state/Mode';
+import { useRecoilState } from 'recoil';
 import { MenuType } from '../types/menuMangementType';
 import EditMenuModal from './MenuManagement/EditMenuModal';
 import ModalPortal from './ModalPortal';
@@ -12,7 +11,7 @@ interface ItemPropType {
 	menu: MenuType;
 }
 function MenuItem({ menu }: ItemPropType) {
-	const mode = useRecoilValue(selectedModeState);
+	const [isAdminMode, setIsAdminMode] = useState<boolean>(false);
 	const [isOpenModal, setModalOpen] = useState<boolean>(false);
 
 	const [selectedItem] = useRecoilState(selectedItemsState);
@@ -22,6 +21,12 @@ function MenuItem({ menu }: ItemPropType) {
 	};
 
 	const onClickToggleModal = useCallback(() => {
+		const mode = localStorage.getItem('mode');
+		if (mode === 'admin') {
+			setIsAdminMode(true);
+		} else {
+			setIsAdminMode(false);
+		}
 		setModalOpen(!isOpenModal);
 	}, [isOpenModal]);
 
@@ -34,8 +39,8 @@ function MenuItem({ menu }: ItemPropType) {
 					<p className="menu-price">{priceTemplate(menu.price)}원</p>
 				</button>
 			</MenuItemWrapper>
-			{mode === 'user' && isOpenModal && <OptionMenu onClickToggleModal={onClickToggleModal} selected={selectedItem} />}
-			{mode === 'admin' && isOpenModal && (
+			{!isAdminMode && isOpenModal && <OptionMenu onClickToggleModal={onClickToggleModal} selected={selectedItem} />}
+			{isAdminMode && isOpenModal && (
 				<ModalPortal>
 					<EditMenuModal menu={menu} onCloseModal={onClickToggleModal} />
 				</ModalPortal>

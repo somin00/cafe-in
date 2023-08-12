@@ -17,7 +17,7 @@ import {
 	getDocs,
 } from 'firebase/firestore';
 type StyledProps = {
-	quantity: number;
+	$quantity: number;
 };
 function SelectedItemContainer() {
 	const navigate = useNavigate();
@@ -122,7 +122,7 @@ function SelectedItemContainer() {
 			<Layout>
 				<MenuSelectedContainer>
 					{selectedItems.map((item) => (
-						<SelectedItem as="li" key={item.id} quantity={item.quantity}>
+						<SelectedItem as="li" key={item.id} $quantity={item.quantity}>
 							<div className="first">
 								<p>{item.name}</p>
 								<div className="counter">
@@ -166,7 +166,7 @@ function SelectedItemContainer() {
 }
 const Background = styled.div`
 	background-color: ${({ theme }) =>
-		theme === defaultTheme ? defaultTheme.textColor.white : darkTheme.textColor.black};
+		theme === defaultTheme ? defaultTheme.textColor.white : darkTheme.darkColor.background};
 	padding: 10px;
 	height: fit-content;
 `;
@@ -175,13 +175,14 @@ const Layout = styled.div`
 	display: flex;
 	flex-direction: column;
 	justify-content: space-between;
+	border-left: ${({ theme }) => (theme.mode === 'dark' ? 'none' : ' 1px solid white')};
 `;
 const MenuSelectedContainer = styled.ul`
 	display: flex;
 	flex-direction: column;
 	height: 440px;
 	background-color: ${({ theme }) =>
-		theme === defaultTheme ? defaultTheme.lightColor?.yellow.background : darkTheme.textColor.black};
+		theme === defaultTheme ? defaultTheme.lightColor?.yellow.background : darkTheme.darkColor.background};
 	border-radius: 10px;
 	overflow-y: auto;
 
@@ -232,14 +233,14 @@ const SelectedItem = styled.li<StyledProps>`
 		}
 		.plus {
 			background-color: ${({ theme }) =>
-				theme === defaultTheme ? defaultTheme.lightColor?.yellow.main : darkTheme.darkColor?.sub};
+				theme === defaultTheme ? defaultTheme.lightColor?.yellow.main : darkTheme.darkColor?.main};
 		}
 		.minus {
-			background-color: ${({ theme, quantity }) => {
+			background-color: ${({ theme, $quantity }) => {
 				if (theme === defaultTheme) {
-					return quantity > 1 ? theme.lightColor?.yellow.main : defaultTheme.textColor.lightgray;
+					return $quantity > 1 ? theme.lightColor?.yellow.main : defaultTheme.textColor.lightgray;
 				} else {
-					return quantity > 1 ? darkTheme.darkColor?.main : darkTheme.textColor.darkgray;
+					return $quantity > 1 ? darkTheme.darkColor?.main : darkTheme.textColor.darkgray;
 				}
 			}};
 			&:disabled {
@@ -267,7 +268,7 @@ const SelectedItem = styled.li<StyledProps>`
 const OptionsSelected = styled.div<{ $noOptions: boolean }>`
 	display: flex;
 	width: 100%;
-	overflow: hidden;
+	margin-left: 10px;
 	text-overflow: ellipsis;
 	justify-content: start;
 	margin-top: ${({ $noOptions }) => ($noOptions ? '0' : '10px')};
@@ -279,21 +280,29 @@ const OptionsSelected = styled.div<{ $noOptions: boolean }>`
 `;
 const PayContainer = styled.div`
 	flex: 0.3;
+	overflow: hidden;
+	margin-left: 10px;
+	border-top: ${({ theme }) => (theme.mode === 'dark' ? 'none' : ' 1px solid white')};
 `;
 
 const TotalPrice = styled.div`
 	margin-top: 20px;
 	height: 110px;
 	padding: 20px 10px 10px 10px;
-	color: ${({ theme }) => theme.lightColor?.yellow.point};
-	background-color: ${({ theme }) => (theme === defaultTheme ? theme.textColor.lightbrown : darkTheme.textColor.black)};
+	color: ${defaultTheme.lightColor.yellow.point};
+	background-color: ${({ theme }) =>
+		theme === defaultTheme ? theme.textColor.lightbrown : darkTheme.darkColor.background};
 	border-top: ${({ theme }) => (theme === darkTheme ? '1px solid  darkTheme.textColor.lightgray' : 'none')};
 	font-size: ${({ theme }) => theme.fontSize['2xl']};
 	font-weight: ${({ theme }) => theme.fontWeight.bold};
+	& p:first-child {
+		color: ${({ theme }) =>
+			theme === darkTheme ? defaultTheme.lightColor.yellow.point : darkTheme.textColor.lightbrown};
+	}
 	.total-price {
 		float: right;
 		font-size: ${({ theme }) => theme.fontSize['4xl']};
-		color: ${({ theme }) => theme.textColor.black};
+		color: ${({ theme }) => (theme === darkTheme ? theme.textColor.black : darkTheme.textColor.white)};
 		right: 15px;
 		bottom: 500px;
 	}

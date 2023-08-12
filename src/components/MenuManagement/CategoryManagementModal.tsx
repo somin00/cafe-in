@@ -42,7 +42,15 @@ function CategoryManagementModal({ onClickToggleModal }: ModalDefaultType) {
 			<CategoryModalContent>
 				<GuidText>* 이미 존재하는 카테고리는 추가 불가능합니다.</GuidText>
 				<AddContainer>
-					<input type="text" value={categoryName} onChange={handleChangeCategoryName} />
+					<form
+						onSubmit={(e) => {
+							e.preventDefault();
+						}}
+					>
+						<label htmlFor="categoryName">
+							<input type="text" id="categoryName" value={categoryName} onChange={handleChangeCategoryName} />
+						</label>
+					</form>
 					<button type="button" onClick={handleAddCategory} disabled={!categoryName || isDuplicate ? true : false}>
 						추가
 					</button>
@@ -76,7 +84,7 @@ const CategoryManagementWrapper = styled.div`
 const CategoryModalContent = styled.div`
 	width: 492px;
 	height: 758px;
-	background-color: ${({ theme }) => (theme.lightColor ? theme.lightColor?.yellow.background : theme.textColor.black)};
+	background-color: ${({ theme }) => (theme.lightColor ? theme.lightColor.background : theme.textColor.black)};
 	border-radius: 10px;
 	display: flex;
 	flex-direction: column;
@@ -111,7 +119,7 @@ const AddContainer = styled.div`
 	button {
 		width: 97px;
 		height: 66px;
-		background-color: ${({ theme }) => (theme.lightColor ? theme.lightColor?.yellow.main : theme.darkColor?.main)};
+		background-color: ${({ theme }) => (theme.lightColor ? theme.lightColor.main : theme.darkColor.main)};
 		color: ${({ theme }) => theme.textColor.white};
 		border-radius: 10px;
 		font-size: ${({ theme }) => theme.fontSize['3xl']};
@@ -128,7 +136,7 @@ const CloseButton = styled.button`
 	margin-left: 115px;
 	width: 146px;
 	height: 57px;
-	background-color: ${({ theme }) => (theme.lightColor ? theme.lightColor?.yellow.main : theme.darkColor?.main)};
+	background-color: ${({ theme }) => (theme.lightColor ? theme.lightColor.main : theme.darkColor.main)};
 	color: ${({ theme }) => theme.textColor.white};
 	border-radius: 10px;
 	font-size: ${({ theme }) => theme.fontSize['3xl']};

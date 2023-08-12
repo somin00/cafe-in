@@ -29,7 +29,7 @@ function CategoryList() {
 export default CategoryList;
 
 export const NavWrapper = styled.nav`
-	background-color: ${({ theme }) => (theme.lightColor ? theme.textColor.white : theme.darkColor?.background)};
+	background-color: ${({ theme }) => (theme.lightColor ? theme.textColor.white : theme.darkColor.background)};
 	height: 60px;
 	ul {
 		margin-left: 50px;
@@ -45,7 +45,7 @@ export const NavWrapper = styled.nav`
 	}
 
 	li.is-selected button {
-		color: ${({ theme }) => (theme.lightColor ? theme.lightColor?.yellow.sub : theme.darkColor?.main)};
+		color: ${({ theme }) => (theme.lightColor ? theme.lightColor.sub : theme.darkColor.main)};
 		font-weight: ${({ theme }) => theme.fontWeight.semibold};
 	}
 `;

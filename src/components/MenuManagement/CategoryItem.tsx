@@ -144,7 +144,7 @@ const CategoryItemWrapper = styled.li`
 	button {
 		width: 83px;
 		height: 57px;
-		background-color: ${({ theme }) => (theme.lightColor ? theme.lightColor?.yellow.main : theme.darkColor?.main)};
+		background-color: ${({ theme }) => (theme.lightColor ? theme.lightColor.main : theme.darkColor.main)};
 		color: ${({ theme }) => theme.textColor.white};
 		border-radius: 10px;
 		font-size: ${({ theme }) => theme.fontSize['2xl']};
