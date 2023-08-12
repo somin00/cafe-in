@@ -6,25 +6,54 @@ function Start() {
 	const navigate = useNavigate();
 
 	return (
-		<div>
-			<h1>매장 vs 테이크아웃</h1>
-			<Button
-				onClick={() => {
-					navigate('/menu');
-				}}
-			>
-				메뉴 주문 클릭 🎈{' '}
-			</Button>
-		</div>
+		<StartWrapper>
+			<TakeOutBoxWrapper>
+				<TakeOutBox
+					onClick={() => {
+						navigate('/menu');
+					}}
+					aria-label="매장에서 먹고 가기 선택"
+				>
+					매장
+				</TakeOutBox>
+				<TakeOutBox
+					onClick={() => {
+						navigate('/menu');
+					}}
+					aria-label="테이크 아웃 선택"
+				>
+					테이크 아웃
+				</TakeOutBox>
+			</TakeOutBoxWrapper>
+		</StartWrapper>
 	);
 }
 
 export default Start;
 
-const Button = styled.button`
-	width: 200px;
-	height: 60px;
-	font-size: 20px;
-	background-color: ${({ theme }) => theme.lightColor?.blue.background};
-	margin: 10px;
+const StartWrapper = styled.div`
+	width: 1194px;
+	height: 834px;
+	background-color: ${({ theme }) => (theme.lightColor ? theme.textColor.lightBeige : theme.darkColor?.background)};
+	user-select: none;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+`;
+
+const TakeOutBoxWrapper = styled.div`
+	width: 834px;
+	display: flex;
+	justify-content: space-between;
+`;
+
+const TakeOutBox = styled.button`
+	width: 350px;
+	height: 416px;
+	border-radius: 15px;
+	background-color: ${({ theme }) => (theme.lightColor ? theme.lightColor.yellow.background : theme.darkColor?.main)};
+	border: 3px solid ${({ theme }) => (theme.lightColor ? theme.lightColor.yellow.point : theme.darkColor?.main)};
+	color: ${({ theme }) => (theme.lightColor ? theme.lightColor.yellow.point : theme.textColor.white)};
+	font-size: ${({ theme }) => theme.fontSize['6xl']};
+	font-weight: ${({ theme }) => theme.fontWeight.semibold};
 `;
