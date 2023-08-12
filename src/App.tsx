@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom';
-import { RecoilRoot } from 'recoil';
+import { useRecoilValue } from 'recoil';
 import { ThemeProvider } from 'styled-components';
-import { defaultTheme, darkTheme } from './style/theme';
+import { defaultTheme, darkTheme, SelectedColorType } from './style/theme';
 import { GlobalStyles } from './style/global';
 import MenuList from './pages/user/MenuList';
 import AdminLogin from './pages/admin/AdminLogin';
@@ -19,9 +19,18 @@ import SalesList from './pages/admin/SalesList';
 import PointList from './pages/admin/PointList';
 import Thumbnail from './pages/Thumbnail';
 import Start from './pages/user/Start';
+import { selectedColorState } from './state/ColorState';
 
 function App() {
 	const [isDarkmode, setIsDarkmode] = useState<boolean>(false);
+	const selectedColor = useRecoilValue<SelectedColorType>(selectedColorState);
+
+	const lightTheme = {
+		fontSize: { ...defaultTheme.fontSize },
+		fontWeight: { ...defaultTheme.fontWeight },
+		textColor: { ...defaultTheme.textColor },
+		lightColor: { ...defaultTheme.lightColor[selectedColor] },
+	};
 
 	useEffect(() => {
 		const getDarkmode = localStorage.getItem('isDarkmode');
@@ -31,8 +40,8 @@ function App() {
 	}, []);
 
 	return (
-		<RecoilRoot>
-			<ThemeProvider theme={isDarkmode ? darkTheme : defaultTheme}>
+		<>
+			<ThemeProvider theme={isDarkmode ? darkTheme : lightTheme}>
 				<GlobalStyles />
 				<BrowserRouter>
 					<Routes>
@@ -59,7 +68,7 @@ function App() {
 					</Routes>
 				</BrowserRouter>
 			</ThemeProvider>
-		</RecoilRoot>
+		</>
 	);
 }
 

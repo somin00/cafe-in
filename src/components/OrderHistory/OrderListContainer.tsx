@@ -14,7 +14,7 @@ function OrderListContainer({ isProgressMode }: ContainerPropType) {
 	const [completeList, setCompleteList] = useState<OrderListType[]>([]);
 	const [today, setToday] = useState<TodayDateType>({ year: 0, month: 0, date: 0 });
 
-	const orderListRef = collection(db, 'testOrderList'); //orderList로 수정
+	const orderListRef = collection(db, 'orderList');
 
 	const fetchInProgress = async (today: number) => {
 		const unsub = onSnapshot(

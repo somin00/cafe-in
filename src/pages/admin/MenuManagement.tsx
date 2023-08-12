@@ -9,6 +9,7 @@ import { useRecoilState, useSetRecoilState } from 'recoil';
 import { categoryListState, selectedCategoryState } from '../../state/CategoryList';
 import { CategoryType, MenuType } from '../../types/menuMangementType';
 import { menuListState } from '../../state/MenuListState';
+
 function MenuManagement() {
 	const setSelectedCategory = useSetRecoilState(selectedCategoryState);
 	const setCategoryList = useSetRecoilState(categoryListState);
@@ -72,5 +73,6 @@ export default MenuManagement;
 const MenuManagementWrapper = styled.div`
 	width: 1194px;
 	height: 100vh;
-	background-color: ${({ theme }) => (theme.lightColor ? '#f9f9f9' : theme.darkColor?.background)};
+	background-color: ${({ theme }) => (theme.lightColor ? '#f9f9f9' : theme.darkColor.background)};
+	overflow-y: auto;
 `;
