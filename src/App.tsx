@@ -4,7 +4,6 @@ import { useRecoilValue } from 'recoil';
 import { ThemeProvider } from 'styled-components';
 import { defaultTheme, darkTheme, SelectedColorType } from './style/theme';
 import { GlobalStyles } from './style/global';
-import Home from './pages/Home';
 import MenuList from './pages/user/MenuList';
 import AdminLogin from './pages/admin/AdminLogin';
 import AdminMenu from './pages/admin/AdminMenu';
@@ -18,6 +17,8 @@ import NotFound from './pages/NotFound';
 import OrderHistory from './pages/admin/OrderHistory';
 import SalesList from './pages/admin/SalesList';
 import PointList from './pages/admin/PointList';
+import Thumbnail from './pages/Thumbnail';
+import Start from './pages/user/Start';
 import { selectedColorState } from './state/ColorState';
 
 function App() {
@@ -44,8 +45,9 @@ function App() {
 				<GlobalStyles />
 				<BrowserRouter>
 					<Routes>
-						<Route path="/home/*" element={<Home />} />
-						<Route path="/" element={<Navigate replace to="/home" />} />
+						<Route path="/home/*" element={<Thumbnail />} />
+						<Route path="/" element={<Thumbnail />} />
+						<Route path="/start" element={<Start />} />
 						<Route path="/*" element={<NotFound />} />
 						<Route path="/menu" element={<MenuList />} />
 						<Route path="/order" element={<OrderCheck />} />

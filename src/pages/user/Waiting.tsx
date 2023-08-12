@@ -197,7 +197,7 @@ function Waiting() {
 							<ApplicationBtn
 								$selectedColor={selectedColor}
 								onClick={() => {
-									navigate('/home');
+									navigate('/start');
 								}}
 							>
 								취소
