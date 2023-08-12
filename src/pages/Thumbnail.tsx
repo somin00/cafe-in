@@ -17,7 +17,7 @@ function Thumbnail() {
 				<div onClick={() => navigate('/start')}></div>
 			</AdminIcon>
 			<ThumbnailContent onClick={() => navigate('/start')}>
-				<Logo>
+				<Logo tabIndex={0} onClick={() => navigate('/start')}>
 					<img alt="서비스 로고" />
 				</Logo>
 				<p className="logoText">- 카페에 꼭 필요한 서비스 -</p>
@@ -37,7 +37,7 @@ const ThumbnailWrapper = styled.div`
 	cursor: pointer;
 `;
 
-const Logo = styled.div`
+const Logo = styled.button`
 	img {
 		content: ${({ theme }) => (theme.lightColor ? 'url(/assets/logo_beige.svg)' : 'url(/assets/logo_dark.png)')};
 	}
