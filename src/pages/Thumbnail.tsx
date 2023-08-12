@@ -6,15 +6,14 @@ function Thumbnail() {
 	return (
 		<ThumbnailWrapper>
 			<AdminIcon>
-				<img
-					src={process.env.PUBLIC_URL + '/assets/paw_adminIcon.svg'}
-					alt="관리자 아이콘"
-					role="button"
+				<AdminBtn
 					aria-label="관리자 페이지로 이동하기"
 					onClick={() => {
 						navigate('/admin/main');
 					}}
-				/>
+				>
+					<img src={process.env.PUBLIC_URL + '/assets/paw_adminIcon.svg'} alt="관리자 아이콘" />
+				</AdminBtn>
 				<div onClick={() => navigate('/start')}></div>
 			</AdminIcon>
 			<ThumbnailContent onClick={() => navigate('/start')}>
@@ -46,16 +45,15 @@ const Logo = styled.div`
 
 const AdminIcon = styled.div`
 	display: flex;
-
-	img {
-		width: 50px;
-		height: 50px;
-		margin: 30px;
-	}
-
 	div {
 		width: 100%;
 	}
+`;
+
+const AdminBtn = styled.button`
+	width: 25px;
+	height: 25px;
+	margin: 30px;
 `;
 
 const ThumbnailContent = styled.div`
