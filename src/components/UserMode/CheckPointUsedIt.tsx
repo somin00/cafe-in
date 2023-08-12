@@ -1,24 +1,52 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { styled, useTheme } from 'styled-components';
 import { ModalContainer } from './UsePointUser';
 import { CloseBtn, PointInput } from './AddPointModal';
 import { darkTheme, defaultTheme } from '../../style/theme';
 import { ModalAndModalType } from '../../types/ModalOpenTypes';
+import { useSetRecoilState } from 'recoil';
+import { usedPointsState } from '../../state/PointState';
 interface CheckPointUsedIt extends ModalAndModalType {
 	onClickOpenModal: () => void;
 	isOpenModal: boolean;
+	points: number | null;
+	onUsePoints: (usedPoints: number) => Promise<void>;
+	phoneNumber: string;
 }
-function CheckPointUsedIt({ isOpenModal, onClickOpenModal }: CheckPointUsedIt) {
+function CheckPointUsedIt({ isOpenModal, onClickOpenModal, points, onUsePoints, phoneNumber }: CheckPointUsedIt) {
+	const setUsedPoints = useSetRecoilState(usedPointsState);
+
 	const theme = useTheme();
-	const handleCloseBtnClick = (e: React.MouseEvent) => {
-		e.stopPropagation();
-		onClickOpenModal();
+	const [point, setPoint] = useState('');
+
+	const handleConfirmClick = async () => {
+		try {
+			const enteredPoints = parseInt(point, 10);
+			if (points && enteredPoints >= 1000 && enteredPoints <= points) {
+				await onUsePoints(enteredPoints);
+				onClickOpenModal();
+			} else {
+				alert('포인트를 확인하세요');
+			}
+		} catch (error) {
+			console.error('err:', error);
+		}
 	};
+
+	const handlePointChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		const value = e.target.value ? parseInt(e.target.value, 10) : null;
+		setPoint(e.target.value);
+		setUsedPoints(value);
+	};
+	const handlePointClick = () => {
+		setPoint(points?.toString() ?? '');
+	};
+	const phoneLastFourDigits = phoneNumber.slice(-4);
 	return isOpenModal ? (
 		<ModalContainer onClick={onClickOpenModal}>
 			<DialogBox onClick={(e) => e.stopPropagation()}>
 				<div className="guide-ment">
-					<p>0 0 0 0 님, </p>
+					<p>{phoneLastFourDigits.slice(-4)} 님, </p>
 					<p>사용하실 포인트 입력 해주세요 </p>
 					<img
 						src={theme === defaultTheme ? '/assets/user/yellowcloud_light.svg' : '/assets/user/pinkcloud_dark.svg'}
@@ -27,16 +55,23 @@ function CheckPointUsedIt({ isOpenModal, onClickOpenModal }: CheckPointUsedIt) {
 					/>
 				</div>
 				<div className="point-check-allBtn">
-					<button>전액</button>
-					<p>잔여 : 3000 point</p>
+					<button onClick={handlePointClick}>전액</button>
+					<p>잔여 : {points?.toLocaleString() ?? '0'} point</p>
 				</div>
 				<InputExplain>
-					<label htmlFor="phone-number" hidden />
-					<input type="number" id="phone-number" name="phonnumber" placeholder="숫자만 입력해주세요"></input>
+					<label htmlFor="point" hidden />
+					<input
+						type="number"
+						id="point"
+						name="point"
+						value={point}
+						placeholder="숫자만 입력해주세요"
+						onChange={handlePointChange}
+					></input>
 					<p>1,000 포인트 이상 사용 가능합니다. </p>
 				</InputExplain>
 				<BtnContainer>
-					<CloseBtn onClick={handleCloseBtnClick}>확인</CloseBtn>
+					<CloseBtn onClick={() => handleConfirmClick()}>확인</CloseBtn>
 				</BtnContainer>
 			</DialogBox>
 		</ModalContainer>

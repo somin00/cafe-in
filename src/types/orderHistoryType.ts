@@ -1,15 +1,17 @@
 export interface OrderListType {
+	date: string;
 	id: number;
 	list: OrderListItemType[];
 	progress: string;
 	takeout: boolean;
+	totalPrice: number;
 }
 
 export interface OrderListItemType {
 	menu: string;
 	isComplete: boolean;
 	quantity: number;
-	totalPrice: number;
+	options: string;
 }
 
 export interface TodayDateType {

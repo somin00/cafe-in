@@ -10,11 +10,15 @@ interface OrderListPropType {
 	order: OrderListType;
 }
 function OrderList({ order }: OrderListPropType) {
-	const orderRef = collection(db, 'testOrderList'); //orderList로 수정
+	const orderRef = collection(db, 'orderList');
 
 	const timeFormat = (id: number) => {
 		const { hour, minute, sec } = changeDateFormat(id);
-		return `${hour}:${minute}:${sec}`;
+		const strHour = hour.toString().padStart(2, '0');
+		const strMin = minute.toString().padStart(2, '0');
+		const strSec = sec.toString().padStart(2, '0');
+
+		return `${strHour}:${strMin}:${strSec}`;
 	};
 
 	const handleToggleComplete = async (id: number, checked: boolean) => {
@@ -63,8 +67,7 @@ function OrderList({ order }: OrderListPropType) {
 export default OrderList;
 
 const OrderListWrapper = styled.li`
-	background-color: ${({ theme }) =>
-		theme.lightColor ? theme.lightColor?.yellow.background : theme.darkColor?.background};
+	background-color: ${({ theme }) => (theme.lightColor ? theme.lightColor.background : theme.darkColor.background)};
 	width: 350px;
 	height: 560px;
 	border-radius: 10px;
@@ -75,7 +78,7 @@ const OrderListWrapper = styled.li`
 		width: 130px;
 		height: 50px;
 		border-radius: 10px;
-		background-color: ${({ theme }) => (theme.lightColor ? theme.lightColor?.yellow.main : theme.darkColor?.main)};
+		background-color: ${({ theme }) => (theme.lightColor ? theme.lightColor.main : theme.darkColor.main)};
 		font-size: ${({ theme }) => theme.fontSize['2xl']};
 		font-weight: ${({ theme }) => theme.fontWeight.semibold};
 		margin-left: 90px;

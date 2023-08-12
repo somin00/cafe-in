@@ -3,23 +3,76 @@ import { ModalDefaultType } from '../../types/ModalOpenTypes';
 import { styled } from 'styled-components';
 import CheckPointUsedIt from './CheckPointUsedIt';
 import { darkTheme, defaultTheme } from '../../style/theme';
+import { collection, query, where, getDocs, doc, updateDoc } from 'firebase/firestore';
+import { db } from '../../firebase/firebaseConfig';
 
 function UsePointUser({ onClickToggleModal }: ModalDefaultType) {
 	const [isOpenModal, setModalOpen] = useState<boolean>(false);
+	const [phoneNumber, setPhoneNumber] = useState('');
+	const [userPoints, setUserPoints] = useState<number | null>(null);
+
+	const handlePhoneNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		setPhoneNumber(e.target.value);
+	};
+
 	const handleCloseBtnClick = (e: React.MouseEvent) => {
 		e.stopPropagation();
 		onClickToggleModal();
 	};
-	const onClickOpenModal = useCallback(() => {
-		setModalOpen(true);
-	}, []);
+
+	const onClickOpenModal = useCallback(async () => {
+		const pointsCollection = collection(db, 'point');
+		const q = query(pointsCollection, where('phoneNumber', '==', phoneNumber));
+
+		const matchingDocs = await getDocs(q);
+		if (!matchingDocs.empty) {
+			const existingDoc = matchingDocs.docs[0];
+			const points = existingDoc.data().point || 0;
+			if (points === 0) {
+				alert('사용할 수 있는 포인트가 없습니다.');
+				onClickToggleModal();
+				return;
+			}
+			setUserPoints(points);
+			setModalOpen(true);
+		} else {
+			alert('회원만 포인트 사용이 가능합니다!');
+			setModalOpen(false);
+			onClickToggleModal();
+		}
+	}, [phoneNumber]);
+
+	const handleUsePoints = async (usedPoints: number) => {
+		if (userPoints !== null && userPoints >= usedPoints) {
+			const remainingPoints = userPoints - usedPoints;
+			setUserPoints(remainingPoints);
+
+			const pointsCollection = collection(db, 'point');
+			const q = query(pointsCollection, where('phoneNumber', '==', phoneNumber));
+			const matchingDocs = await getDocs(q);
+			if (!matchingDocs.empty) {
+				const existingDoc = matchingDocs.docs[0];
+				const docRef = doc(db, 'point', existingDoc.id);
+				await updateDoc(docRef, { point: remainingPoints });
+			}
+		} else {
+			alert('포인트가 부족합니다.');
+		}
+	};
 	return (
 		<ModalContainer onClick={onClickToggleModal}>
 			<DialogBox onClick={(e) => e.stopPropagation()}>
-				<p>핸드폰 번호 뒷자리 4자리를 입력해주세요 </p>
+				<p>핸드폰 번호를 입력해주세요 </p>
 				<PointInput>
 					<label htmlFor="phone-number" hidden />
-					<input type="number" id="phone-number" name="phonnumber" placeholder="숫자만 입력해주세요"></input>
+					<input
+						type="number"
+						id="phone-number"
+						name="phonnumber"
+						value={phoneNumber}
+						placeholder="숫자만 입력해주세요"
+						onChange={handlePhoneNumberChange}
+					></input>
 					<button>
 						<img src="/assets/user/BackBtn_light.svg" alt="지우기" width={45} />
 					</button>
@@ -29,7 +82,15 @@ function UsePointUser({ onClickToggleModal }: ModalDefaultType) {
 					<CloseBtn onClick={onClickOpenModal}>확인</CloseBtn>
 				</BtnContainer>
 			</DialogBox>
-			{isOpenModal && <CheckPointUsedIt onClickOpenModal={onClickToggleModal} isOpenModal={isOpenModal} />}
+			{isOpenModal && (
+				<CheckPointUsedIt
+					onClickOpenModal={onClickToggleModal}
+					isOpenModal={isOpenModal}
+					points={userPoints}
+					onUsePoints={handleUsePoints}
+					phoneNumber={phoneNumber}
+				/>
+			)}
 			<Backdrop
 				onClick={(e: React.MouseEvent) => {
 					e.preventDefault();

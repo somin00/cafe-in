@@ -90,7 +90,7 @@ const DeleteContent = styled.div`
 		font-size: ${({ theme }) => theme.fontSize['3xl']};
 		font-weight: ${({ theme }) => theme.fontWeight.regular};
 		color: ${({ theme }) => theme.textColor.white};
-		background-color: ${({ theme }) => (theme.lightColor ? theme.lightColor?.yellow.sub : theme.darkColor?.main)};
+		background-color: ${({ theme }) => (theme.lightColor ? theme.lightColor.sub : theme.darkColor?.main)};
 		border-radius: 10px;
 
 		&:first-child {

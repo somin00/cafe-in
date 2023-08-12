@@ -4,21 +4,52 @@ import { ModalDefaultType } from '../../types/ModalOpenTypes';
 import PointAddCheckModal from '../UserMode/PointAddCheckModal';
 import { darkTheme, defaultTheme } from '../../style/theme';
 import Dark_PointAddCheckModal from '../darkThemeModal/Dark_PointAddCheckModal';
-
+import { addDoc, collection, doc, getDocs, query, updateDoc, where } from 'firebase/firestore';
+import { db } from '../../firebase/firebaseConfig';
 function AddPointModal({ onClickToggleModal }: ModalDefaultType) {
 	const theme = useTheme();
+	const [phoneNumber, setPhoneNumber] = useState('');
+	const [isOpenModal, setModalOpen] = useState<boolean>(false);
+	const [isNewUser, setIsNewUser] = useState<boolean | null>(null);
+
 	const handleCloseBtnClick = (e: React.MouseEvent) => {
 		e.stopPropagation();
 		onClickToggleModal();
 	};
-	const [isOpenModal, setModalOpen] = useState<boolean>(false);
-	const onClickOpenModal = useCallback(() => {
+	const onClickOpenModal = useCallback(async () => {
 		setModalOpen(true);
+
+		const pointsCollection = collection(db, 'point');
+		const q = query(pointsCollection, where('phoneNumber', '==', phoneNumber));
+
+		const matchingDocs = await getDocs(q);
+
+		if (!matchingDocs.empty) {
+			// 이미 존재하는 문서에 포인트를 500 증가
+			const existingDoc = matchingDocs.docs[0];
+			const docRef = doc(db, 'point', existingDoc.id);
+			const currentPoints = existingDoc.data().point || 0;
+			setIsNewUser(false);
+			await updateDoc(docRef, {
+				point: currentPoints + 500,
+			});
+		} else {
+			// 존재하지 않는 경우 새로운 문서를 추가하고 포인트를 1000으로 설정
+			setIsNewUser(true);
+			const userToBeAdded = {
+				date: Date.now(),
+				phoneNumber: phoneNumber,
+				point: 1000,
+			};
+
+			await addDoc(pointsCollection, userToBeAdded);
+		}
+
 		setTimeout(() => {
 			setModalOpen(true);
 			onClickToggleModal();
-		}, 2000); // 15 seconds
-	}, [onClickToggleModal]);
+		}, 2000);
+	}, [phoneNumber, onClickToggleModal]);
 
 	return (
 		<ModalContainer onClick={onClickToggleModal}>
@@ -26,7 +57,14 @@ function AddPointModal({ onClickToggleModal }: ModalDefaultType) {
 				<p> 이용약관과 개인 정보 취급 방침에 동의하시면 적립 버튼을 눌러주세요 </p>
 				<PointInput>
 					<label htmlFor="phone-number" hidden />
-					<input type="number" id="phone-number" name="phonnumber" placeholder="숫자만 입력해주세요"></input>
+					<input
+						type="number"
+						id="phone-number"
+						name="phonnumber"
+						placeholder="숫자만 입력해주세요"
+						value={phoneNumber}
+						onChange={(e) => setPhoneNumber(e.target.value)}
+					/>
 					<button>
 						<img src="/assets/user/BackBtn_light.svg" alt="지우기" width={45} />
 					</button>
@@ -38,7 +76,12 @@ function AddPointModal({ onClickToggleModal }: ModalDefaultType) {
 			</DialogBox>
 			{isOpenModal &&
 				(theme === defaultTheme ? (
-					<PointAddCheckModal onClickOpenModal={onClickOpenModal} isOpenModal={isOpenModal} />
+					<PointAddCheckModal
+						onClickOpenModal={onClickOpenModal}
+						isOpenModal={isOpenModal}
+						phoneNumber={phoneNumber}
+						isNewUser={isNewUser}
+					/>
 				) : (
 					<Dark_PointAddCheckModal onClickOpenModal={onClickOpenModal} isOpenModal={isOpenModal} />
 				))}

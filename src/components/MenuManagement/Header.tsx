@@ -24,7 +24,7 @@ function Header() {
 				<ManagementHeader headerText="메뉴 추가">
 					<ButtonContainer>
 						<HeaderButton text="카테고리" decorate="is-selected" onClick={handleOpenCategoryModal} />
-						<HeaderButton text="메뉴추가" decorate="is-selected" onClick={handleOpenCategoryModal} />
+						<HeaderButton text="메뉴추가" decorate="is-selected" onClick={handleOpenAddMenuModal} />
 					</ButtonContainer>
 				</ManagementHeader>
 			</HeadWrapper>
