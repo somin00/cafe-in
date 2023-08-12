@@ -1,12 +1,9 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useSetRecoilState } from 'recoil';
 import { styled } from 'styled-components';
-import { selectedModeState } from '../state/Mode';
 
 function Home() {
 	const navigate = useNavigate();
-	const setMode = useSetRecoilState(selectedModeState);
 
 	return (
 		<div>
@@ -14,7 +11,6 @@ function Home() {
 			<div className="button">
 				<Button
 					onClick={() => {
-						setMode('user');
 						navigate('/menu');
 					}}
 				>
@@ -22,7 +18,6 @@ function Home() {
 				</Button>
 				<Button
 					onClick={() => {
-						setMode('admin');
 						navigate('/admin/main');
 					}}
 				>
@@ -30,7 +25,6 @@ function Home() {
 				</Button>
 				<Button
 					onClick={() => {
-						setMode('admin');
 						navigate('/waiting');
 					}}
 				>
