@@ -119,7 +119,7 @@ const TableHeader = styled.tr<ColorProps>`
 	border: ${({ theme }) => (theme.lightColor ? 'none' : '1px solid white')};
 	color: ${({ theme, $selectedColor }) =>
 		theme.lightColor
-			? $selectedColor === 'blue'
+			? $selectedColor === 'blue' || $selectedColor === 'purple' || $selectedColor === 'pink'
 				? theme.textColor.white
 				: theme.textColor.black
 			: theme.textColor.black};

@@ -32,7 +32,7 @@ export const defaultTheme: DefaultTheme = {
 			background: '#EDE4FF',
 			main: '#A076F9',
 			sub: '#D7BBF5',
-			point: '#7A49ED',
+			point: '#645CAA',
 		},
 	},
 	textColor: {
@@ -42,6 +42,7 @@ export const defaultTheme: DefaultTheme = {
 		darkgray: '#808080',
 		lightbrown: '#eeeeee',
 		darkbrown: '#726868',
+		lightBeige: '#FFF9F0',
 	},
 
 	fontWeight: {
@@ -81,6 +82,7 @@ export const darkTheme: DefaultTheme = {
 		darkgray: '#808080',
 		lightbrown: '#eeeeee',
 		darkbrown: '#726868',
+		lightBeige: '#FFF9F0',
 	},
 
 	fontWeight: {

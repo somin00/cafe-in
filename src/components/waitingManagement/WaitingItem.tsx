@@ -134,12 +134,7 @@ const WaitingItemWrapper = styled.tr`
 const WatingBtnWrapper = styled.td<ColorProps>`
 	width: 300px;
 	height: 48px;
-	color: ${({ theme, $selectedColor }) =>
-		theme.lightColor
-			? $selectedColor === 'pink'
-				? theme.textColor.white
-				: theme.textColor.black
-			: theme.textColor.white};
+	color: ${({ theme }) => (theme.lightColor ? theme.textColor.white : theme.textColor.white)};
 	font-weight: ${({ theme }) => theme.fontWeight.semibold};
 	display: flex;
 	justify-content: center;
