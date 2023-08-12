@@ -4,6 +4,7 @@ import { Option } from '../../state/OptinalState';
 import { db } from '../../firebase/firebaseConfig';
 import { addDoc, collection, doc, getDocs, increment, query, updateDoc, where } from 'firebase/firestore';
 import { Item } from '../../state/Category';
+import { darkTheme, defaultTheme } from '../../style/theme';
 export interface OptionMenuProps {
 	selected: Item;
 	onClickToggleModal: () => void;
@@ -147,11 +148,11 @@ const Layout = styled.div`
 	border-bottom: 1px solid ${({ theme }) => theme.textColor.lightgray};
 `;
 const DialogBox = styled.dialog`
-	width: 700px;
-	height: 700px;
+	width: 600px;
+	height: 550px;
 	position: absolute;
-	top: 0;
-	left: 250px;
+	top: 80px;
+	left: 300px;
 	display: flex;
 	flex-direction: column;
 	align-items: center;
@@ -162,6 +163,7 @@ const DialogBox = styled.dialog`
 	z-index: 10000;
 	h1 {
 		width: 100%;
+		text-align: center;
 		font-size: ${({ theme }) => theme.fontSize['2xl']};
 		padding: 25px;
 		border-bottom: 1px solid ${({ theme }) => theme.textColor.lightgray};
@@ -199,9 +201,9 @@ const CheckOption = styled.button`
 	}
 `;
 const CloseBtn = styled.button`
-	margin-top: 10px;
+	margin-top: 20px;
 	border-radius: 10px;
-	background-color: burlywood;
+	background-color: ${({ theme }) => (theme === defaultTheme ? theme.lightColor.sub : darkTheme.darkColor.point)};
 	width: 110px;
 	height: 45px;
 	font-size: ${({ theme }) => theme.fontSize['2xl']};

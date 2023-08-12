@@ -1,5 +1,6 @@
 import React, { ForwardedRef, forwardRef } from 'react';
 import { styled } from 'styled-components';
+import { darkTheme } from '../../style/theme';
 
 interface HeaderButtonPropType {
 	text: string;
@@ -22,7 +23,7 @@ const Button = styled.button`
 	border-radius: 10px;
 	font-size: ${({ theme }) => theme.fontSize['2xl']};
 	font-weight: ${({ theme }) => theme.fontWeight.medium};
-	background-color: ${({ theme }) => (theme.lightColor ? theme.textColor.white : theme.darkColor?.background)};
+	background-color: ${({ theme }) => (theme.lightColor ? theme.textColor.white : darkTheme.darkColor.background)};
 	border: ${({ theme }) => (theme.lightColor ? theme.lightColor.point : theme.textColor.darkgray)} 1px solid;
 	color: ${({ theme }) => (theme.lightColor ? theme.lightColor.point : theme.textColor.darkgray)};
 
