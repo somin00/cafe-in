@@ -1,25 +1,17 @@
 import { useEffect, useState, useCallback } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { styled } from 'styled-components';
-import { useRecoilValue } from 'recoil';
-import { SelectedColorType } from '../../style/theme';
-import { selectedColorState } from '../../state/ColorState';
-import { useSelectedColor } from '../../hooks/useSelectedColor';
-import { ColorProps } from '../../types/ColorProps';
 
 function WaitingCheck() {
-	const selectedColor = useRecoilValue<SelectedColorType>(selectedColorState);
 	const navigate = useNavigate();
 	const location = useLocation();
 	const [remainingTime, setRemainingTime] = useState<number>(20);
-
-	useSelectedColor();
 
 	//? 대기 신청 페이지에서 넘겨 받은 대기 번호
 	const { userWaitingNum } = location.state;
 
 	const RemainingTimeText = ({ remainingTime }: { remainingTime: number }) => {
-		return <p>{remainingTime}초 뒤에 자동으로 홈 화면으로 이동합니다.</p>;
+		return <p className="remainingTimeText">{remainingTime}초 뒤에 자동으로 홈 화면으로 이동합니다.</p>;
 	};
 
 	useEffect(() => {
@@ -46,7 +38,7 @@ function WaitingCheck() {
 			<WaitingCheckHeaderText>
 				신청 완료! <p>순서가 되면 알림으로 알려드립니다.</p>
 			</WaitingCheckHeaderText>
-			<WaitingNumWrapper $selectedColor={selectedColor}>
+			<WaitingNumWrapper>
 				<LeftFireworks />
 				<WaitingNumText>{userWaitingNum}번</WaitingNumText>
 				<RightFireworks />
@@ -70,6 +62,11 @@ const WaitingCheckWrapper = styled.div`
 	justify-content: space-around;
 	align-items: center;
 	user-select: none;
+
+	.remainingTimeText {
+		color: ${({ theme }) => (theme.lightColor ? theme.textColor.black : theme.textColor.white)};
+		font-size: ${({ theme }) => theme.fontSize['2xl']};
+	}
 `;
 
 const WaitingCheckHeaderText = styled.h1`
@@ -89,12 +86,11 @@ const WaitingCheckHeaderText = styled.h1`
 	}
 `;
 
-const WaitingNumWrapper = styled.div<ColorProps>`
+const WaitingNumWrapper = styled.div`
 	width: 324px;
 	height: 308px;
 	border-radius: 50%;
-	background-color: ${({ theme, $selectedColor }) =>
-		theme.lightColor ? theme.lightColor[$selectedColor].sub : theme.darkColor?.main};
+	background-color: ${({ theme }) => (theme.lightColor ? theme.lightColor.sub : theme.darkColor?.main)};
 	color: ${({ theme }) => theme.textColor.white};
 	font-size: ${({ theme }) => theme.fontSize['7xl']};
 	font-weight: ${({ theme }) => theme.fontWeight.semibold};
