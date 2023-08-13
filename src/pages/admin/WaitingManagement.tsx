@@ -7,6 +7,7 @@ import WaitingTableBox from '../../components/waitingManagement/WaitingTableBox'
 import WaitingModal from '../../components/waitingManagement/WaitingModal';
 import { isWaitingAvailableState } from '../../state/WaitingState';
 import { modalState } from '../../state/ModalState';
+import withAuth from '../../components/adminMode/WithAuth';
 
 type DataStatusProps = {
 	$isWaiting: boolean;
@@ -109,7 +110,7 @@ const WaitingManagement = () => {
 	);
 };
 
-export default WaitingManagement;
+export default withAuth(WaitingManagement);
 
 const WaitingManagementWrapper = styled.div`
 	width: 1194px;

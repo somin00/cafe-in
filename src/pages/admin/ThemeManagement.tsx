@@ -4,6 +4,7 @@ import ManagementHeader from '../../components/adminMode/ManagementHeader';
 import { useSetRecoilState } from 'recoil';
 import { selectedColorState } from '../../state/ColorState';
 import { SelectedColorType } from '../../style/theme';
+import withAuth from '../../components/adminMode/WithAuth';
 
 interface ThemeManagementProps {
 	setIsDarkmode: React.Dispatch<React.SetStateAction<boolean>>;
@@ -94,7 +95,7 @@ function ThemeManagement({ setIsDarkmode }: ThemeManagementProps) {
 	);
 }
 
-export default ThemeManagement;
+export default withAuth(ThemeManagement);
 
 const ThemeManagementWrapper = styled.div`
 	width: 1194px;

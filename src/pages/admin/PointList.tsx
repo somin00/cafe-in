@@ -4,6 +4,7 @@ import { defaultTheme, darkTheme } from '../../style/theme';
 import { useNavigate } from 'react-router-dom';
 import { collection, getDocs } from 'firebase/firestore';
 import { db } from '../../firebase/firebaseConfig';
+import withAuth from '../../components/adminMode/WithAuth';
 
 function underBarPhoneNumber(phoneNumber: string): string {
 	const cleaned = ('' + phoneNumber).replace(/\D/g, ''); // 숫자만 남기기
@@ -151,4 +152,4 @@ const Pagination = styled.div`
 	}
 `;
 
-export default PointList;
+export default withAuth(PointList);
