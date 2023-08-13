@@ -34,7 +34,12 @@ export default Start;
 const StartWrapper = styled.div`
 	width: 1194px;
 	height: 834px;
-	background-color: ${({ theme }) => (theme.lightColor ? theme.textColor.lightBeige : theme.darkColor?.background)};
+	background-color: ${({ theme }) =>
+		theme.lightColor
+			? theme.color === 'yellow'
+				? theme.textColor.lightBeige
+				: theme.lightColor.background
+			: theme.darkColor?.background};
 	user-select: none;
 	display: flex;
 	justify-content: center;
@@ -51,9 +56,9 @@ const TakeOutBox = styled.button`
 	width: 350px;
 	height: 416px;
 	border-radius: 15px;
-	background-color: ${({ theme }) => (theme.lightColor ? theme.lightColor.yellow.background : theme.darkColor?.main)};
-	border: 3px solid ${({ theme }) => (theme.lightColor ? theme.lightColor.yellow.point : theme.darkColor?.main)};
-	color: ${({ theme }) => (theme.lightColor ? theme.lightColor.yellow.point : theme.textColor.white)};
+	background-color: ${({ theme }) => (theme.lightColor ? theme.textColor.white : theme.darkColor?.main)};
+	border: 3px solid ${({ theme }) => (theme.lightColor ? theme.lightColor.point : theme.darkColor?.main)};
+	color: ${({ theme }) => (theme.lightColor ? theme.lightColor.point : theme.textColor.white)};
 	font-size: ${({ theme }) => theme.fontSize['6xl']};
 	font-weight: ${({ theme }) => theme.fontWeight.semibold};
 `;
