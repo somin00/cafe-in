@@ -15,8 +15,8 @@ interface Order {
 		quantity: number;
 		options: string;
 		isComplete: boolean;
+		totalPrice: number;
 	}[];
-	totalPrice: number;
 	takeout: boolean;
 	progress: '선택주문' | '진행중' | '완료주문';
 }
@@ -53,16 +53,17 @@ function OrderCheck() {
 		getOrderList();
 	}, []);
 
-	const totalOrderAmount = orderList.reduce((acc, order) => acc + order.totalPrice, 0);
-
+	const totalOrderAmount = orderList.reduce((acc, order) => {
+		const orderTotal = order.list.reduce((orderAcc, item) => orderAcc + item.totalPrice, 0);
+		return acc + orderTotal;
+	}, 0);
 	const handleDeleteAll = () => {
 		setOrderList([]);
 	};
-
 	const handlePayment = async () => {
 		const batch = writeBatch(db);
 
-		// 현재 progress가 진행중인것만
+		// 현재 progress가 진행중 주문만
 		const ordersToUpdate = orderList.filter((order) => order.progress === '진행중');
 
 		for (const order of ordersToUpdate) {
@@ -70,9 +71,10 @@ function OrderCheck() {
 			batch.update(orderRef, { progress: '완료주문' });
 		}
 
+		// batch 작업 실행
 		await batch.commit();
 
-		// 현재 상태에서 주문 상태를 업데이트
+		// 주문 상태 업데이트
 		setOrderList((prevOrders) =>
 			prevOrders.map((order) => (order.progress === '진행중' ? { ...order, progress: '완료주문' } : order)),
 		);
@@ -114,7 +116,7 @@ function OrderCheck() {
 												<p>{item.menu}</p>
 											</div>
 											<p>{item.quantity}</p>
-											<p>{order.totalPrice.toLocaleString()}원</p>
+											<p>{item.totalPrice}원</p>
 										</OrderMenuItem>
 									))}
 								</div>

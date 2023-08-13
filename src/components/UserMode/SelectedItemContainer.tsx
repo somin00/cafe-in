@@ -16,7 +16,6 @@ import {
 	increment,
 	getDocs,
 } from 'firebase/firestore';
-import { type } from 'os';
 type StyledProps = {
 	$quantity: number;
 };
@@ -76,22 +75,26 @@ function SelectedItemContainer() {
 
 		setSelectedItems([]);
 	}, [db]);
+
 	const handleAddOrderMoveTo = async () => {
 		navigate('/order');
-		selectedItems.forEach(async (item) => {
-			const newOrder = {
-				id: Date.now(),
-				date: Date(),
-				list: [{ menu: item.name, quantity: item.quantity, options: item.options, isComplete: false }],
-				progress: '진행중' as OrderProgress,
+
+		const newOrder = {
+			id: Date.now(),
+			date: Date(),
+			progress: '진행중' as OrderProgress,
+			takeOut: true,
+			list: selectedItems.map((item) => ({
+				menu: item.name,
+				quantity: item.quantity,
+				options: item.options,
+				isComplete: false,
 				totalPrice: item.totalPrice * item.quantity,
-				takeOut: true,
-			};
+			})),
+		};
 
-			await addDoc(collection(db, 'orderList'), newOrder);
-		});
+		await addDoc(collection(db, 'orderList'), newOrder);
 	};
-
 	useEffect(() => {
 		let lastInteraction = Date.now();
 		const timeoutDuration = 10000; // 10초
