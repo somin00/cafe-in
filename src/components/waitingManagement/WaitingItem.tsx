@@ -11,10 +11,6 @@ import {
 	notificationUserState,
 } from '../../state/ModalState';
 import { WaitingDataType } from '../../types/waitingDataType';
-import { ColorProps } from '../../types/ColorProps';
-import { SelectedColorType } from '../../style/theme';
-import { selectedColorState } from '../../state/ColorState';
-import { useSelectedColor } from '../../hooks/useSelectedColor';
 
 type WaitingItemProps = {
 	waitingInfo: WaitingDataType[];
@@ -22,8 +18,6 @@ type WaitingItemProps = {
 };
 
 const WaitingItem = (props: WaitingItemProps) => {
-	const selectedColor = useRecoilValue<SelectedColorType>(selectedColorState);
-	useSelectedColor();
 	const { waitingInfo, waitingDataStatus } = props;
 	const setIsOpenModal = useSetRecoilState<boolean>(modalState);
 	const [modalType, setModalType] = useRecoilState<string>(modalTypeState);
@@ -63,11 +57,10 @@ const WaitingItem = (props: WaitingItemProps) => {
 					<td width={'110px'}>{value.name}</td>
 					<td width={'120px'}>{value.personNum}명</td>
 					<td width={'250px'}>{formatTel(value.tel)}</td>
-					<WatingBtnWrapper $selectedColor={selectedColor} width={'300px'}>
+					<WatingBtnWrapper width={'300px'}>
 						{waitingDataStatus === 'waiting' ? (
 							<>
 								<ShortBtn
-									$selectedColor={selectedColor}
 									onClick={() => {
 										setIsOpenModal(true);
 										setModalType('notification');
@@ -78,7 +71,6 @@ const WaitingItem = (props: WaitingItemProps) => {
 									알림
 								</ShortBtn>
 								<ShortBtn
-									$selectedColor={selectedColor}
 									onClick={() => {
 										setIsOpenModal(true);
 										setModalType('cancel');
@@ -88,7 +80,6 @@ const WaitingItem = (props: WaitingItemProps) => {
 									취소
 								</ShortBtn>
 								<LongBtn
-									$selectedColor={selectedColor}
 									onClick={() => {
 										setIsOpenModal(true);
 										setModalType('seated');
@@ -131,39 +122,31 @@ const WaitingItemWrapper = styled.tr`
 	}
 `;
 
-const WatingBtnWrapper = styled.td<ColorProps>`
+const WatingBtnWrapper = styled.td`
 	width: 300px;
 	height: 48px;
-	color: ${({ theme, $selectedColor }) =>
-		theme.lightColor
-			? $selectedColor === 'pink'
-				? theme.textColor.white
-				: theme.textColor.black
-			: theme.textColor.white};
+	color: ${({ theme }) => (theme.lightColor ? theme.textColor.white : theme.textColor.white)};
 	font-weight: ${({ theme }) => theme.fontWeight.semibold};
 	display: flex;
 	justify-content: center;
 	align-items: center;
 
 	span {
-		color: ${({ theme, $selectedColor }) =>
-			theme.lightColor ? theme.lightColor[$selectedColor]?.point : theme.darkColor?.point};
+		color: ${({ theme }) => (theme.lightColor ? theme.lightColor.point : theme.darkColor?.point)};
 	}
 `;
 
-const ShortBtn = styled.button<ColorProps>`
+const ShortBtn = styled.button`
 	width: 65px;
 	height: 48px;
 	margin-right: 14px;
 	border-radius: 10px;
-	background-color: ${({ theme, $selectedColor }) =>
-		theme.lightColor ? theme.lightColor[$selectedColor].sub : theme.darkColor?.main};
+	background-color: ${({ theme }) => (theme.lightColor ? theme.lightColor.sub : theme.darkColor?.main)};
 `;
 
-const LongBtn = styled.button<ColorProps>`
+const LongBtn = styled.button`
 	width: 113px;
 	height: 48px;
 	border-radius: 10px;
-	background-color: ${({ theme, $selectedColor }) =>
-		theme.lightColor ? theme.lightColor[$selectedColor].sub : theme.darkColor?.main};
+	background-color: ${({ theme }) => (theme.lightColor ? theme.lightColor.sub : theme.darkColor?.main)};
 `;

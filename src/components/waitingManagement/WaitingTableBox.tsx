@@ -4,13 +4,9 @@ import { db } from '../../firebase/firebaseConfig';
 import { collection, onSnapshot } from 'firebase/firestore';
 import { useRecoilValue } from 'recoil';
 import WaitingItem from './WaitingItem';
-import { SelectedColorType } from '../../style/theme';
 import { WaitingDataType } from '../../types/waitingDataType';
-import { ColorProps } from '../../types/ColorProps';
 import { filterTodayWaiting } from '../../utils/filter';
-import { useSelectedColor } from '../../hooks/useSelectedColor';
 import { isWaitingAvailableState } from '../../state/WaitingState';
-import { selectedColorState } from '../../state/ColorState';
 
 interface ThProps {
 	width?: string;
@@ -21,8 +17,6 @@ type waitingDataProps = {
 };
 
 const WaitingTableBox = (props: waitingDataProps) => {
-	const selectedColor = useRecoilValue<SelectedColorType>(selectedColorState);
-	useSelectedColor();
 	const { waitingDataStatus } = props;
 	const [waitingList, setWaitingList] = useState<WaitingDataType[]>([]);
 	const isWaitingAvailable = useRecoilValue<boolean>(isWaitingAvailableState);
@@ -46,10 +40,10 @@ const WaitingTableBox = (props: waitingDataProps) => {
 	const todayWaitingNum = waitingInfo.length;
 
 	return (
-		<TableBox $selectedColor={selectedColor}>
+		<TableBox>
 			<table>
 				<thead>
-					<TableHeader $selectedColor={selectedColor}>
+					<TableHeader>
 						<ThCell width="140px">대기 번호</ThCell>
 						<ThCell width="110px">이름</ThCell>
 						<ThCell width="125px">인원</ThCell>
@@ -80,13 +74,12 @@ const WaitingTableBox = (props: waitingDataProps) => {
 
 export default WaitingTableBox;
 
-const TableBox = styled.div<ColorProps>`
+const TableBox = styled.div`
 	width: 1046px;
 	height: 625px;
 	margin-bottom: 48px;
 	padding-top: 20px;
-	background-color: ${({ theme, $selectedColor }) =>
-		theme.lightColor ? theme.lightColor[$selectedColor].background : theme.darkColor?.background};
+	background-color: ${({ theme }) => (theme.lightColor ? theme.lightColor.background : theme.darkColor?.background)};
 	border: ${({ theme }) => (theme.lightColor ? 'none' : `1px solid ${theme.textColor.white}`)};
 	overflow-y: scroll;
 	overflow-x: hidden;
@@ -103,7 +96,7 @@ const ThCell = styled.th<ThProps>`
 	width: ${({ width }) => width};
 `;
 
-const TableHeader = styled.tr<ColorProps>`
+const TableHeader = styled.tr`
 	width: 982px;
 	height: 68px;
 	font-size: ${({ theme }) => theme.fontSize['2xl']};
@@ -114,12 +107,11 @@ const TableHeader = styled.tr<ColorProps>`
 	margin: 0 32px 15px 32px;
 	padding-left: 32px;
 	padding-right: 40px;
-	background-color: ${({ theme, $selectedColor }) =>
-		theme.lightColor ? theme.lightColor[$selectedColor].main : theme.textColor.white};
+	background-color: ${({ theme }) => (theme.lightColor ? theme.lightColor.main : theme.textColor.white)};
 	border: ${({ theme }) => (theme.lightColor ? 'none' : '1px solid white')};
-	color: ${({ theme, $selectedColor }) =>
+	color: ${({ theme }) =>
 		theme.lightColor
-			? $selectedColor === 'blue'
+			? theme.color === 'blue' || theme.color === 'purple' || theme.color === 'pink'
 				? theme.textColor.white
 				: theme.textColor.black
 			: theme.textColor.black};

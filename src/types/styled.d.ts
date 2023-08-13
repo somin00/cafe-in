@@ -14,6 +14,7 @@ declare module 'styled-components' {
 			darkgray: string;
 			lightbrown: string;
 			darkbrown: string;
+			lightBeige: string;
 		};
 
 		fontWeight: {
