@@ -1,32 +1,20 @@
 import React, { useCallback, useState } from 'react';
 import { styled } from 'styled-components';
-import OptionMenu from './UserMode/OptionMenu';
-import { useRecoilState } from 'recoil';
 import { MenuType } from '../types/menuMangementType';
 import EditMenuModal from './MenuManagement/EditMenuModal';
 import ModalPortal from './ModalPortal';
-import { selectedItemsState } from '../firebase/FirStoreDoc';
 
 interface ItemPropType {
 	menu: MenuType;
 }
 function MenuItem({ menu }: ItemPropType) {
-	const [isAdminMode, setIsAdminMode] = useState<boolean>(false);
 	const [isOpenModal, setModalOpen] = useState<boolean>(false);
-
-	const [selectedItem] = useRecoilState(selectedItemsState);
 
 	const priceTemplate = (price: string) => {
 		return price.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 	};
 
 	const onClickToggleModal = useCallback(() => {
-		const mode = localStorage.getItem('mode');
-		if (mode === 'admin') {
-			setIsAdminMode(true);
-		} else {
-			setIsAdminMode(false);
-		}
 		setModalOpen(!isOpenModal);
 	}, [isOpenModal]);
 
@@ -39,8 +27,7 @@ function MenuItem({ menu }: ItemPropType) {
 					<p className="menu-price">{priceTemplate(menu.price)}원</p>
 				</button>
 			</MenuItemWrapper>
-			{!isAdminMode && isOpenModal && <OptionMenu onClickToggleModal={onClickToggleModal} selected={selectedItem} />}
-			{isAdminMode && isOpenModal && (
+			{isOpenModal && (
 				<ModalPortal>
 					<EditMenuModal menu={menu} onCloseModal={onClickToggleModal} />
 				</ModalPortal>

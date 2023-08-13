@@ -10,6 +10,12 @@ function AdminLogin() {
 	const passwordRef = useRef<HTMLInputElement>(null);
 	const [errorMesage, setErrorMessage] = useState('');
 
+	const enterLogin = (e: React.KeyboardEvent) => {
+		if (e.key === 'Enter') {
+			handleLogin();
+		}
+	};
+
 	const handleLogin = async () => {
 		setErrorMessage('');
 		const useInputPwd = passwordRef.current?.value;
@@ -38,6 +44,7 @@ function AdminLogin() {
 						onSubmit={(e) => {
 							e.preventDefault();
 						}}
+						onKeyDown={enterLogin}
 					>
 						<label htmlFor="password">비밀번호</label>
 						<input

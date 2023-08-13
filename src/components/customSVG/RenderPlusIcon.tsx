@@ -11,7 +11,11 @@ function RenderPlusIcon({ theme }: RenderMinusIconProps) {
 			return <PlusSVG />;
 		} else {
 			return (
-				<img alt="1 빼기 버튼" aria-label="1 빼기" src={process.env.PUBLIC_URL + '/assets/user/minusIcon_dark.svg'} />
+				<img
+					alt="1 더하기 버튼"
+					aria-label="1 더하기"
+					src={process.env.PUBLIC_URL + '/assets/user/plusIcon_dark.svg'}
+				/>
 			);
 		}
 	};

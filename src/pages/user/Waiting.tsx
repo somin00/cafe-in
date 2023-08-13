@@ -7,26 +7,19 @@ import { db } from '../../firebase/firebaseConfig';
 import WaitingApplyModal from '../../components/waitingManagement/WaitingApplyModal';
 import RenderMinusIcon from '../../components/customSVG/RenderMinusIcon';
 import RenderPlusIcon from '../../components/customSVG/RenderPlusIcon';
-import { SelectedColorType } from '../../style/theme';
 import { filterTodayWaiting } from '../../utils/filter';
 import { WaitingDataType } from '../../types/waitingDataType';
-import { ColorProps } from '../../types/ColorProps';
 import { isWaitingAvailableState } from '../../state/WaitingState';
 import { modalState, modalTypeState } from '../../state/ModalState';
-import { selectedColorState } from '../../state/ColorState';
-import { useSelectedColor } from '../../hooks/useSelectedColor';
 
 type DecreaseProps = {
 	$decreaseDisable: boolean;
 };
 
 function Waiting() {
-	const selectedColor = useRecoilValue<SelectedColorType>(selectedColorState);
 	const theme = useTheme();
 	const navigate = useNavigate();
 	const isWaitingAvailable = useRecoilValue<boolean>(isWaitingAvailableState);
-
-	useSelectedColor();
 
 	//* 대기 신청 확인 모달
 	const [isOpenModal, setIsOpenModal] = useRecoilState<boolean>(modalState);
@@ -61,6 +54,7 @@ function Waiting() {
 	const onIncrease = () => {
 		setWaitingPersonNum((prevNum) => prevNum + 1);
 	};
+
 	const onDecrease = () => {
 		if (!decreaseDisable) {
 			setWaitingPersonNum((prevNum) => prevNum - 1);
@@ -154,7 +148,7 @@ function Waiting() {
 	};
 
 	return (
-		<WaitingWrapper $selectedColor={selectedColor}>
+		<WaitingWrapper>
 			{isWaitingAvailable ? (
 				<>
 					{isOpenModal && <WaitingApplyModal closeModal={closeModal} />}
@@ -195,15 +189,13 @@ function Waiting() {
 						</InputBoxWrapper>
 						<ApplicationButtnoWrapper>
 							<ApplicationBtn
-								$selectedColor={selectedColor}
 								onClick={() => {
-									navigate('/home');
+									navigate('/start');
 								}}
 							>
 								취소
 							</ApplicationBtn>
 							<ApplicationBtn
-								$selectedColor={selectedColor}
 								onClick={() => {
 									applyWaiting();
 								}}
@@ -217,7 +209,6 @@ function Waiting() {
 				<WaitingDisableMessage>
 					대기가 마감되었습니다.
 					<BackHomeBtn
-						$selectedColor={selectedColor}
 						onClick={() => {
 							navigate('/home');
 						}}
@@ -232,11 +223,10 @@ function Waiting() {
 
 export default Waiting;
 
-const WaitingWrapper = styled.div<ColorProps>`
+const WaitingWrapper = styled.div`
 	width: 1194px;
 	height: 834px;
-	background-color: ${({ theme, $selectedColor }) =>
-		theme.lightColor ? theme.lightColor[$selectedColor].background : theme.darkColor?.background};
+	background-color: ${({ theme }) => (theme.lightColor ? theme.lightColor.background : theme.darkColor?.background)};
 	user-select: none;
 	display: flex;
 	align-items: center;
@@ -307,7 +297,7 @@ const InputBoxWrapper = styled.div`
 	h1 {
 		padding-left: 5px;
 		font-size: ${({ theme }) => theme.fontSize.lg};
-		color: ${({ theme }) => (theme.lightColor ? theme.lightColor.pink.point : theme.darkColor?.point)};
+		color: ${({ theme }) => (theme.lightColor ? theme.lightColor.point : theme.darkColor?.point)};
 	}
 `;
 const InputBox = styled.input`
@@ -334,14 +324,12 @@ const ApplicationButtnoWrapper = styled.div`
 	margin-bottom: 20px;
 `;
 
-const ApplicationBtn = styled.button<ColorProps>`
+const ApplicationBtn = styled.button`
 	width: 168px;
 	height: 64px;
 	border-radius: 10px;
 	color: ${({ theme }) => theme.textColor.white};
-
-	background-color: ${({ theme, $selectedColor }) =>
-		theme.lightColor ? theme.lightColor[$selectedColor].point : theme.textColor.darkgray};
+	background-color: ${({ theme }) => (theme.lightColor ? theme.lightColor.point : theme.textColor.darkgray)};
 	font-size: ${({ theme }) => theme.fontSize['2xl']};
 	font-weight: ${({ theme }) => theme.fontWeight.semibold};
 `;
@@ -358,12 +346,11 @@ const WaitingDisableMessage = styled.div`
 	color: ${({ theme }) => (theme.lightColor ? theme.textColor.black : theme.textColor.white)};
 `;
 
-const BackHomeBtn = styled.button<ColorProps>`
+const BackHomeBtn = styled.button`
 	width: 225px;
 	height: 75px;
 	border-radius: 10px;
-	background-color: ${({ theme, $selectedColor }) =>
-		theme.lightColor ? theme.lightColor[$selectedColor].main : theme.darkColor?.main};
+	background-color: ${({ theme }) => (theme.lightColor ? theme.lightColor.main : theme.darkColor?.main)};
 	color: ${({ theme }) => (theme.lightColor ? theme.textColor.black : theme.textColor.white)};
 	font-size: ${({ theme }) => theme.fontSize['2xl']};
 	font-weight: ${({ theme }) => theme.fontWeight.semibold};

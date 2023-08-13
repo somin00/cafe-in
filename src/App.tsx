@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
 import { ThemeProvider } from 'styled-components';
@@ -17,13 +17,19 @@ import NotFound from './pages/NotFound';
 import OrderHistory from './pages/admin/OrderHistory';
 import SalesList from './pages/admin/SalesList';
 import PointList from './pages/admin/PointList';
+import Thumbnail from './pages/Thumbnail';
+import Start from './pages/user/Start';
 import { selectedColorState } from './state/ColorState';
+import { useSelectedColor } from './hooks/useSelectedColor';
 
 function App() {
 	const [isDarkmode, setIsDarkmode] = useState<boolean>(false);
 	const selectedColor = useRecoilValue<SelectedColorType>(selectedColorState);
 
+	useSelectedColor();
+
 	const lightTheme = {
+		color: selectedColor,
 		fontSize: { ...defaultTheme.fontSize },
 		fontWeight: { ...defaultTheme.fontWeight },
 		textColor: { ...defaultTheme.textColor },
@@ -43,7 +49,9 @@ function App() {
 				<GlobalStyles />
 				<BrowserRouter>
 					<Routes>
-						<Route path="/" element={<Navigate replace to="/home" />} />
+						<Route path="/home/*" element={<Thumbnail />} />
+						<Route path="/" element={<Thumbnail />} />
+						<Route path="/start" element={<Start />} />
 						<Route path="/*" element={<NotFound />} />
 						<Route path="/menu" element={<MenuList />} />
 						<Route path="/order" element={<OrderCheck />} />
