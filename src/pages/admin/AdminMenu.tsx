@@ -27,7 +27,12 @@ export default AdminMenu;
 const AdminMenuWrapper = styled.div`
 	width: 1194px;
 	height: 834px;
-	background-color: ${({ theme }) => (theme.lightColor ? theme.textColor.lightBeige : theme.darkColor?.background)};
+	background-color: ${({ theme }) =>
+		theme.lightColor
+			? theme.color === 'yellow'
+				? theme.textColor.lightBeige
+				: theme.textColor.white
+			: theme.darkColor?.background};
 	user-select: none;
 	display: flex;
 	flex-flow: column nowrap;
@@ -39,7 +44,11 @@ const Logo = styled.button`
 	margin-bottom: 62px;
 	img {
 		content: ${({ theme }) =>
-			theme.lightColor ? 'url(/assets/logo_beige_small.svg)' : 'url(/assets/logo_dark_small.svg)'};
+			theme.lightColor
+				? theme.color === 'yellow'
+					? 'url(/assets/logo_beige_small.svg)'
+					: 'url(/assets/logo_small.svg)'
+				: 'url(/assets/logo_dark_small.svg)'};
 	}
 `;
 
@@ -56,7 +65,7 @@ const AdminMenuBox = styled.button`
 	width: 300px;
 	height: 236px;
 	border: 1px solid ${({ theme }) => theme.textColor.lightgray};
-	background-color: ${({ theme }) => (theme.lightColor ? theme.lightColor.yellow.background : theme.darkColor?.main)};
+	background-color: ${({ theme }) => (theme.lightColor ? theme.lightColor.background : theme.darkColor?.main)};
 	color: ${({ theme }) => (theme.lightColor ? theme.textColor.black : theme.textColor.white)};
 	text-align: center;
 	line-height: 236px;
