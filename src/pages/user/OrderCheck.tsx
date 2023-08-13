@@ -52,18 +52,7 @@ function OrderCheck() {
 	}, []);
 
 	const totalOrderAmount = orderList.reduce((acc, order) => acc + order.totalPrice, 0);
-	const handleDeleteAll = async () => {
-		const selectedItemsCol = collection(db, 'orderList');
-		const snapshot = await getDocs(selectedItemsCol);
-
-		const batch = writeBatch(db);
-
-		snapshot.docs.forEach((doc) => {
-			batch.delete(doc.ref);
-		});
-
-		await batch.commit();
-
+	const handleDeleteAll = () => {
 		setOrderList([]);
 	};
 	const TotalOrderPrice = totalOrderAmount - (usedPoints || 0);
@@ -72,7 +61,6 @@ function OrderCheck() {
 			<Header>
 				<BackBTn
 					onClick={() => {
-						handleDeleteAll();
 						navigate('/menu');
 					}}
 				>
