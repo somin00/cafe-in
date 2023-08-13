@@ -16,9 +16,13 @@ import {
 	increment,
 	getDocs,
 } from 'firebase/firestore';
+import { type } from 'os';
 type StyledProps = {
 	$quantity: number;
 };
+
+type OrderProgress = '선택주문' | '진행중' | '완료주문';
+
 function SelectedItemContainer() {
 	const navigate = useNavigate();
 
@@ -79,9 +83,9 @@ function SelectedItemContainer() {
 				id: Date.now(),
 				date: Date(),
 				list: [{ menu: item.name, quantity: item.quantity, options: item.options, isComplete: false }],
-				progress: '완료주문',
+				progress: '진행중' as OrderProgress,
 				totalPrice: item.totalPrice * item.quantity,
-				tackOut: true,
+				takeOut: true,
 			};
 
 			await addDoc(collection(db, 'orderList'), newOrder);

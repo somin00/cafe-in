@@ -4,7 +4,7 @@ import styled, { useTheme } from 'styled-components';
 import AddPointModal from '../../components/UserMode/AddPointModal';
 import UsePointUser from '../../components/UserMode/UsePointUser';
 import { darkTheme, defaultTheme } from '../../style/theme';
-import { collection, getDocs, writeBatch } from 'firebase/firestore';
+import { collection, doc, getDocs, writeBatch } from 'firebase/firestore';
 import { db } from '../../firebase/firebaseConfig';
 import { useRecoilValue } from 'recoil';
 import { usedPointsState } from '../../state/PointState';
@@ -18,6 +18,7 @@ interface Order {
 	}[];
 	totalPrice: number;
 	takeout: boolean;
+	progress: '선택주문' | '진행중' | '완료주문';
 }
 function OrderCheck() {
 	const navigate = useNavigate();
@@ -44,6 +45,7 @@ function OrderCheck() {
 					list: data.list,
 					totalPrice: data.totalPrice,
 					takeout: data.takeout,
+					progress: data.progress,
 				};
 			});
 			setOrderList(orderListData);
@@ -52,8 +54,28 @@ function OrderCheck() {
 	}, []);
 
 	const totalOrderAmount = orderList.reduce((acc, order) => acc + order.totalPrice, 0);
+
 	const handleDeleteAll = () => {
 		setOrderList([]);
+	};
+
+	const handlePayment = async () => {
+		const batch = writeBatch(db);
+
+		// 현재 progress가 진행중인것만
+		const ordersToUpdate = orderList.filter((order) => order.progress === '진행중');
+
+		for (const order of ordersToUpdate) {
+			const orderRef = doc(db, 'orderList', order.id);
+			batch.update(orderRef, { progress: '완료주문' });
+		}
+
+		await batch.commit();
+
+		// 현재 상태에서 주문 상태를 업데이트
+		setOrderList((prevOrders) =>
+			prevOrders.map((order) => (order.progress === '진행중' ? { ...order, progress: '완료주문' } : order)),
+		);
 	};
 	const TotalOrderPrice = totalOrderAmount - (usedPoints || 0);
 	return (
@@ -61,6 +83,7 @@ function OrderCheck() {
 			<Header>
 				<BackBTn
 					onClick={() => {
+						handleDeleteAll();
 						navigate('/menu');
 					}}
 				>
@@ -80,20 +103,22 @@ function OrderCheck() {
 						<li>주문금액 </li>
 					</TableHead>
 					<Tbody>
-						{orderList.map((order) => (
-							<div key={order.id}>
-								{order.list.map((item, index) => (
-									<OrderMenuItem key={index}>
-										<div className="products-name">
-											<img src="/assets/user/IceCoffee.svg" alt="제품이미지" width={42} />
-											<p>{item.menu}</p>
-										</div>
-										<p>{item.quantity}</p>
-										<p>{order.totalPrice.toLocaleString()}원</p>
-									</OrderMenuItem>
-								))}
-							</div>
-						))}
+						{orderList
+							.filter((order) => order.progress === '진행중')
+							.map((order) => (
+								<div key={order.id}>
+									{order.list.map((item, index) => (
+										<OrderMenuItem key={index}>
+											<div className="products-name">
+												<img src="/assets/user/IceCoffee.svg" alt="제품이미지" width={42} />
+												<p>{item.menu}</p>
+											</div>
+											<p>{item.quantity}</p>
+											<p>{order.totalPrice.toLocaleString()}원</p>
+										</OrderMenuItem>
+									))}
+								</div>
+							))}
 					</Tbody>
 				</OrderList>
 				<OrderTotalPriceContainer>
@@ -123,7 +148,7 @@ function OrderCheck() {
 							{isOpenAddPointModal && <AddPointModal onClickToggleModal={onClickToggleAddPointModal} />}
 							{isOpenUsePointUserModal && <UsePointUser onClickToggleModal={onClickToggleUsePointUserModal} />}
 						</div>
-						<button className="payment" onClick={() => handleDeleteAll()}>
+						<button className="payment" onClick={handlePayment}>
 							결제하기
 							<img src="/assets/user/buy.svg" />
 						</button>
