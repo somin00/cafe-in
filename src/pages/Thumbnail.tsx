@@ -7,9 +7,9 @@ function Thumbnail() {
 		<ThumbnailWrapper>
 			<AdminIcon>
 				<AdminBtn
-					aria-label="관리자 페이지로 이동하기"
+					aria-label="관리자 로그인 페이지로 이동하기"
 					onClick={() => {
-						navigate('/admin/main');
+						navigate('/admin/login');
 					}}
 				>
 					<img src={process.env.PUBLIC_URL + '/assets/paw_adminIcon.svg'} alt="관리자 아이콘" />
