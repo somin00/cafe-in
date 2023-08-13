@@ -1,15 +1,9 @@
 import { styled } from 'styled-components';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import { ModalProps } from '../../types/ModalProps';
-import { ColorProps } from '../../types/ColorProps';
-import { SelectedColorType } from '../../style/theme';
 import { modalState, modalTypeState, modalUpdateState, notificationUserState } from '../../state/ModalState';
-import { selectedColorState } from '../../state/ColorState';
-import { useSelectedColor } from '../../hooks/useSelectedColor';
 
 function WaitingModal({ closeModal }: ModalProps) {
-	const selectedColor = useRecoilValue<SelectedColorType>(selectedColorState);
-	useSelectedColor();
 	const [isOpenModal, setIsOpenModal] = useRecoilState<boolean>(modalState);
 	const modalType = useRecoilValue<string>(modalTypeState);
 	const setModalUpdate = useSetRecoilState<boolean>(modalUpdateState);
@@ -28,7 +22,6 @@ function WaitingModal({ closeModal }: ModalProps) {
 				)}
 				<ModalBtnWrapper>
 					<ModalBtn
-						$selectedColor={selectedColor}
 						onClick={() => {
 							setIsOpenModal(false);
 							setModalUpdate(true);
@@ -37,7 +30,6 @@ function WaitingModal({ closeModal }: ModalProps) {
 						예
 					</ModalBtn>
 					<ModalBtn
-						$selectedColor={selectedColor}
 						onClick={() => {
 							setIsOpenModal(false);
 							setModalUpdate(false);
@@ -89,11 +81,10 @@ const ModalBtnWrapper = styled.div`
 	justify-content: space-between;
 `;
 
-const ModalBtn = styled.button<ColorProps>`
+const ModalBtn = styled.button`
 	width: 110px;
 	height: 65px;
-	background-color: ${({ theme, $selectedColor }) =>
-		theme.lightColor ? theme.lightColor[$selectedColor].sub : theme.darkColor?.main};
+	background-color: ${({ theme }) => (theme.lightColor ? theme.lightColor.sub : theme.darkColor?.main)};
 	border-radius: 10px;
 	color: ${({ theme }) => theme.textColor.white};
 	font-size: ${({ theme }) => theme.fontSize['3xl']};
