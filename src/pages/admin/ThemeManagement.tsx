@@ -1,11 +1,9 @@
 import React from 'react';
 import { styled } from 'styled-components';
 import ManagementHeader from '../../components/adminMode/ManagementHeader';
-import { useRecoilState } from 'recoil';
+import { useSetRecoilState } from 'recoil';
 import { selectedColorState } from '../../state/ColorState';
 import { SelectedColorType } from '../../style/theme';
-import { useSelectedColor } from '../../hooks/useSelectedColor';
-import { ColorProps } from '../../types/ColorProps';
 
 interface ThemeManagementProps {
 	setIsDarkmode: React.Dispatch<React.SetStateAction<boolean>>;
@@ -13,8 +11,7 @@ interface ThemeManagementProps {
 }
 
 function ThemeManagement({ setIsDarkmode }: ThemeManagementProps) {
-	const [selectedColor, setSelectedColor] = useRecoilState<SelectedColorType>(selectedColorState);
-	useSelectedColor();
+	const setSelectedColor = useSetRecoilState<SelectedColorType>(selectedColorState);
 	const handleColorSelected = (color: SelectedColorType) => {
 		setSelectedColor(color);
 		localStorage.setItem('selectedColor', color);
@@ -26,7 +23,7 @@ function ThemeManagement({ setIsDarkmode }: ThemeManagementProps) {
 	};
 
 	return (
-		<ThemeManagementWrapper $selectedColor={selectedColor}>
+		<ThemeManagementWrapper>
 			<ManagementHeader headerText="테마 및 색상 설정" />
 			<ThemeMain>
 				<ColorWrapper>
@@ -99,11 +96,10 @@ function ThemeManagement({ setIsDarkmode }: ThemeManagementProps) {
 
 export default ThemeManagement;
 
-const ThemeManagementWrapper = styled.div<ColorProps>`
+const ThemeManagementWrapper = styled.div`
 	width: 1194px;
 	height: 834px;
-	background-color: ${({ theme, $selectedColor }) =>
-		theme.lightColor ? theme.lightColor[$selectedColor].background : theme.darkColor?.background};
+	background-color: ${({ theme }) => (theme.lightColor ? theme.lightColor.background : theme.darkColor?.background)};
 	user-select: none;
 `;
 

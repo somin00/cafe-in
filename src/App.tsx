@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
 import { ThemeProvider } from 'styled-components';
@@ -20,12 +20,16 @@ import PointList from './pages/admin/PointList';
 import Thumbnail from './pages/Thumbnail';
 import Start from './pages/user/Start';
 import { selectedColorState } from './state/ColorState';
+import { useSelectedColor } from './hooks/useSelectedColor';
 
 function App() {
 	const [isDarkmode, setIsDarkmode] = useState<boolean>(false);
 	const selectedColor = useRecoilValue<SelectedColorType>(selectedColorState);
 
+	useSelectedColor();
+
 	const lightTheme = {
+		color: selectedColor,
 		fontSize: { ...defaultTheme.fontSize },
 		fontWeight: { ...defaultTheme.fontWeight },
 		textColor: { ...defaultTheme.textColor },

@@ -1,21 +1,36 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useRecoilValue } from 'recoil';
 import { styled } from 'styled-components';
+import { isWaitingAvailableState } from '../../state/WaitingState';
 
 function Start() {
 	const navigate = useNavigate();
+	const isWaitingAvailable = useRecoilValue<boolean>(isWaitingAvailableState);
 
 	return (
 		<StartWrapper>
 			<TakeOutBoxWrapper>
-				<TakeOutBox
-					onClick={() => {
-						navigate('/menu');
-					}}
-					aria-label="매장에서 먹고 가기 선택"
-				>
-					매장
-				</TakeOutBox>
+				{isWaitingAvailable ? (
+					<TakeOutBox
+						onClick={() => {
+							navigate('/waiting');
+						}}
+						aria-label="대기 신청하기"
+					>
+						대기
+					</TakeOutBox>
+				) : (
+					<TakeOutBox
+						onClick={() => {
+							navigate('/menu');
+						}}
+						aria-label="매장에서 먹고 가기 선택"
+					>
+						매장
+					</TakeOutBox>
+				)}
+
 				<TakeOutBox
 					onClick={() => {
 						navigate('/menu');
@@ -34,7 +49,12 @@ export default Start;
 const StartWrapper = styled.div`
 	width: 1194px;
 	height: 834px;
-	background-color: ${({ theme }) => (theme.lightColor ? theme.textColor.lightBeige : theme.darkColor?.background)};
+	background-color: ${({ theme }) =>
+		theme.lightColor
+			? theme.color === 'yellow'
+				? theme.textColor.lightBeige
+				: theme.lightColor.background
+			: theme.darkColor?.background};
 	user-select: none;
 	display: flex;
 	justify-content: center;
@@ -51,9 +71,9 @@ const TakeOutBox = styled.button`
 	width: 350px;
 	height: 416px;
 	border-radius: 15px;
-	background-color: ${({ theme }) => (theme.lightColor ? theme.lightColor.yellow.background : theme.darkColor?.main)};
-	border: 3px solid ${({ theme }) => (theme.lightColor ? theme.lightColor.yellow.point : theme.darkColor?.main)};
-	color: ${({ theme }) => (theme.lightColor ? theme.lightColor.yellow.point : theme.textColor.white)};
+	background-color: ${({ theme }) => (theme.lightColor ? theme.textColor.white : theme.darkColor?.main)};
+	border: 3px solid ${({ theme }) => (theme.lightColor ? theme.lightColor.point : theme.darkColor?.main)};
+	color: ${({ theme }) => (theme.lightColor ? theme.lightColor.point : theme.textColor.white)};
 	font-size: ${({ theme }) => theme.fontSize['6xl']};
 	font-weight: ${({ theme }) => theme.fontWeight.semibold};
 `;
