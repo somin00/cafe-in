@@ -1,21 +1,36 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useRecoilValue } from 'recoil';
 import { styled } from 'styled-components';
+import { isWaitingAvailableState } from '../../state/WaitingState';
 
 function Start() {
 	const navigate = useNavigate();
+	const isWaitingAvailable = useRecoilValue<boolean>(isWaitingAvailableState);
 
 	return (
 		<StartWrapper>
 			<TakeOutBoxWrapper>
-				<TakeOutBox
-					onClick={() => {
-						navigate('/menu');
-					}}
-					aria-label="매장에서 먹고 가기 선택"
-				>
-					매장
-				</TakeOutBox>
+				{isWaitingAvailable ? (
+					<TakeOutBox
+						onClick={() => {
+							navigate('/waiting');
+						}}
+						aria-label="대기 신청하기"
+					>
+						대기
+					</TakeOutBox>
+				) : (
+					<TakeOutBox
+						onClick={() => {
+							navigate('/menu');
+						}}
+						aria-label="매장에서 먹고 가기 선택"
+					>
+						매장
+					</TakeOutBox>
+				)}
+
 				<TakeOutBox
 					onClick={() => {
 						navigate('/menu');
