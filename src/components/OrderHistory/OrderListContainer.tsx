@@ -62,13 +62,13 @@ function OrderListContainer({ isProgressMode }: ContainerPropType) {
 				{isProgressMode ? (
 					<>
 						{inProgressList.map((item) => (
-							<OrderList key={item.id} order={item} />
+							<OrderList key={item.id} order={item} isProgressMode={isProgressMode} />
 						))}
 					</>
 				) : (
 					<>
 						{completeList.map((item) => (
-							<OrderList key={item.id} order={item} />
+							<OrderList key={item.id} order={item} isProgressMode={isProgressMode} />
 						))}
 					</>
 				)}
