@@ -8,8 +8,9 @@ import { changeDateFormat } from '../../utils/changeDateFormat';
 
 interface OrderListPropType {
 	order: OrderListType;
+	isProgressMode: boolean;
 }
-function OrderList({ order }: OrderListPropType) {
+function OrderList({ order, isProgressMode }: OrderListPropType) {
 	const orderRef = collection(db, 'orderList');
 
 	const timeFormat = (id: number) => {
@@ -56,9 +57,11 @@ function OrderList({ order }: OrderListPropType) {
 						<OrderItem key={`${order.id}${idx}`} idx={idx} itemInfo={item} toggleComplete={handleToggleComplete} />
 					))}
 				</ItemWrapper>
-				<button type="button" onClick={handleComplete}>
-					제조완료
-				</button>
+				{isProgressMode && (
+					<button type="button" onClick={handleComplete}>
+						제조완료
+					</button>
+				)}
 			</OrderListWrapper>
 		</>
 	);
