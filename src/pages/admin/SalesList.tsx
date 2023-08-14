@@ -26,13 +26,39 @@ interface DaySalesData {
 
 function SalesList() {
 	const currentDate = new Date();
-	const targetYear = currentDate.getFullYear();
-	const targetMonth = currentDate.getMonth() + 1;
+	const timezoneOffset = currentDate.getTimezoneOffset(); // 현재 시간대의 UTC 차이 (분 단위)
+	const koreanOffset = 9 * 60; // 한국 시간대의 UTC 차이 (분 단위)
+	const koreanTime = currentDate.getTime() + (koreanOffset - timezoneOffset) * 60 * 1000; // 보정된 시간 (밀리초 단위)
+	const KoreanDate = new Date(koreanTime);
 
-	const todayDate = currentDate.toISOString().split('T')[0];
+	const todayDate = KoreanDate.toISOString().split('T')[0];
 	const [salesList, setSalesList] = useState<Order[]>([]);
 	const [daySalesData, setDaySalesData] = useState<DaySalesData[]>([]);
 	const [displayDate, setDisplayDate] = useState(todayDate);
+	const [targetYear, setTargetYear] = useState(KoreanDate.getFullYear());
+	const [targetMonth, setTargetMonth] = useState(KoreanDate.getMonth() + 1);
+
+	const handleMonthChange = (nextMonth: boolean) => {
+		let newTargetYear = targetYear;
+		let newTargetMonth = targetMonth;
+
+		if (nextMonth) {
+			newTargetMonth += 1;
+			if (newTargetMonth > 12) {
+				newTargetMonth = 1;
+				newTargetYear += 1;
+			}
+		} else {
+			newTargetMonth -= 1;
+			if (newTargetMonth < 1) {
+				newTargetMonth = 12;
+				newTargetYear -= 1;
+			}
+		}
+
+		setTargetYear(newTargetYear);
+		setTargetMonth(newTargetMonth);
+	};
 
 	const handlePreviousDay = () => {
 		const currentDate = new Date(displayDate);
@@ -98,8 +124,6 @@ function SalesList() {
 		return year === targetYear && month === targetMonth;
 	});
 
-	// console.log(filterData);
-
 	return (
 		<SalesListWrapper>
 			<ManagementHeader headerText="매출 내역 조회" />
@@ -127,12 +151,17 @@ function SalesList() {
 				</DailySalesWrapper>
 				<MonthlySalesWrapper>
 					<p>
-						<button aria-label="지난 달 매출 보기">{'<'}</button> 8월 매출{' '}
-						<button aria-label="다음 달 매출 보기">{'>'}</button>
+						<button aria-label="지난 달 매출 보기" onClick={() => handleMonthChange(false)}>
+							{'<'}
+						</button>
+						{targetMonth}월 매출
+						<button aria-label="다음 달 매출 보기" onClick={() => handleMonthChange(true)}>
+							{'>'}
+						</button>
 					</p>
 					<SalesBoxWrapper>
 						<SalesBox>
-							<p>8월 매출</p> {filterData.length > 0 ? <p> {filterData.length}건</p> : <p>0 건</p>}
+							<p>{targetMonth}월 매출</p> {filterData.length > 0 ? <p>원</p> : <p>0 원</p>}
 						</SalesBox>
 					</SalesBoxWrapper>
 				</MonthlySalesWrapper>
