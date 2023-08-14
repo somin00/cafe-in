@@ -27,7 +27,7 @@ export default withAuth(OrderHistory);
 
 const HistoryWrapper = styled.div`
 	width: 1194px;
-	height: 100vh;
+	height: 834px;
 	background-color: ${({ theme }) => (theme.lightColor ? '#f9f9f9' : theme.darkColor?.background)};
 	overflow-y: auto;
 `;

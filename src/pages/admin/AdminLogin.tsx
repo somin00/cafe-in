@@ -73,7 +73,7 @@ const AdminLoginWrapper = styled.div`
 	align-items: center;
 	justify-content: center;
 	width: 1194px;
-	height: 100vh;
+	height: 834px;
 	background-color: ${({ theme }) => (theme.lightColor ? theme.textColor.white : theme.darkColor.background)};
 	img {
 		position: absolute;
