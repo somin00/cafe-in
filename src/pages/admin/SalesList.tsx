@@ -26,17 +26,68 @@ interface DaySalesData {
 
 function SalesList() {
 	const currentDate = new Date();
-	const timezoneOffset = currentDate.getTimezoneOffset(); // 현재 시간대의 UTC 차이 (분 단위)
-	const koreanOffset = 9 * 60; // 한국 시간대의 UTC 차이 (분 단위)
-	const koreanTime = currentDate.getTime() + (koreanOffset - timezoneOffset) * 60 * 1000; // 보정된 시간 (밀리초 단위)
+	const timezoneOffset = currentDate.getTimezoneOffset();
+	const koreanOffset = 9 * 60;
+	const koreanTime = currentDate.getTime() + (koreanOffset - timezoneOffset) * 60 * 1000;
 	const KoreanDate = new Date(koreanTime);
-
 	const todayDate = KoreanDate.toISOString().split('T')[0];
+
 	const [salesList, setSalesList] = useState<Order[]>([]);
 	const [daySalesData, setDaySalesData] = useState<DaySalesData[]>([]);
 	const [displayDate, setDisplayDate] = useState(todayDate);
 	const [targetYear, setTargetYear] = useState(KoreanDate.getFullYear());
 	const [targetMonth, setTargetMonth] = useState(KoreanDate.getMonth() + 1);
+
+	useEffect(() => {
+		const getSales = async () => {
+			const orderListCollection = collection(db, 'testOrderList');
+			const salesDocs = await getDocs(orderListCollection);
+			const salesDataList: Order[] = [];
+			salesDocs.forEach((doc) => {
+				salesDataList.push({ ...(doc.data() as Order) });
+			});
+			setSalesList(salesDataList);
+		};
+
+		getSales();
+	}, []);
+
+	// 같은 날짜 별로 데이터 그룹화하고 필요한 데이터만 저장
+	useEffect(() => {
+		const salesByDate: { [date: string]: { salesData: Order[]; totalPriceSum: number } } = {};
+
+		salesList.forEach((order) => {
+			const date = new Date(order.id).toISOString().split('T')[0];
+			if (!salesByDate[date]) {
+				salesByDate[date] = { salesData: [], totalPriceSum: 0 };
+			}
+			salesByDate[date].salesData.push(order);
+			salesByDate[date].totalPriceSum += order.totalPrice;
+		});
+
+		const daySalesList: DaySalesData[] = [];
+
+		for (const date in salesByDate) {
+			const { salesData, totalPriceSum } = salesByDate[date];
+			daySalesList.push({ date, totalPriceSum, orderCount: salesData.length });
+		}
+
+		setDaySalesData(daySalesList);
+	}, [salesList]);
+
+	const handlePreviousDay = () => {
+		const currentDate = new Date(displayDate);
+		currentDate.setDate(currentDate.getDate() - 1);
+		const previousDate = currentDate.toISOString().split('T')[0];
+		setDisplayDate(previousDate);
+	};
+
+	const handleNextDay = () => {
+		const currentDate = new Date(displayDate);
+		currentDate.setDate(currentDate.getDate() + 1);
+		const nextDate = currentDate.toISOString().split('T')[0];
+		setDisplayDate(nextDate);
+	};
 
 	const handleMonthChange = (nextMonth: boolean) => {
 		let newTargetYear = targetYear;
@@ -60,63 +111,11 @@ function SalesList() {
 		setTargetMonth(newTargetMonth);
 	};
 
-	const handlePreviousDay = () => {
-		const currentDate = new Date(displayDate);
-		currentDate.setDate(currentDate.getDate() - 1);
-		const previousDate = currentDate.toISOString().split('T')[0];
-		setDisplayDate(previousDate);
-	};
-
-	const handleNextDay = () => {
-		const currentDate = new Date(displayDate);
-		currentDate.setDate(currentDate.getDate() + 1);
-		const nextDate = currentDate.toISOString().split('T')[0];
-		setDisplayDate(nextDate);
-	};
-
-	useEffect(() => {
-		const getSales = async () => {
-			const orderListCollection = collection(db, 'testOrderList');
-			const salesDocs = await getDocs(orderListCollection);
-			const salesDataList: Order[] = [];
-			salesDocs.forEach((doc) => {
-				salesDataList.push({ ...(doc.data() as Order) });
-			});
-			setSalesList(salesDataList);
-		};
-
-		getSales();
-	}, []);
-
-	// 같은 날짜 별로 데이터 그룹화하기
-	useEffect(() => {
-		const salesByDate: { [date: string]: { salesData: Order[]; totalPriceSum: number } } = {};
-
-		salesList.forEach((order) => {
-			const date = new Date(order.id).toISOString().split('T')[0];
-
-			if (!salesByDate[date]) {
-				salesByDate[date] = { salesData: [], totalPriceSum: 0 };
-			}
-
-			salesByDate[date].salesData.push(order);
-			salesByDate[date].totalPriceSum += order.totalPrice;
-		});
-
-		const daySalesList: DaySalesData[] = [];
-
-		for (const date in salesByDate) {
-			const { salesData, totalPriceSum } = salesByDate[date];
-			daySalesList.push({ date, totalPriceSum, orderCount: salesData.length });
-		}
-
-		setDaySalesData(daySalesList);
-	}, [salesList]);
-
-	//일 별 데이터 가져오기
+	//선택된 날짜에 해당하는 데이터 가져오기
 	const dayData = daySalesData.filter((v) => v.date === displayDate);
 
-	const filterData = daySalesData.filter((data) => {
+	//선택된 달에 해당하는 데이터 가져오기
+	const monthData = daySalesData.filter((data) => {
 		const stringDate = data.date.split('-');
 		const year = parseInt(stringDate[0]);
 		const month = parseInt(stringDate[1]);
@@ -162,8 +161,8 @@ function SalesList() {
 					<SalesBoxWrapper>
 						<SalesBox>
 							<p>{targetMonth}월 매출</p>{' '}
-							{filterData.length > 0 ? (
-								<p> {filterData.reduce((sum, data) => sum + data.totalPriceSum, 0)}원</p>
+							{monthData.length > 0 ? (
+								<p> {monthData.reduce((sum, data) => sum + data.totalPriceSum, 0)}원</p>
 							) : (
 								<p>0 원</p>
 							)}
