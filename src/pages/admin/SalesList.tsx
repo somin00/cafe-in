@@ -25,8 +25,28 @@ interface DaySalesData {
 }
 
 function SalesList() {
+	const currentDate = new Date();
+	const targetYear = currentDate.getFullYear();
+	const targetMonth = currentDate.getMonth() + 1;
+
+	const todayDate = currentDate.toISOString().split('T')[0];
 	const [salesList, setSalesList] = useState<Order[]>([]);
 	const [daySalesData, setDaySalesData] = useState<DaySalesData[]>([]);
+	const [displayDate, setDisplayDate] = useState(todayDate);
+
+	const handlePreviousDay = () => {
+		const currentDate = new Date(displayDate);
+		currentDate.setDate(currentDate.getDate() - 1);
+		const previousDate = currentDate.toISOString().split('T')[0];
+		setDisplayDate(previousDate);
+	};
+
+	const handleNextDay = () => {
+		const currentDate = new Date(displayDate);
+		currentDate.setDate(currentDate.getDate() + 1);
+		const nextDate = currentDate.toISOString().split('T')[0];
+		setDisplayDate(nextDate);
+	};
 
 	useEffect(() => {
 		const getSales = async () => {
@@ -42,6 +62,7 @@ function SalesList() {
 		getSales();
 	}, []);
 
+	// 같은 날짜 별로 데이터 그룹화하기
 	useEffect(() => {
 		const salesByDate: { [date: string]: { salesData: Order[]; totalPriceSum: number } } = {};
 
@@ -66,12 +87,8 @@ function SalesList() {
 		setDaySalesData(daySalesList);
 	}, [salesList]);
 
-	const sampleData = daySalesData.filter((v) => v.date === '2023-08-14');
-
-	// 월 별 데이터 가져오기
-	const currentDate = new Date();
-	const targetYear = currentDate.getFullYear();
-	const targetMonth = currentDate.getMonth() + 1;
+	//일 별 데이터 가져오기
+	const dayData = daySalesData.filter((v) => v.date === displayDate);
 
 	const filterData = daySalesData.filter((data) => {
 		const stringDate = data.date.split('-');
@@ -89,18 +106,22 @@ function SalesList() {
 			<SalesContent>
 				<DailySalesWrapper>
 					<p>
-						<button aria-label="전 날 매출 보기">{'<'}</button>
-						{sampleData.length > 0 ? <span> {sampleData[0].date} </span> : <span>로딩중 </span>}
-						<button aria-label="다음 날 매출 보기">{'>'}</button>
+						<button aria-label="전 날 매출 보기" onClick={handlePreviousDay}>
+							{'<'}
+						</button>
+						{dayData.length > 0 ? <span> {dayData[0].date} </span> : <span>{displayDate} </span>}
+						<button aria-label="다음 날 매출 보기" onClick={handleNextDay}>
+							{'>'}
+						</button>
 					</p>
 					<SalesBoxWrapper>
 						<SalesBox className="totalOrder">
 							<p>주문 건 수</p>
-							{sampleData.length > 0 ? <p> {sampleData[0].orderCount}건</p> : <p>0 건</p>}
+							{dayData.length > 0 ? <p> {dayData[0].orderCount}건</p> : <p>0 건</p>}
 						</SalesBox>
 						<SalesBox>
 							<p>총 매출 액</p>
-							{sampleData.length > 0 ? <p> {sampleData[0].totalPriceSum}원</p> : <p>0원</p>}
+							{dayData.length > 0 ? <p> {dayData[0].totalPriceSum}원</p> : <p>0원</p>}
 						</SalesBox>
 					</SalesBoxWrapper>
 				</DailySalesWrapper>
