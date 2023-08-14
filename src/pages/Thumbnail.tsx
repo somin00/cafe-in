@@ -1,38 +1,62 @@
-import { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useEffect, useMemo, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { styled } from 'styled-components';
+import ModalPortal from '../components/ModalPortal';
+import Toast from '../components/adminMode/Toast';
+
+interface RouteStateType {
+	state: string;
+}
 
 function Thumbnail() {
 	const navigate = useNavigate();
+	const { state } = useLocation() as RouteStateType;
+	const [isShowToast, setIsShowToast] = useState<boolean>(false);
+	const redirectPath: string[] = useMemo(() => {
+		return ['main', 'menu', 'waiting', 'orderhistory', 'sales', 'point', 'theme'];
+	}, []);
 
 	useEffect(() => {
 		const mode = localStorage.getItem('mode');
 		if (mode) {
 			localStorage.removeItem('mode');
 		}
-	}, []);
+		if (redirectPath.includes(state)) {
+			window.history.replaceState({}, '');
+			setIsShowToast(true);
+		}
+		const timer = setTimeout(() => setIsShowToast(false), 3000);
+		return () => clearTimeout(timer);
+	}, [state]);
 
 	return (
-		<ThumbnailWrapper>
-			<AdminIcon>
-				<AdminBtn
-					aria-label="관리자 로그인 페이지로 이동하기"
-					onClick={() => {
-						navigate('/admin/login');
-					}}
-				>
-					<img src={process.env.PUBLIC_URL + '/assets/paw_adminIcon.svg'} alt="관리자 아이콘" />
-				</AdminBtn>
-				<div onClick={() => navigate('/start')}></div>
-			</AdminIcon>
-			<ThumbnailContent onClick={() => navigate('/start')}>
-				<Logo tabIndex={0} onClick={() => navigate('/start')}>
-					<img alt="서비스 로고" />
-				</Logo>
-				<p className="logoText">- 카페에 꼭 필요한 서비스 -</p>
-				<p className="thumbnailText">서비스 이용을 원하시면 화면을 클릭해주세요.</p>
-			</ThumbnailContent>
-		</ThumbnailWrapper>
+		<>
+			<ThumbnailWrapper>
+				<AdminIcon>
+					<AdminBtn
+						aria-label="관리자 로그인 페이지로 이동하기"
+						onClick={() => {
+							navigate('/admin/login');
+						}}
+					>
+						<img src={process.env.PUBLIC_URL + '/assets/paw_adminIcon.svg'} alt="관리자 아이콘" />
+					</AdminBtn>
+					<div onClick={() => navigate('/start')}></div>
+				</AdminIcon>
+				<ThumbnailContent onClick={() => navigate('/start')}>
+					<Logo tabIndex={0} onClick={() => navigate('/start')}>
+						<img alt="서비스 로고" />
+					</Logo>
+					<p className="logoText">- 카페에 꼭 필요한 서비스 -</p>
+					<p className="thumbnailText">서비스 이용을 원하시면 화면을 클릭해주세요.</p>
+				</ThumbnailContent>
+			</ThumbnailWrapper>
+			{isShowToast && (
+				<ModalPortal>
+					<Toast />
+				</ModalPortal>
+			)}
+		</>
 	);
 }
 
