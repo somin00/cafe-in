@@ -161,7 +161,12 @@ function SalesList() {
 					</p>
 					<SalesBoxWrapper>
 						<SalesBox>
-							<p>{targetMonth}월 매출</p> {filterData.length > 0 ? <p>원</p> : <p>0 원</p>}
+							<p>{targetMonth}월 매출</p>{' '}
+							{filterData.length > 0 ? (
+								<p> {filterData.reduce((sum, data) => sum + data.totalPriceSum, 0)}원</p>
+							) : (
+								<p>0 원</p>
+							)}
 						</SalesBox>
 					</SalesBoxWrapper>
 				</MonthlySalesWrapper>
