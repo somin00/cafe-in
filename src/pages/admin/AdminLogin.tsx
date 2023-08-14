@@ -3,6 +3,7 @@ import React, { useRef, useState } from 'react';
 import styled from 'styled-components';
 import { db } from '../../firebase/firebaseConfig';
 import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 function AdminLogin() {
 	const navigate = useNavigate();
@@ -36,7 +37,9 @@ function AdminLogin() {
 
 	return (
 		<AdminLoginWrapper>
-			<img alt="카페인 로고" width="100" height="100" />
+			<Link to="/">
+				<img alt="카페인 로고" width="100" height="100" />
+			</Link>
 			<div>
 				<h1>관리자 로그인</h1>
 				<FormWrapper>
@@ -73,7 +76,7 @@ const AdminLoginWrapper = styled.div`
 	align-items: center;
 	justify-content: center;
 	width: 1194px;
-	height: 100vh;
+	height: 834px;
 	background-color: ${({ theme }) => (theme.lightColor ? theme.textColor.white : theme.darkColor.background)};
 	img {
 		position: absolute;

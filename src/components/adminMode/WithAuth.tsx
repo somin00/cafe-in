@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 interface WrappedPropsType {
 	setIsDarkMode?: () => Element;
@@ -9,10 +9,11 @@ interface WrappedPropsType {
 export default function withAuth<P extends WrappedPropsType>(Component: React.ComponentType<P>) {
 	return function WithAuthComponent({ ...props }) {
 		const navigate = useNavigate();
+		const { pathname } = useLocation();
 		useEffect(() => {
 			const isAdminMode = localStorage.getItem('mode') === 'admin';
-			if (!isAdminMode) navigate('/');
-		}, [navigate]);
+			if (!isAdminMode) navigate('/', { state: pathname.replace('/admin/', '') });
+		}, [navigate, pathname]);
 		return <Component {...(props as P)} />;
 	};
 }
