@@ -76,6 +76,7 @@ function MenuItem() {
 				quantity: 1,
 				options: selectedOptionsStr,
 				totalPrice: selectedItem.price,
+				progress: '선택주문',
 			};
 
 			await addDoc(itemsCollection, itemToBeAdded);
