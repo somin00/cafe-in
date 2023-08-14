@@ -133,7 +133,12 @@ const FormWrapper = styled.div`
 	button {
 		width: 175px;
 		height: 54px;
-		background-color: ${({ theme }) => (theme.lightColor ? theme.lightColor.main : theme.darkColor.main)};
+		background-color: ${({ theme }) =>
+			theme.lightColor
+				? theme.color === 'green'
+					? theme.lightColor.sub
+					: theme.lightColor.main
+				: theme.darkColor.main};
 		border-radius: 20px;
 		color: ${({ theme }) => theme.textColor.white};
 		font-size: ${({ theme }) => theme.fontSize['2xl']};

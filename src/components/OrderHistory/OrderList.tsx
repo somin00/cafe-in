@@ -78,7 +78,12 @@ const OrderListWrapper = styled.li`
 		width: 130px;
 		height: 50px;
 		border-radius: 10px;
-		background-color: ${({ theme }) => (theme.lightColor ? theme.lightColor.main : theme.darkColor.main)};
+		background-color: ${({ theme }) =>
+			theme.lightColor
+				? theme.color === 'green'
+					? theme.lightColor.sub
+					: theme.lightColor.main
+				: theme.darkColor.main};
 		font-size: ${({ theme }) => theme.fontSize['2xl']};
 		font-weight: ${({ theme }) => theme.fontWeight.semibold};
 		margin-left: 90px;
