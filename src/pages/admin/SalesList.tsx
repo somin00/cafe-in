@@ -1,4 +1,5 @@
 import React from 'react';
+import withAuth from '../../components/adminMode/WithAuth';
 
 function SalesList() {
 	return (
@@ -8,4 +9,4 @@ function SalesList() {
 	);
 }
 
-export default SalesList;
+export default withAuth(SalesList);

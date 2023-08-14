@@ -1,6 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { styled } from 'styled-components';
+import withAuth from '../../components/adminMode/WithAuth';
 
 function AdminMenu() {
 	const navigate = useNavigate();
@@ -22,7 +23,7 @@ function AdminMenu() {
 	);
 }
 
-export default AdminMenu;
+export default withAuth(AdminMenu);
 
 const AdminMenuWrapper = styled.div`
 	width: 1194px;
