@@ -1,8 +1,17 @@
+import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { styled } from 'styled-components';
 
 function Thumbnail() {
 	const navigate = useNavigate();
+
+	useEffect(() => {
+		const mode = localStorage.getItem('mode');
+		if (mode) {
+			localStorage.removeItem('mode');
+		}
+	}, []);
+
 	return (
 		<ThumbnailWrapper>
 			<AdminIcon>

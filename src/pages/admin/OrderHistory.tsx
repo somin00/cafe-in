@@ -2,6 +2,7 @@ import React, { useCallback, useState } from 'react';
 import styled from 'styled-components';
 import Header from '../../components/OrderHistory/Header';
 import OrderListContainer from '../../components/OrderHistory/OrderListContainer';
+import withAuth from '../../components/adminMode/WithAuth';
 
 function OrderHistory() {
 	const [isProgressMode, setIsProgressMode] = useState<boolean>(true);
@@ -22,7 +23,7 @@ function OrderHistory() {
 	);
 }
 
-export default OrderHistory;
+export default withAuth(OrderHistory);
 
 const HistoryWrapper = styled.div`
 	width: 1194px;

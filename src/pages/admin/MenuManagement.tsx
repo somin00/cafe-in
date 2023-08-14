@@ -9,6 +9,7 @@ import { useRecoilState, useSetRecoilState } from 'recoil';
 import { categoryListState, selectedCategoryState } from '../../state/CategoryList';
 import { CategoryType, MenuType } from '../../types/menuMangementType';
 import { menuListState } from '../../state/MenuListState';
+import withAuth from '../../components/adminMode/WithAuth';
 
 function MenuManagement() {
 	const setSelectedCategory = useSetRecoilState(selectedCategoryState);
@@ -68,7 +69,7 @@ function MenuManagement() {
 	);
 }
 
-export default MenuManagement;
+export default withAuth(MenuManagement);
 
 const MenuManagementWrapper = styled.div`
 	width: 1194px;
