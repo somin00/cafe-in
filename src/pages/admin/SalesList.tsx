@@ -1,4 +1,3 @@
-import React from 'react';
 import withAuth from '../../components/adminMode/WithAuth';
 import { styled } from 'styled-components';
 import ManagementHeader from '../../components/adminMode/ManagementHeader';
@@ -10,7 +9,8 @@ function SalesList() {
 			<SalesContent>
 				<DailySalesWrapper>
 					<p>
-						<button>{'<'}</button> 08/13 매출 <button>{'>'}</button>
+						<button aria-label="전 날 매출 보기">{'<'}</button> 08/13 매출{' '}
+						<button aria-label="다음 날 매출 보기">{'>'}</button>
 					</p>
 					<SalesBoxWrapper>
 						<SalesBox className="totalOrder">
@@ -24,7 +24,8 @@ function SalesList() {
 				</DailySalesWrapper>
 				<MonthlySalesWrapper>
 					<p>
-						<button>{'<'}</button> 8월 매출 <button>{'>'}</button>
+						<button aria-label="지난 달 매출 보기">{'<'}</button> 8월 매출{' '}
+						<button aria-label="다음 달 매출 보기">{'>'}</button>
 					</p>
 					<SalesBoxWrapper>
 						<SalesBox>
@@ -66,7 +67,7 @@ const SalesContent = styled.div`
 `;
 
 const SalesBoxWrapper = styled.div`
-	background-color: lavender;
+	background-color: ${({ theme }) => (theme.lightColor ? theme.lightColor.background : theme.darkColor.background)};
 	height: 239px;
 	display: flex;
 	justify-content: center;
@@ -80,7 +81,7 @@ const SalesBoxWrapper = styled.div`
 const SalesBox = styled.div`
 	width: 194px;
 	height: 194px;
-	background-color: white;
+	background-color: ${({ theme }) => (theme.lightColor ? theme.textColor.white : theme.darkColor.main)};
 	display: flex;
 	flex-flow: column nowrap;
 	align-items: center;
