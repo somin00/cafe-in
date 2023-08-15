@@ -1,24 +1,21 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { styled } from 'styled-components';
 import { defaultTheme, darkTheme } from '../../style/theme';
 
-import { db } from '../../firebase/firebaseConfig';
-import { selectedItem } from '../../state/OptinalState';
-import { addDoc, collection } from 'firebase/firestore';
 import { useRecoilState } from 'recoil';
 import { selectedItemsState } from '../../firebase/FirStoreDoc';
+import { orderListStateAtom } from '../../state/OrderListAtom';
+import { OrderProgress } from '../../types/Order';
 type StyledProps = {
 	$quantity: number;
 };
-
-type OrderProgress = '선택주문' | '진행중' | '완료주문';
 
 function SelectedItemContainer() {
 	const navigate = useNavigate();
 
 	const [selectedItems, setSelectedItems] = useRecoilState(selectedItemsState);
-
+	const [orderList, setOrderList] = useRecoilState(orderListStateAtom);
 	const handleItemDelete = (itemName: string) => {
 		setSelectedItems((prev) => prev.filter((item) => item.id.toString() !== itemName));
 	};
@@ -67,7 +64,7 @@ function SelectedItemContainer() {
 			})),
 		};
 
-		await addDoc(collection(db, 'orderList'), newOrder);
+		setOrderList((prev) => [...prev, newOrder]);
 	};
 	useEffect(() => {
 		let lastInteraction = Date.now();

@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { Option, selectedItem } from '../../state/OptinalState';
+import { Option } from '../../state/OptinalState';
 import { db } from '../../firebase/firebaseConfig';
-import { collection, getDocs, increment, query, updateDoc, where } from 'firebase/firestore';
+import { collection, getDocs } from 'firebase/firestore';
 import { Item } from '../../state/Category';
 import { darkTheme, defaultTheme } from '../../style/theme';
 import { selectedItemsState } from '../../firebase/FirStoreDoc';

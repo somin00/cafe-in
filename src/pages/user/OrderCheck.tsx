@@ -6,80 +6,52 @@ import UsePointUser from '../../components/UserMode/UsePointUser';
 import { darkTheme, defaultTheme } from '../../style/theme';
 import { collection, doc, getDocs, writeBatch } from 'firebase/firestore';
 import { db } from '../../firebase/firebaseConfig';
-import { useRecoilValue } from 'recoil';
+import { useRecoilState, useRecoilValue } from 'recoil';
 import { usedPointsState } from '../../state/PointState';
-interface Order {
-	id: string;
-	list: {
-		menu: string;
-		quantity: number;
-		options: string;
-		isComplete: boolean;
-		totalPrice: number;
-	}[];
-	takeout: boolean;
-	progress: '선택주문' | '진행중' | '완료주문';
-}
+import { Order } from '../../types/Order';
+import { orderListStateAtom } from '../../state/OrderListAtom';
+
 function OrderCheck() {
 	const navigate = useNavigate();
 	const theme = useTheme();
 	const usedPoints = useRecoilValue(usedPointsState);
+	const [orderList, setOrderList] = useRecoilState(orderListStateAtom);
 	const [isOpenAddPointModal, setAddPointModalOpen] = useState<boolean>(false);
 	const [isOpenUsePointUserModal, setUsePointUserModalOpen] = useState<boolean>(false);
-	const [orderList, setOrderList] = useState<Order[]>([]);
 
-	const onClickToggleAddPointModal = useCallback(() => {
-		setAddPointModalOpen(!isOpenAddPointModal);
-	}, [isOpenAddPointModal]);
-	const onClickToggleUsePointUserModal = useCallback(() => {
-		setUsePointUserModalOpen(!isOpenUsePointUserModal);
-	}, [isOpenUsePointUserModal]);
-	useEffect(() => {
-		const getOrderList = async () => {
-			const orderListCol = collection(db, 'orderList');
-			const orderListSnapshot = await getDocs(orderListCol);
-			const orderListData: Order[] = orderListSnapshot.docs.map((doc) => {
-				const data = doc.data();
-				return {
-					id: doc.id,
-					list: data.list,
-					totalPrice: data.totalPrice,
-					takeout: data.takeout,
-					progress: data.progress,
-				};
-			});
-			setOrderList(orderListData);
-		};
-		getOrderList();
-	}, []);
+	const toggleModal = (modalSetter: React.Dispatch<React.SetStateAction<boolean>>) => () => {
+		modalSetter((prevState) => !prevState);
+	};
 
-	const totalOrderAmount = orderList.reduce((acc, order) => {
-		const orderTotal = order.list.reduce((orderAcc, item) => orderAcc + item.totalPrice, 0);
-		return acc + orderTotal;
-	}, 0);
+	const onClickToggleAddPointModal = toggleModal(setAddPointModalOpen);
+	const onClickToggleUsePointUserModal = toggleModal(setUsePointUserModalOpen);
+
+	const computeTotalOrderAmount = () =>
+		orderList.reduce((acc, order) => acc + order.list.reduce((orderAcc, item) => orderAcc + item.totalPrice, 0), 0);
+
 	const handleDeleteAll = () => {
 		setOrderList([]);
 	};
+
 	const handlePayment = async () => {
 		const batch = writeBatch(db);
-
-		// 현재 progress가 진행중 주문만
 		const ordersToUpdate = orderList.filter((order) => order.progress === '진행중');
 
-		for (const order of ordersToUpdate) {
-			const orderRef = doc(db, 'orderList', order.id);
-			batch.update(orderRef, { progress: '완료주문' });
-		}
+		ordersToUpdate.forEach((order) => {
+			const orderRef = doc(db, 'orderList', order.id.toString());
+			batch.update(orderRef, { progress: '주문완료' });
+		});
 
-		// batch 작업 실행
 		await batch.commit();
-
-		// 주문 상태 업데이트
 		setOrderList((prevOrders) =>
-			prevOrders.map((order) => (order.progress === '진행중' ? { ...order, progress: '완료주문' } : order)),
+			prevOrders.map((order) => (order.progress === '진행중' ? { ...order, progress: '주문완료' } : order)),
 		);
+		alert('결제되었습니다');
 	};
+
+	const totalOrderAmount = computeTotalOrderAmount();
 	const TotalOrderPrice = totalOrderAmount - (usedPoints || 0);
+
 	return (
 		<Layout>
 			<Header>
