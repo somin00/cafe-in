@@ -10,6 +10,15 @@ function Start() {
 
 	return (
 		<StartWrapper>
+			<BackIconWrapper>
+				<BackIcon
+					onClick={() => {
+						navigate('/');
+					}}
+				>
+					<img src={process.env.PUBLIC_URL + '/assets/admin/back_light.svg'} alt="뒤로가기 버튼" />
+				</BackIcon>
+			</BackIconWrapper>
 			<TakeOutBoxWrapper>
 				{isWaitingAvailable ? (
 					<TakeOutBox
@@ -57,7 +66,8 @@ const StartWrapper = styled.div`
 			: theme.darkColor?.background};
 	user-select: none;
 	display: flex;
-	justify-content: center;
+	flex-flow: column nowrap;
+	justify-content: space-around;
 	align-items: center;
 `;
 
@@ -65,6 +75,21 @@ const TakeOutBoxWrapper = styled.div`
 	width: 834px;
 	display: flex;
 	justify-content: space-between;
+	margin-bottom: 200px;
+	margin-top: 50px;
+`;
+
+const BackIconWrapper = styled.div`
+	width: 1115px;
+`;
+
+const BackIcon = styled.button`
+	text-align: left;
+	width: 30px;
+
+	img {
+		width: 30px;
+	}
 `;
 
 const TakeOutBox = styled.button`
