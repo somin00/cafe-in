@@ -1,19 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { Option } from '../../state/OptinalState';
+import { Option, selectedItem } from '../../state/OptinalState';
 import { db } from '../../firebase/firebaseConfig';
-import { addDoc, collection, doc, getDocs, increment, query, updateDoc, where } from 'firebase/firestore';
+import { collection, getDocs, increment, query, updateDoc, where } from 'firebase/firestore';
 import { Item } from '../../state/Category';
 import { darkTheme, defaultTheme } from '../../style/theme';
+import { selectedItemsState } from '../../firebase/FirStoreDoc';
+import { useRecoilState } from 'recoil';
 export interface OptionMenuProps {
-	selected: Item;
+	selected: Item[];
 	onClickToggleModal: () => void;
 }
 
 function OptionMenu({ selected, onClickToggleModal }: OptionMenuProps) {
 	const [options, setOptions] = useState<{ [key: string]: Option[] }>({});
 	const [activeOptions, setActiveOptions] = useState<string[]>([]);
-
+	const [selectedItems, setSelectedItems] = useRecoilState(selectedItemsState);
 	const [selectedItemOptions, setSelectedItemOptions] = useState<Option[]>([]);
 
 	useEffect(() => {
@@ -51,11 +53,9 @@ function OptionMenu({ selected, onClickToggleModal }: OptionMenuProps) {
 			setActiveOptions((oldActiveOptions) => [...oldActiveOptions, option.name]);
 		}
 	};
-
-	const handleCloseBtnClick = async (e: React.MouseEvent) => {
+	const handleCloseBtnClick = (e: React.MouseEvent) => {
 		e.stopPropagation();
 
-		const itemsCollection = collection(db, 'selectedItem');
 		const selectedOptionsStr =
 			selectedItemOptions.length > 0
 				? selectedItemOptions
@@ -63,9 +63,7 @@ function OptionMenu({ selected, onClickToggleModal }: OptionMenuProps) {
 						.sort()
 						.join(',')
 				: '없음';
-		const q = query(itemsCollection, where('name', '==', selected.name), where('options', '==', selectedOptionsStr));
 
-		// 가격이 500인 옵션만
 		const selectedOptionsTotalPrice = selectedItemOptions.reduce((total, option) => {
 			if (option.price === 500) {
 				return total + option.price;
@@ -73,32 +71,27 @@ function OptionMenu({ selected, onClickToggleModal }: OptionMenuProps) {
 			return total;
 		}, 0);
 
-		const itemTotalPrice = selected.price + selectedOptionsTotalPrice;
+		const totalSelectedPrice = selected.reduce((sum, item) => sum + item.price, 0);
+		const itemTotalPrice = totalSelectedPrice + selectedOptionsTotalPrice;
 
-		const matchingDocs = await getDocs(q);
+		const newSelectedItem: selectedItem = {
+			// selectedItem 타입으로 변경
+			...selected,
+			date: new Date(),
+			quantity: 1,
+			options: selectedOptionsStr,
+			totalPrice: itemTotalPrice,
+			progress: '선택주문',
+			category: '',
+			id: 0,
+			name: '',
+			price: 0,
+		};
 
-		if (!matchingDocs.empty) {
-			// 이미 존재하는 문서에 수량을 증가
-			const existingDoc = matchingDocs.docs[0];
-			const docRef = doc(db, 'selectedItem', existingDoc.id);
-			await updateDoc(docRef, {
-				quantity: increment(1),
-			});
-		} else {
-			// 존재하지 않는 경우 새로운 문서를 추가
-			const itemToBeAdded = {
-				...selected,
-				data: new Date(),
-				quantity: 1,
-				options: selectedOptionsStr,
-				totalPrice: itemTotalPrice,
-			};
-
-			await addDoc(itemsCollection, itemToBeAdded);
-		}
-
+		setSelectedItems((prevItems: Item[]) => [...prevItems, newSelectedItem as any]);
 		onClickToggleModal();
 	};
+
 	return (
 		<ModalContainer onClick={onClickToggleModal}>
 			<DialogBox onClick={(e) => e.stopPropagation()}>
@@ -203,7 +196,7 @@ const CheckOption = styled.button`
 const CloseBtn = styled.button`
 	margin-top: 20px;
 	border-radius: 10px;
-	background-color: ${({ theme }) => (theme === defaultTheme ? theme.lightColor.sub : darkTheme.darkColor.point)};
+	background-color: ${({ theme }) => (theme === defaultTheme ? theme.lightColor.sub : darkTheme.darkColor.sub)};
 	width: 110px;
 	height: 45px;
 	font-size: ${({ theme }) => theme.fontSize['2xl']};

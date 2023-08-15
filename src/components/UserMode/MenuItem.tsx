@@ -2,19 +2,17 @@ import React, { useCallback, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import OptionMenu from './OptionMenu';
 import { useRecoilState, useRecoilValue } from 'recoil';
-import { selectedModeState } from '../../state/Mode';
 import { Item } from '../../state/Category';
-import { addDoc, collection, doc, getDocs, increment, query, updateDoc, where } from 'firebase/firestore';
+import { collection, getDocs, query, where } from 'firebase/firestore';
 import { db } from '../../firebase/firebaseConfig';
 import { selectedCategoryState } from '../../state/CategoryList';
 import { selectedItemsState } from '../../firebase/FirStoreDoc';
-import { Option } from '../../state/OptinalState';
+import { Option, selectedItem } from '../../state/OptinalState';
 function MenuItem() {
-	const mode = useRecoilValue(selectedModeState);
 	const selectedCategory = useRecoilValue(selectedCategoryState);
 	const [isOpenModal, setModalOpen] = useState<boolean>(false);
 	const [items, setItems] = useState<Item[]>([]);
-	const [selectedItem, setSelectedItem] = useRecoilState(selectedItemsState);
+	const [selectedItems, setSelectedItems] = useRecoilState(selectedItemsState);
 	const onClickToggleModal = useCallback(() => {
 		setModalOpen(!isOpenModal);
 	}, [isOpenModal]);
@@ -44,9 +42,8 @@ function MenuItem() {
 		};
 		fetchItems();
 	}, [selectedCategory]);
-	const saveToSelectedItem = async (selectedItem: Item, selectedItemOptions: Option[] = []) => {
-		const itemsCollection = collection(db, 'selectedItem');
 
+	const saveToSelectedItem = (selectedItem: Item, selectedItemOptions: Option[] = []) => {
 		const selectedOptionsStr =
 			selectedItemOptions.length > 0
 				? selectedItemOptions
@@ -55,37 +52,23 @@ function MenuItem() {
 						.join(',')
 				: '없음';
 
-		const q = query(
-			itemsCollection,
-			where('name', '==', selectedItem.name),
-			where('options', '==', selectedOptionsStr),
-		);
-
-		const matchingDocs = await getDocs(q);
-
-		if (!matchingDocs.empty) {
-			const existingDoc = matchingDocs.docs[0];
-			const docRef = doc(db, 'selectedItem', existingDoc.id);
-			await updateDoc(docRef, {
-				quantity: increment(1),
-			});
-		} else {
-			const itemToBeAdded = {
-				...selectedItem,
-				data: new Date(),
-				quantity: 1,
-				options: selectedOptionsStr,
-				totalPrice: selectedItem.price,
-				progress: '선택주문',
-			};
-
-			await addDoc(itemsCollection, itemToBeAdded);
-		}
+		const itemToBeAdded: selectedItem = {
+			...selectedItem,
+			date: new Date(),
+			id: selectedItem.id,
+			quantity: 1,
+			options: selectedOptionsStr,
+			totalPrice: selectedItem.price,
+			progress: '선택주문',
+		};
+		setSelectedItems((prevItems: Item[]) => [...prevItems, itemToBeAdded as unknown as Item]);
 	};
+
 	const handleClick = async (item: Item) => {
-		setSelectedItem(item);
+		setSelectedItems((prevItems) => [...prevItems, item]);
 		if (item.category === '스무디' || item.category === '디저트') {
-			await saveToSelectedItem(item);
+			await saveToSelectedItem(item, []);
+			onClickToggleModal();
 		} else {
 			onClickToggleModal();
 		}
@@ -101,8 +84,7 @@ function MenuItem() {
 					</button>
 				</MenuItemWrapper>
 			))}
-			{mode === 'user' ||
-				(isOpenModal && <OptionMenu onClickToggleModal={onClickToggleModal} selected={selectedItem} />)}
+			{isOpenModal && <OptionMenu onClickToggleModal={onClickToggleModal} selected={selectedItems} />}
 		</>
 	);
 }
