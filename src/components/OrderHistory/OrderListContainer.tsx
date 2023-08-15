@@ -4,7 +4,7 @@ import OrderList from './OrderList';
 import { OrderListType, TodayDateType } from '../../types/orderHistoryType';
 import { collection, onSnapshot, query, orderBy, where } from 'firebase/firestore';
 import { db } from '../../firebase/firebaseConfig';
-import { changeDateFormat } from '../../utils/changeDateFormat';
+import { changeDateFormat } from '../../utils/changeFormat';
 
 interface ContainerPropType {
 	isProgressMode: boolean;

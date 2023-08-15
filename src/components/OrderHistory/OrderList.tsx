@@ -4,7 +4,7 @@ import OrderItem from './OrderItem';
 import { OrderListItemType, OrderListType } from '../../types/orderHistoryType';
 import { collection, getDocs, query, updateDoc, where } from 'firebase/firestore';
 import { db } from '../../firebase/firebaseConfig';
-import { changeDateFormat } from '../../utils/changeDateFormat';
+import { changeDateFormat } from '../../utils/changeFormat';
 
 interface OrderListPropType {
 	order: OrderListType;
