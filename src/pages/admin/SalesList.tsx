@@ -26,17 +26,12 @@ interface DaySalesData {
 
 function SalesList() {
 	const currentDate = new Date();
-	const timezoneOffset = currentDate.getTimezoneOffset();
-	const koreanOffset = 9 * 60;
-	const koreanTime = currentDate.getTime() + (koreanOffset - timezoneOffset) * 60 * 1000;
-	const KoreanDate = new Date(koreanTime);
-	const todayDate = KoreanDate.toISOString().split('T')[0];
-
+	const todayDate = currentDate.toISOString().split('T')[0];
 	const [salesList, setSalesList] = useState<Order[]>([]);
 	const [daySalesData, setDaySalesData] = useState<DaySalesData[]>([]);
 	const [displayDate, setDisplayDate] = useState(todayDate);
-	const [targetYear, setTargetYear] = useState(KoreanDate.getFullYear());
-	const [targetMonth, setTargetMonth] = useState(KoreanDate.getMonth() + 1);
+	const [targetYear, setTargetYear] = useState(currentDate.getFullYear());
+	const [targetMonth, setTargetMonth] = useState(currentDate.getMonth() + 1);
 
 	useEffect(() => {
 		const getSales = async () => {
