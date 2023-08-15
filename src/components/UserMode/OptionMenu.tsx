@@ -53,10 +53,38 @@ function OptionMenu({ clickedItem, onClickToggleModal }: OptionMenuProps) {
 			setActiveOptions((oldActiveOptions) => [...oldActiveOptions, option.name]);
 		}
 	};
+	const addOrUpdateSelectedItem = () => {
+		const sortedOptions = [...selectedItemOptions].sort((a, b) => a.name.localeCompare(b.name));
+		const optionsStr = sortedOptions.length ? sortedOptions.map((o) => o.name).join(', ') : '없음';
+		const additionalPrice = sortedOptions.reduce((acc, option) => acc + option.price, 0);
+
+		const newItem = {
+			...clickedItem!,
+			options: optionsStr,
+			totalPrice: (clickedItem?.price || 0) + additionalPrice,
+			quantity: 1,
+		};
+
+		setSelectedItems((prev) => {
+			const existingItemIndex = prev.findIndex(
+				(item) => item.name === newItem.name && item.options === newItem.options,
+			);
+
+			if (existingItemIndex >= 0) {
+				const updatedItem = {
+					...prev[existingItemIndex],
+					quantity: prev[existingItemIndex].quantity + 1,
+				};
+				const updatedItems = [...prev.slice(0, existingItemIndex), updatedItem, ...prev.slice(existingItemIndex + 1)];
+				return updatedItems;
+			} else {
+				return [...prev, newItem];
+			}
+		});
+	};
 	const handleCloseBtnClick = (e: React.MouseEvent) => {
 		e.stopPropagation();
-		console.log(selectedItemOptions);
-
+		addOrUpdateSelectedItem();
 		onClickToggleModal();
 	};
 	return (
