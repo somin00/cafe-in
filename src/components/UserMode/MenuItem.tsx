@@ -13,6 +13,9 @@ function MenuItem() {
 	const [isOpenModal, setModalOpen] = useState<boolean>(false);
 	const [items, setItems] = useState<Item[]>([]);
 	const [selectedItems, setSelectedItems] = useRecoilState(selectedItemsState);
+
+	const [clickedMenuItem, setClickedMenuItem] = useState<Item | null>(null); // 추가: 클릭한 메뉴 아이템 저장용 상태
+
 	const onClickToggleModal = useCallback(() => {
 		setModalOpen(!isOpenModal);
 	}, [isOpenModal]);
@@ -43,48 +46,47 @@ function MenuItem() {
 		fetchItems();
 	}, [selectedCategory]);
 
-	const saveToSelectedItem = (selectedItem: Item, selectedItemOptions: Option[] = []) => {
-		const selectedOptionsStr =
-			selectedItemOptions.length > 0
-				? selectedItemOptions
+	const addSelectedItem = (item: Item, options: Option[] = []) => {
+		const optionsStr =
+			options.length > 0
+				? options
 						.map((i) => i.name)
 						.sort()
 						.join(',')
 				: '없음';
 
-		const itemToBeAdded: selectedItem = {
-			...selectedItem,
+		const newItem = {
+			...item,
 			date: new Date(),
-			id: selectedItem.id,
 			quantity: 1,
-			options: selectedOptionsStr,
-			totalPrice: selectedItem.price,
+			options: optionsStr,
+			totalPrice: item.price,
 			progress: '선택주문',
 		};
-		setSelectedItems((prevItems: Item[]) => [...prevItems, itemToBeAdded as unknown as Item]);
+		setSelectedItems((prev) => [...prev, newItem]);
 	};
 
-	const handleClick = async (item: Item) => {
-		setSelectedItems((prevItems) => [...prevItems, item]);
-		if (item.category === '스무디' || item.category === '디저트') {
-			await saveToSelectedItem(item, []);
-			onClickToggleModal();
+	const handleClickMenuItem = (item: Item) => {
+		if (['스무디', '디저트'].includes(item.category)) {
+			addSelectedItem(item);
 		} else {
+			setClickedMenuItem(item);
 			onClickToggleModal();
 		}
 	};
+
 	return (
 		<>
 			{items.map((item) => (
 				<MenuItemWrapper key={item.id}>
-					<button onClick={() => handleClick(item)}>
+					<button onClick={() => handleClickMenuItem(item)}>
 						<img src={item.imageUrl} alt={item.imageName} />
 						<p className="menu-name">{item.name}</p>
 						<p className="menu-price">{item.price}</p>
 					</button>
 				</MenuItemWrapper>
 			))}
-			{isOpenModal && <OptionMenu onClickToggleModal={onClickToggleModal} selected={selectedItems} />}
+			{isOpenModal && <OptionMenu onClickToggleModal={onClickToggleModal} clickedItem={clickedMenuItem} />}
 		</>
 	);
 }

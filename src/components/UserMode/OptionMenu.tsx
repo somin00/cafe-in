@@ -8,11 +8,11 @@ import { darkTheme, defaultTheme } from '../../style/theme';
 import { selectedItemsState } from '../../firebase/FirStoreDoc';
 import { useRecoilState } from 'recoil';
 export interface OptionMenuProps {
-	selected: Item[];
+	clickedItem: Item | null;
 	onClickToggleModal: () => void;
 }
 
-function OptionMenu({ selected, onClickToggleModal }: OptionMenuProps) {
+function OptionMenu({ clickedItem, onClickToggleModal }: OptionMenuProps) {
 	const [options, setOptions] = useState<{ [key: string]: Option[] }>({});
 	const [activeOptions, setActiveOptions] = useState<string[]>([]);
 	const [selectedItems, setSelectedItems] = useRecoilState(selectedItemsState);
@@ -38,7 +38,7 @@ function OptionMenu({ selected, onClickToggleModal }: OptionMenuProps) {
 		};
 		setSelectedItemOptions([]);
 		fetchOptions();
-	}, [selected]);
+	}, [clickedItem]);
 
 	const handleOptionClick = (e: React.MouseEvent, option: Option) => {
 		e.preventDefault();
@@ -55,43 +55,10 @@ function OptionMenu({ selected, onClickToggleModal }: OptionMenuProps) {
 	};
 	const handleCloseBtnClick = (e: React.MouseEvent) => {
 		e.stopPropagation();
+		console.log(selectedItemOptions);
 
-		const selectedOptionsStr =
-			selectedItemOptions.length > 0
-				? selectedItemOptions
-						.map((i) => i.name)
-						.sort()
-						.join(',')
-				: '없음';
-
-		const selectedOptionsTotalPrice = selectedItemOptions.reduce((total, option) => {
-			if (option.price === 500) {
-				return total + option.price;
-			}
-			return total;
-		}, 0);
-
-		const totalSelectedPrice = selected.reduce((sum, item) => sum + item.price, 0);
-		const itemTotalPrice = totalSelectedPrice + selectedOptionsTotalPrice;
-
-		const newSelectedItem: selectedItem = {
-			// selectedItem 타입으로 변경
-			...selected,
-			date: new Date(),
-			quantity: 1,
-			options: selectedOptionsStr,
-			totalPrice: itemTotalPrice,
-			progress: '선택주문',
-			category: '',
-			id: 0,
-			name: '',
-			price: 0,
-		};
-
-		setSelectedItems((prevItems: Item[]) => [...prevItems, newSelectedItem as any]);
 		onClickToggleModal();
 	};
-
 	return (
 		<ModalContainer onClick={onClickToggleModal}>
 			<DialogBox onClick={(e) => e.stopPropagation()}>
@@ -115,7 +82,7 @@ function OptionMenu({ selected, onClickToggleModal }: OptionMenuProps) {
 						</CheckMenuContainer>
 					))}
 				</Layout>
-				<CloseBtn onClick={handleCloseBtnClick}>담기</CloseBtn>
+				<CloseBtn onClick={(e) => handleCloseBtnClick(e)}>담기</CloseBtn>
 			</DialogBox>
 			<Backdrop
 				onClick={(e: React.MouseEvent) => {
