@@ -4,7 +4,7 @@ import styled, { useTheme } from 'styled-components';
 import AddPointModal from '../../components/UserMode/AddPointModal';
 import UsePointUser from '../../components/UserMode/UsePointUser';
 import { darkTheme, defaultTheme } from '../../style/theme';
-import { collection, doc, getDocs, writeBatch } from 'firebase/firestore';
+import { addDoc, collection, doc, getDoc, getDocs, writeBatch } from 'firebase/firestore';
 import { db } from '../../firebase/firebaseConfig';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { usedPointsState } from '../../state/PointState';
@@ -34,15 +34,16 @@ function OrderCheck() {
 	};
 
 	const handlePayment = async () => {
-		const batch = writeBatch(db);
 		const ordersToUpdate = orderList.filter((order) => order.progress === '진행중');
 
-		ordersToUpdate.forEach((order) => {
-			const orderRef = doc(db, 'orderList', order.id.toString());
-			batch.update(orderRef, { progress: '주문완료' });
-		});
+		for (const order of ordersToUpdate) {
+			const orderCollectionRef = collection(db, 'orderList');
 
-		await batch.commit();
+			// 새 문서 ID를 자동 생성하여 추가
+			const newDocRef = await addDoc(orderCollectionRef, { ...order, progress: '주문완료' });
+			console.log(`Added document with ID ${newDocRef.id}`);
+		}
+
 		setOrderList((prevOrders) =>
 			prevOrders.map((order) => (order.progress === '진행중' ? { ...order, progress: '주문완료' } : order)),
 		);
