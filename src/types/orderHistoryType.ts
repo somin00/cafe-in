@@ -3,7 +3,7 @@ export interface OrderListType {
 	id: number;
 	list: OrderListItemType[];
 	progress: string;
-	takeout: boolean;
+	takeOut: boolean;
 	totalPrice: number;
 }
 

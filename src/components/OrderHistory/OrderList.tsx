@@ -49,7 +49,7 @@ function OrderList({ order, isProgressMode }: OrderListPropType) {
 		<>
 			<OrderListWrapper key={order.id}>
 				<OrderInfo>
-					<span>{order.takeout ? '포장' : '매장'}</span>
+					<span>{order.takeOut ? '포장' : '매장'}</span>
 					<span>{timeFormat(order.id)}</span>
 				</OrderInfo>
 				<ItemWrapper>
