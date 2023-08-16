@@ -4,7 +4,7 @@ import OrderItem from './OrderItem';
 import { OrderListItemType, OrderListType } from '../../types/orderHistoryType';
 import { collection, getDocs, query, updateDoc, where } from 'firebase/firestore';
 import { db } from '../../firebase/firebaseConfig';
-import { changeDateFormat } from '../../utils/changeDateFormat';
+import { changeDateFormat } from '../../utils/changeFormat';
 
 interface OrderListPropType {
 	order: OrderListType;
@@ -49,7 +49,7 @@ function OrderList({ order, isProgressMode }: OrderListPropType) {
 		<>
 			<OrderListWrapper key={order.id}>
 				<OrderInfo>
-					<span>{order.takeout ? '포장' : '매장'}</span>
+					<span>{order.takeOut ? '포장' : '매장'}</span>
 					<span>{timeFormat(order.id)}</span>
 				</OrderInfo>
 				<ItemWrapper>

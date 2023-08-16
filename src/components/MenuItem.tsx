@@ -3,16 +3,13 @@ import { styled } from 'styled-components';
 import { MenuType } from '../types/menuMangementType';
 import EditMenuModal from './MenuManagement/EditMenuModal';
 import ModalPortal from './ModalPortal';
+import { changePriceFormat } from '../utils/changeFormat';
 
 interface ItemPropType {
 	menu: MenuType;
 }
 function MenuItem({ menu }: ItemPropType) {
 	const [isOpenModal, setModalOpen] = useState<boolean>(false);
-
-	const priceTemplate = (price: string) => {
-		return price.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-	};
 
 	const onClickToggleModal = useCallback(() => {
 		setModalOpen(!isOpenModal);
@@ -24,7 +21,7 @@ function MenuItem({ menu }: ItemPropType) {
 				<button onClick={onClickToggleModal}>
 					{menu.imageUrl ? <img src={menu.imageUrl} alt={`${menu.name}이미지`} /> : <div>이미지 없음</div>}
 					<p className="menu-name"> {menu.name}</p>
-					<p className="menu-price">{priceTemplate(menu.price)}원</p>
+					<p className="menu-price">{changePriceFormat(menu.price)}원</p>
 				</button>
 			</MenuItemWrapper>
 			{isOpenModal && (

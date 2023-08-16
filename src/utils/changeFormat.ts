@@ -9,3 +9,7 @@ export const changeDateFormat = (numberDate: number) => {
 
 	return { year, month, date, hour, minute, sec };
 };
+
+export const changePriceFormat = (price: string) => {
+	return price.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+};
