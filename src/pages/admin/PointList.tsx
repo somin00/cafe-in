@@ -181,6 +181,7 @@ const Pagination = styled.div`
 
 		&.currentPage {
 			color: ${({ theme }) => (theme.lightColor ? theme.lightColor.point : theme.darkColor.point)};
+			font-weight: ${({ theme }) => theme.fontWeight.semibold};
 		}
 	}
 `;
