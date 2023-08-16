@@ -14,7 +14,7 @@ import { orderListStateAtom } from '../../state/OrderListAtom';
 function OrderCheck() {
 	const navigate = useNavigate();
 	const theme = useTheme();
-	const usedPoints = useRecoilValue(usedPointsState);
+	const [usedPoints, setUsedPoints] = useRecoilState(usedPointsState);
 	const [orderList, setOrderList] = useRecoilState(orderListStateAtom);
 	const [isOpenAddPointModal, setAddPointModalOpen] = useState<boolean>(false);
 	const [isOpenUsePointUserModal, setUsePointUserModalOpen] = useState<boolean>(false);
@@ -47,6 +47,9 @@ function OrderCheck() {
 			prevOrders.map((order) => (order.progress === '주문완료' ? { ...order, progress: '진행중' } : order)),
 		);
 		alert('결제되었습니다');
+		// 상태 초기화
+		setOrderList([]); // 주문 목록 초기화
+		setUsedPoints(0); // 사용된 포인트 초기화
 	};
 
 	const totalOrderPay = computeTotalOrderAmount();
