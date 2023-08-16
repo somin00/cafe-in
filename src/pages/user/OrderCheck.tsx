@@ -34,18 +34,17 @@ function OrderCheck() {
 	};
 
 	const handlePayment = async () => {
-		const ordersToUpdate = orderList.filter((order) => order.progress === '진행중');
+		const ordersToUpdate = orderList.filter((order) => order.progress === '주문완료');
 
 		for (const order of ordersToUpdate) {
 			const orderCollectionRef = collection(db, 'orderList');
 
 			// 새 문서 ID를 자동 생성하여 추가
-			const newDocRef = await addDoc(orderCollectionRef, { ...order, progress: '주문완료', totalOrderPay });
-			console.log(`Added document with ID ${newDocRef.id}`);
+			const newDocRef = await addDoc(orderCollectionRef, { ...order, progress: '진행중', totalOrderPay });
 		}
 
 		setOrderList((prevOrders) =>
-			prevOrders.map((order) => (order.progress === '진행중' ? { ...order, progress: '주문완료' } : order)),
+			prevOrders.map((order) => (order.progress === '주문완료' ? { ...order, progress: '진행중' } : order)),
 		);
 		alert('결제되었습니다');
 	};
@@ -79,7 +78,7 @@ function OrderCheck() {
 					</TableHead>
 					<Tbody>
 						{orderList
-							.filter((order) => order.progress === '진행중')
+							.filter((order) => order.progress === '주문완료')
 							.map((order) => (
 								<div key={order.id}>
 									{order.list.map((item, index) => (

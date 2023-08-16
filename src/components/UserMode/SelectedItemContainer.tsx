@@ -53,7 +53,7 @@ function SelectedItemContainer() {
 		const newOrder = {
 			id: Date.now(),
 			date: Date(),
-			progress: '진행중' as OrderProgress,
+			progress: '주문완료' as OrderProgress,
 			takeOut: true,
 			list: selectedItems.map((item) => ({
 				menu: item.name,
