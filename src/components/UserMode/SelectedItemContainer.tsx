@@ -138,7 +138,7 @@ function SelectedItemContainer() {
 						<img src="/assets/user/AllDeleteBtn.svg" alt="전체삭제" />
 						<p>전체삭제</p>
 					</AllDeleteBtn>
-					<OrderBtn onClick={handleAddOrderMoveTo}>
+					<OrderBtn disabled={selectedItems.length === 0} onClick={handleAddOrderMoveTo}>
 						<p>주문하기</p>
 					</OrderBtn>
 				</PayContainer>
