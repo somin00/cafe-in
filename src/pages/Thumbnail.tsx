@@ -53,7 +53,7 @@ function Thumbnail() {
 			</ThumbnailWrapper>
 			{isShowToast && (
 				<ModalPortal>
-					<Toast />
+					<Toast text={'로그인 후 이용 가능한 서비스입니다.'} />
 				</ModalPortal>
 			)}
 		</>

@@ -1,8 +1,12 @@
 import React from 'react';
 import { styled } from 'styled-components';
 
-function Toast() {
-	return <ToastWrapper>로그인 후 이용 가능한 서비스입니다.</ToastWrapper>;
+interface ToastPropTypes {
+	text: string;
+}
+
+function Toast({ text }: ToastPropTypes) {
+	return <ToastWrapper>{text}</ToastWrapper>;
 }
 
 export default Toast;
