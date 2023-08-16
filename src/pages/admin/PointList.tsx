@@ -6,6 +6,13 @@ import { collection, getDocs } from 'firebase/firestore';
 import { db } from '../../firebase/firebaseConfig';
 import withAuth from '../../components/adminMode/WithAuth';
 
+type Points = {
+	id?: string;
+	date: number;
+	phoneNumber: string;
+	point: number;
+};
+
 function underBarPhoneNumber(phoneNumber: string): string {
 	const cleaned = ('' + phoneNumber).replace(/\D/g, ''); // 숫자만 남기기
 	const match = cleaned.match(/^(\d{3})(\d{4})(\d{4})$/); // 정규표현식 사용하여 매칭
@@ -18,7 +25,7 @@ function underBarPhoneNumber(phoneNumber: string): string {
 function PointList() {
 	const theme = useTheme();
 	const navigate = useNavigate();
-	const [points, setPoints] = useState<any[]>([]);
+	const [points, setPoints] = useState<Points[]>([]);
 	const [currentPage, setCurrentPage] = useState(1);
 	const itemsPerPage = 6;
 
@@ -26,7 +33,19 @@ function PointList() {
 		const fetchPoints = async () => {
 			const pointsCollection = collection(db, 'point');
 			const pointsSnapshot = await getDocs(pointsCollection);
-			const pointsData = pointsSnapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
+			const pointsData: Points[] = [];
+			pointsSnapshot.forEach((doc) => {
+				const data = doc.data();
+				if (data) {
+					const point: Points = {
+						id: doc.id,
+						date: data.date,
+						phoneNumber: data.phoneNumber,
+						point: data.point,
+					};
+					pointsData.push(point);
+				}
+			});
 			setPoints(pointsData);
 		};
 
@@ -42,8 +61,8 @@ function PointList() {
 			<Header>
 				<img
 					className="backBtn"
-					src={theme === defaultTheme ? '/assets/user/BackBtn_light.svg' : '/assets/user/BackBtn_dark.svg'}
-					alt="메뉴페이지"
+					src={theme.lightColor ? '/assets/user/BackBtn_light.svg' : '/assets/user/BackBtn_dark.svg'}
+					alt="관리자 메인 페이지"
 					onClick={() => navigate('/admin/main')}
 				/>
 				<h1>회원 포인트 내역</h1>
@@ -82,12 +101,12 @@ function PointList() {
 const Layout = styled.div`
 	width: 1194px;
 	height: 834px;
-	background-color: ${({ theme }) => (theme === defaultTheme ? theme.textColor.white : darkTheme.darkColor.background)};
+	background-color: ${({ theme }) => (theme.lightColor ? theme.textColor.white : darkTheme.darkColor.background)};
 `;
 const Header = styled.div`
 	display: flex;
 	padding: 10px;
-	color: ${({ theme }) => (theme === defaultTheme ? theme.textColor.black : darkTheme.textColor.white)};
+	color: ${({ theme }) => (theme.lightColor ? theme.textColor.black : darkTheme.textColor.white)};
 	h1 {
 		width: 100%;
 		display: flex;
@@ -109,12 +128,12 @@ const TotalMember = styled.div`
 	padding: 20px 30px;
 	font-size: ${({ theme }) => theme.fontSize.xl};
 	background-color: ${({ theme }) =>
-		theme === defaultTheme ? defaultTheme.lightColor.yellow.background : darkTheme.textColor.lightbrown};
+		theme.lightColor ? defaultTheme.lightColor.yellow.background : darkTheme.textColor.lightbrown};
 	border-radius: 10px;
 `;
 const Table = styled.div`
 	background-color: ${({ theme }) =>
-		theme === defaultTheme ? defaultTheme.lightColor.yellow.background : darkTheme.textColor.lightbrown};
+		theme.lightColor ? defaultTheme.lightColor.yellow.background : darkTheme.textColor.lightbrown};
 	height: 580px;
 	border-radius: 10px;
 	position: relative;
