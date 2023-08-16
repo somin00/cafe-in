@@ -76,7 +76,11 @@ function PointList() {
 					<Pagination>
 						<button onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}>이전</button>
 						{Array.from({ length: totalPages }).map((_, index) => (
-							<button key={index} onClick={() => setCurrentPage(index + 1)}>
+							<button
+								key={index}
+								onClick={() => setCurrentPage(index + 1)}
+								className={currentPage === index + 1 ? 'currentPage' : ''}
+							>
 								{index + 1}
 							</button>
 						))}
@@ -174,6 +178,10 @@ const Pagination = styled.div`
 		margin: 0 5px;
 		padding: 5px 10px;
 		cursor: pointer;
+
+		&.currentPage {
+			color: ${({ theme }) => (theme.lightColor ? theme.lightColor.point : theme.darkColor.point)};
+		}
 	}
 `;
 
