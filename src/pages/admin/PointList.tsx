@@ -1,10 +1,9 @@
-import React, { useEffect, useState } from 'react';
-import { styled, useTheme } from 'styled-components';
-import { defaultTheme, darkTheme } from '../../style/theme';
-import { useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { styled } from 'styled-components';
 import { collection, getDocs } from 'firebase/firestore';
 import { db } from '../../firebase/firebaseConfig';
 import withAuth from '../../components/adminMode/WithAuth';
+import ManagementHeader from '../../components/adminMode/ManagementHeader';
 
 type Points = {
 	id?: string;
@@ -23,8 +22,6 @@ function underBarPhoneNumber(phoneNumber: string): string {
 }
 
 function PointList() {
-	const theme = useTheme();
-	const navigate = useNavigate();
 	const [points, setPoints] = useState<Points[]>([]);
 	const [currentPage, setCurrentPage] = useState(1);
 	const itemsPerPage = 6;
@@ -46,6 +43,7 @@ function PointList() {
 					pointsData.push(point);
 				}
 			});
+
 			setPoints(pointsData);
 		};
 
@@ -58,18 +56,10 @@ function PointList() {
 	const currentItems = points.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 	return (
 		<Layout>
-			<Header>
-				<img
-					className="backBtn"
-					src={theme.lightColor ? '/assets/user/BackBtn_light.svg' : '/assets/user/BackBtn_dark.svg'}
-					alt="관리자 메인 페이지"
-					onClick={() => navigate('/admin/main')}
-				/>
-				<h1>회원 포인트 내역</h1>
-			</Header>
+			<ManagementHeader headerText="관리자 메인 페이지" />
 			<Container>
 				<TotalMember>
-					<h2>전체 회원수</h2>
+					<p className="totalMemberText">전체 회원수</p>
 					<p>{points.length}명</p>
 				</TotalMember>
 				<Table>
@@ -79,11 +69,10 @@ function PointList() {
 					</THead>
 					{currentItems.map((point) => (
 						<Item key={point.id}>
-							<p>{underBarPhoneNumber(point.phoneNumber)}</p>
-							<p>{point.point.toLocaleString()}</p>
+							<p className="phoneNum">{underBarPhoneNumber(point.phoneNumber)}</p>
+							<p className="point">{point.point.toLocaleString()}</p>
 						</Item>
 					))}
-
 					<Pagination>
 						<button onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}>이전</button>
 						{Array.from({ length: totalPages }).map((_, index) => (
@@ -101,69 +90,86 @@ function PointList() {
 const Layout = styled.div`
 	width: 1194px;
 	height: 834px;
-	background-color: ${({ theme }) => (theme.lightColor ? theme.textColor.white : darkTheme.darkColor.background)};
-`;
-const Header = styled.div`
-	display: flex;
-	padding: 10px;
-	color: ${({ theme }) => (theme.lightColor ? theme.textColor.black : darkTheme.textColor.white)};
-	h1 {
-		width: 100%;
-		display: flex;
-		justify-content: center;
-		align-items: center;
-		font-size: ${({ theme }) => theme.fontSize['3xl']};
-	}
+	background-color: ${({ theme }) => (theme.lightColor ? theme.textColor.white : theme.darkColor.background)};
+	user-select: none;
 `;
 
 const Container = styled.div`
-	margin-top: 110px;
+	margin-top: 30px;
 	margin-left: 100px;
 	margin-right: 100px;
 `;
 const TotalMember = styled.div`
-	width: 339px;
+	width: 270px;
+	line-height: 50px;
+	padding-left: 20px;
+	padding-right: 20px;
+	height: 50px;
 	display: flex;
 	justify-content: space-between;
-	padding: 20px 30px;
 	font-size: ${({ theme }) => theme.fontSize.xl};
-	background-color: ${({ theme }) =>
-		theme.lightColor ? defaultTheme.lightColor.yellow.background : darkTheme.textColor.lightbrown};
+	background-color: ${({ theme }) => (theme.lightColor ? theme.lightColor.main : theme.darkColor.main)};
 	border-radius: 10px;
+
+	p {
+		&.totalMemberText {
+			font-weight: ${({ theme }) => theme.fontWeight.semibold};
+		}
+	}
 `;
 const Table = styled.div`
-	background-color: ${({ theme }) =>
-		theme.lightColor ? defaultTheme.lightColor.yellow.background : darkTheme.textColor.lightbrown};
-	height: 580px;
+	background-color: ${({ theme }) => (theme.lightColor ? theme.lightColor.background : theme.textColor.lightbrown)};
+	height: 610px;
 	border-radius: 10px;
+	margin-top: 25px;
 	position: relative;
+	display: flex;
+	flex-flow: column nowrap;
+	align-items: center;
+	padding-bottom: 30px;
 `;
 const THead = styled.div`
 	width: 100%;
 	display: flex;
-	margin-top: 30px;
+	margin-top: 15px;
 	justify-content: center;
 	font-size: ${({ theme }) => theme.fontSize['2xl']};
+	font-weight: ${({ theme }) => theme.fontWeight.semibold};
 	p {
 		padding: 20px 180px;
 	}
 `;
 
 const Item = styled.li`
+	width: 900px;
 	display: flex;
 	justify-content: space-around;
 	border-radius: 10px;
 	padding: 20px;
-	margin: 20px 50px;
+	margin-bottom: 20px;
 	background-color: ${({ theme }) => theme.textColor.white};
+	font-size: ${({ theme }) => theme.fontSize['xl']};
+
+	p {
+		text-align: center;
+
+		&.phoneNum {
+			width: 500px;
+		}
+
+		&.point {
+			width: 400px;
+		}
+	}
 `;
 const Pagination = styled.div`
 	display: flex;
 	justify-content: center;
 	align-items: center;
 	position: absolute;
-	bottom: 15px;
+	bottom: 10px;
 	left: 400px;
+	font-size: ${({ theme }) => theme.fontSize['xl']};
 	button {
 		margin: 0 5px;
 		padding: 5px 10px;
