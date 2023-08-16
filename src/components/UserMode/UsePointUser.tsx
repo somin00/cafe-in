@@ -33,6 +33,11 @@ function UsePointUser({ onClickToggleModal }: ModalDefaultType) {
 				onClickToggleModal();
 				return;
 			}
+			if (points < 1000) {
+				alert(`1000포인트 이상 사용할 수 있습니다. 현재 ${points} 포인트 입니다.`);
+				onClickToggleModal();
+				return;
+			}
 			setUserPoints(points);
 			setModalOpen(true);
 		} else {
@@ -43,20 +48,23 @@ function UsePointUser({ onClickToggleModal }: ModalDefaultType) {
 	}, [phoneNumber]);
 
 	const handleUsePoints = async (usedPoints: number) => {
-		if (userPoints !== null && userPoints >= usedPoints) {
-			const remainingPoints = userPoints - usedPoints;
-			setUserPoints(remainingPoints);
-
-			const pointsCollection = collection(db, 'point');
-			const q = query(pointsCollection, where('phoneNumber', '==', phoneNumber));
-			const matchingDocs = await getDocs(q);
-			if (!matchingDocs.empty) {
-				const existingDoc = matchingDocs.docs[0];
-				const docRef = doc(db, 'point', existingDoc.id);
-				await updateDoc(docRef, { point: remainingPoints });
-			}
-		} else {
+		if (userPoints === null || userPoints < usedPoints) {
 			alert('포인트가 부족합니다.');
+			return;
+		}
+
+		const remainingPoints = userPoints - usedPoints;
+
+		setUserPoints(remainingPoints);
+
+		const pointsCollection = collection(db, 'point');
+		const q = query(pointsCollection, where('phoneNumber', '==', phoneNumber));
+		const matchingDocs = await getDocs(q);
+
+		if (!matchingDocs.empty) {
+			const existingDoc = matchingDocs.docs[0];
+			const docRef = doc(db, 'point', existingDoc.id);
+			await updateDoc(docRef, { point: remainingPoints });
 		}
 	};
 	return (

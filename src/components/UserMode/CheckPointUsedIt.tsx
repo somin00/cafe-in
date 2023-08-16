@@ -40,6 +40,7 @@ function CheckPointUsedIt({ isOpenModal, onClickOpenModal, points, onUsePoints, 
 	};
 	const handlePointClick = () => {
 		setPoint(points?.toString() ?? '');
+		setUsedPoints(points);
 	};
 	const phoneLastFourDigits = phoneNumber.slice(-4);
 	return isOpenModal ? (
