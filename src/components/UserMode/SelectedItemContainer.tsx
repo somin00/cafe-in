@@ -66,6 +66,8 @@ function SelectedItemContainer() {
 		};
 
 		setOrderList((prev) => [...prev, newOrder]);
+		// 선택된 항목 초기화
+		handleDeleteAll();
 	};
 	useEffect(() => {
 		let lastInteraction = Date.now();
