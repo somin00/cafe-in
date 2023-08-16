@@ -4,6 +4,7 @@ import { styled } from 'styled-components';
 import ManagementHeader from '../../components/adminMode/ManagementHeader';
 import { db } from '../../firebase/firebaseConfig';
 import { collection, getDocs } from 'firebase/firestore';
+import { changePriceFormat } from '../../utils/changeFormat';
 
 interface Order {
 	id: number;
@@ -139,7 +140,7 @@ function SalesList() {
 						</SalesBox>
 						<SalesBox>
 							<p>총 매출 액</p>
-							{dayData.length > 0 ? <p> {dayData[0].totalPriceSum}원</p> : <p>0원</p>}
+							{dayData.length > 0 ? <p> {changePriceFormat(dayData[0].totalPriceSum.toString())}원</p> : <p>0원</p>}
 						</SalesBox>
 					</SalesBoxWrapper>
 				</DailySalesWrapper>
@@ -157,7 +158,7 @@ function SalesList() {
 						<SalesBox>
 							<p>{targetMonth}월 매출</p>{' '}
 							{monthData.length > 0 ? (
-								<p> {monthData.reduce((sum, data) => sum + data.totalPriceSum, 0)}원</p>
+								<p> {changePriceFormat(monthData.reduce((sum, data) => sum + data.totalPriceSum, 0).toString())}원</p>
 							) : (
 								<p>0 원</p>
 							)}
