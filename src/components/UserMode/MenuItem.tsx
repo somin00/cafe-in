@@ -2,12 +2,12 @@ import React, { useCallback, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import OptionMenu from './OptionMenu';
 import { useRecoilState, useRecoilValue } from 'recoil';
-import { Item } from '../../state/Category';
+import { Item } from '../../types/Category';
 import { collection, getDocs, query, where } from 'firebase/firestore';
 import { db } from '../../firebase/firebaseConfig';
 import { selectedCategoryState } from '../../state/CategoryList';
 import { selectedItemsState } from '../../firebase/FirStoreDoc';
-import { Option, selectedItem } from '../../state/OptinalState';
+import { Option, selectedItem } from '../../types/OptinalState';
 function MenuItem() {
 	const selectedCategory = useRecoilValue(selectedCategoryState);
 	const [isOpenModal, setModalOpen] = useState<boolean>(false);

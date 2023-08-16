@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import styled, { useTheme } from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import { darkTheme, defaultTheme } from '../../style/theme';
-import { Category } from '../../state/Category';
+import { Category } from '../../types/Category';
 import { db } from '../../firebase/firebaseConfig';
 import { getDocs, collection } from 'firebase/firestore';
 import { useSetRecoilState } from 'recoil';

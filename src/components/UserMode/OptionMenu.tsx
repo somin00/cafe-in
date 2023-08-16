@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { Option } from '../../state/OptinalState';
+import { Option } from '../../types/OptinalState';
 import { db } from '../../firebase/firebaseConfig';
 import { collection, getDocs } from 'firebase/firestore';
-import { Item } from '../../state/Category';
+import { Item } from '../../types/Category';
 import { darkTheme, defaultTheme } from '../../style/theme';
 import { selectedItemsState } from '../../firebase/FirStoreDoc';
 import { useRecoilState } from 'recoil';

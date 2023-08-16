@@ -1,6 +1,6 @@
 import { atom } from 'recoil';
-import { Option } from '../state/OptinalState';
-import { Item } from '../state/Category';
+import { Option } from '../types/OptinalState';
+import { Item } from '../types/Category';
 
 export const selectedOptionsState = atom<Option[]>({
 	key: 'selectedOptionsState',
