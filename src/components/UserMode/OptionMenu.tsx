@@ -63,6 +63,7 @@ function OptionMenu({ clickedItem, onClickToggleModal }: OptionMenuProps) {
 			options: optionsStr,
 			totalPrice: (clickedItem?.price || 0) + additionalPrice,
 			quantity: 1,
+			imageUrl: clickedItem?.imageUrl,
 		};
 
 		setSelectedItems((prev) => {

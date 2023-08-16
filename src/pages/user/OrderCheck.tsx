@@ -84,7 +84,7 @@ function OrderCheck() {
 									{order.list.map((item, index) => (
 										<OrderMenuItem key={index}>
 											<div className="products-name">
-												<img src="/assets/user/IceCoffee.svg" alt="제품이미지" width={42} />
+												<img src={item.imgUrl} alt="제품이미지" width={42} />
 												<p>{item.menu}</p>
 											</div>
 											<p>{item.quantity}</p>

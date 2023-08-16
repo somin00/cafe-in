@@ -57,6 +57,7 @@ function SelectedItemContainer() {
 			takeOut: true,
 			list: selectedItems.map((item) => ({
 				menu: item.name,
+				imgUrl: item.imageUrl || '/assets/user/IceCoffee.svg',
 				quantity: item.quantity,
 				options: item.options,
 				isComplete: false,

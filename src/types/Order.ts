@@ -6,6 +6,7 @@ export interface Order {
 	progress: OrderProgress;
 	takeOut: boolean;
 	list: {
+		imgUrl: string;
 		menu: string;
 		quantity: number;
 		options: string;

@@ -14,8 +14,7 @@ function MenuItem() {
 	const [items, setItems] = useState<Item[]>([]);
 	const [selectedItems, setSelectedItems] = useRecoilState(selectedItemsState);
 
-	const [clickedMenuItem, setClickedMenuItem] = useState<Item | null>(null); // 추가: 클릭한 메뉴 아이템 저장용 상태
-
+	const [clickedMenuItem, setClickedMenuItem] = useState<Item | null>(null);
 	const onClickToggleModal = useCallback(() => {
 		setModalOpen(!isOpenModal);
 	}, [isOpenModal]);
