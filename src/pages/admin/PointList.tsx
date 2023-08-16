@@ -43,7 +43,7 @@ function PointList() {
 					pointsData.push(point);
 				}
 			});
-
+			pointsData.sort((a, b) => a.date - b.date);
 			setPoints(pointsData);
 		};
 
