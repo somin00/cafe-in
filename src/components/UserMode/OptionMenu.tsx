@@ -1,19 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { Option } from '../../state/OptinalState';
+import { Option } from '../../types/OptinalState';
 import { db } from '../../firebase/firebaseConfig';
-import { addDoc, collection, doc, getDocs, increment, query, updateDoc, where } from 'firebase/firestore';
-import { Item } from '../../state/Category';
+import { collection, getDocs } from 'firebase/firestore';
+import { Item } from '../../types/Category';
 import { darkTheme, defaultTheme } from '../../style/theme';
+import { selectedItemsState } from '../../firebase/FirStoreDoc';
+import { useRecoilState } from 'recoil';
 export interface OptionMenuProps {
-	selected: Item;
+	clickedItem: Item | null;
 	onClickToggleModal: () => void;
 }
 
-function OptionMenu({ selected, onClickToggleModal }: OptionMenuProps) {
+function OptionMenu({ clickedItem, onClickToggleModal }: OptionMenuProps) {
 	const [options, setOptions] = useState<{ [key: string]: Option[] }>({});
 	const [activeOptions, setActiveOptions] = useState<string[]>([]);
-
+	const [selectedItems, setSelectedItems] = useRecoilState(selectedItemsState);
 	const [selectedItemOptions, setSelectedItemOptions] = useState<Option[]>([]);
 
 	useEffect(() => {
@@ -36,7 +38,7 @@ function OptionMenu({ selected, onClickToggleModal }: OptionMenuProps) {
 		};
 		setSelectedItemOptions([]);
 		fetchOptions();
-	}, [selected]);
+	}, [clickedItem]);
 
 	const handleOptionClick = (e: React.MouseEvent, option: Option) => {
 		e.preventDefault();
@@ -51,52 +53,38 @@ function OptionMenu({ selected, onClickToggleModal }: OptionMenuProps) {
 			setActiveOptions((oldActiveOptions) => [...oldActiveOptions, option.name]);
 		}
 	};
+	const addOrUpdateSelectedItem = () => {
+		const sortedOptions = [...selectedItemOptions].sort((a, b) => a.name.localeCompare(b.name));
+		const optionsStr = sortedOptions.length ? sortedOptions.map((o) => o.name).join(', ') : '없음';
+		const additionalPrice = sortedOptions.reduce((acc, option) => acc + option.price, 0);
 
-	const handleCloseBtnClick = async (e: React.MouseEvent) => {
-		e.stopPropagation();
+		const newItem = {
+			...clickedItem!,
+			options: optionsStr,
+			totalPrice: (clickedItem?.price || 0) + additionalPrice,
+			quantity: 1,
+		};
 
-		const itemsCollection = collection(db, 'selectedItem');
-		const selectedOptionsStr =
-			selectedItemOptions.length > 0
-				? selectedItemOptions
-						.map((i) => i.name)
-						.sort()
-						.join(',')
-				: '없음';
-		const q = query(itemsCollection, where('name', '==', selected.name), where('options', '==', selectedOptionsStr));
+		setSelectedItems((prev) => {
+			const existingItemIndex = prev.findIndex(
+				(item) => item.name === newItem.name && item.options === newItem.options,
+			);
 
-		// 가격이 500인 옵션만
-		const selectedOptionsTotalPrice = selectedItemOptions.reduce((total, option) => {
-			if (option.price === 500) {
-				return total + option.price;
+			if (existingItemIndex >= 0) {
+				const updatedItem = {
+					...prev[existingItemIndex],
+					quantity: prev[existingItemIndex].quantity + 1,
+				};
+				const updatedItems = [...prev.slice(0, existingItemIndex), updatedItem, ...prev.slice(existingItemIndex + 1)];
+				return updatedItems;
+			} else {
+				return [...prev, newItem];
 			}
-			return total;
-		}, 0);
-
-		const itemTotalPrice = selected.price + selectedOptionsTotalPrice;
-
-		const matchingDocs = await getDocs(q);
-
-		if (!matchingDocs.empty) {
-			// 이미 존재하는 문서에 수량을 증가
-			const existingDoc = matchingDocs.docs[0];
-			const docRef = doc(db, 'selectedItem', existingDoc.id);
-			await updateDoc(docRef, {
-				quantity: increment(1),
-			});
-		} else {
-			// 존재하지 않는 경우 새로운 문서를 추가
-			const itemToBeAdded = {
-				...selected,
-				data: new Date(),
-				quantity: 1,
-				options: selectedOptionsStr,
-				totalPrice: itemTotalPrice,
-			};
-
-			await addDoc(itemsCollection, itemToBeAdded);
-		}
-
+		});
+	};
+	const handleCloseBtnClick = (e: React.MouseEvent) => {
+		e.stopPropagation();
+		addOrUpdateSelectedItem();
 		onClickToggleModal();
 	};
 	return (
@@ -122,7 +110,7 @@ function OptionMenu({ selected, onClickToggleModal }: OptionMenuProps) {
 						</CheckMenuContainer>
 					))}
 				</Layout>
-				<CloseBtn onClick={handleCloseBtnClick}>담기</CloseBtn>
+				<CloseBtn onClick={(e) => handleCloseBtnClick(e)}>담기</CloseBtn>
 			</DialogBox>
 			<Backdrop
 				onClick={(e: React.MouseEvent) => {
@@ -203,7 +191,7 @@ const CheckOption = styled.button`
 const CloseBtn = styled.button`
 	margin-top: 20px;
 	border-radius: 10px;
-	background-color: ${({ theme }) => (theme === defaultTheme ? theme.lightColor.sub : darkTheme.darkColor.point)};
+	background-color: ${({ theme }) => (theme === defaultTheme ? theme.lightColor.sub : darkTheme.darkColor.sub)};
 	width: 110px;
 	height: 45px;
 	font-size: ${({ theme }) => theme.fontSize['2xl']};

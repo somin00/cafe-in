@@ -7,13 +7,15 @@ export interface Option {
 }
 
 export interface selectedItem {
-	price: string;
 	category: string;
-	id: string;
+	id: number;
+	date?: Date;
 	name: string;
+	price: number;
 	options: string;
 	quantity: number;
 	totalPrice: number;
+	progress?: string;
 }
 export interface orderList {
 	id: number;

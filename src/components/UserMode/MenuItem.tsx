@@ -2,19 +2,20 @@ import React, { useCallback, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import OptionMenu from './OptionMenu';
 import { useRecoilState, useRecoilValue } from 'recoil';
-import { selectedModeState } from '../../state/Mode';
-import { Item } from '../../state/Category';
-import { addDoc, collection, doc, getDocs, increment, query, updateDoc, where } from 'firebase/firestore';
+import { Item } from '../../types/Category';
+import { collection, getDocs, query, where } from 'firebase/firestore';
 import { db } from '../../firebase/firebaseConfig';
 import { selectedCategoryState } from '../../state/CategoryList';
 import { selectedItemsState } from '../../firebase/FirStoreDoc';
-import { Option } from '../../state/OptinalState';
+import { Option, selectedItem } from '../../types/OptinalState';
 function MenuItem() {
-	const mode = useRecoilValue(selectedModeState);
 	const selectedCategory = useRecoilValue(selectedCategoryState);
 	const [isOpenModal, setModalOpen] = useState<boolean>(false);
 	const [items, setItems] = useState<Item[]>([]);
-	const [selectedItem, setSelectedItem] = useRecoilState(selectedItemsState);
+	const [selectedItems, setSelectedItems] = useRecoilState(selectedItemsState);
+
+	const [clickedMenuItem, setClickedMenuItem] = useState<Item | null>(null); // 추가: 클릭한 메뉴 아이템 저장용 상태
+
 	const onClickToggleModal = useCallback(() => {
 		setModalOpen(!isOpenModal);
 	}, [isOpenModal]);
@@ -44,65 +45,62 @@ function MenuItem() {
 		};
 		fetchItems();
 	}, [selectedCategory]);
-	const saveToSelectedItem = async (selectedItem: Item, selectedItemOptions: Option[] = []) => {
-		const itemsCollection = collection(db, 'selectedItem');
 
-		const selectedOptionsStr =
-			selectedItemOptions.length > 0
-				? selectedItemOptions
+	const addSelectedItem = (item: Item, options: Option[] = []) => {
+		const optionsStr =
+			options.length > 0
+				? options
 						.map((i) => i.name)
 						.sort()
 						.join(',')
 				: '없음';
 
-		const q = query(
-			itemsCollection,
-			where('name', '==', selectedItem.name),
-			where('options', '==', selectedOptionsStr),
-		);
+		const newItem = {
+			...item,
+			date: new Date(),
+			quantity: 1,
+			options: optionsStr,
+			totalPrice: item.price,
+			progress: '선택주문',
+		};
+		setSelectedItems((prev) => {
+			const existingItemIndex = prev.findIndex(
+				(existingItem) => existingItem.name === newItem.name && existingItem.options === newItem.options,
+			);
 
-		const matchingDocs = await getDocs(q);
-
-		if (!matchingDocs.empty) {
-			const existingDoc = matchingDocs.docs[0];
-			const docRef = doc(db, 'selectedItem', existingDoc.id);
-			await updateDoc(docRef, {
-				quantity: increment(1),
-			});
-		} else {
-			const itemToBeAdded = {
-				...selectedItem,
-				data: new Date(),
-				quantity: 1,
-				options: selectedOptionsStr,
-				totalPrice: selectedItem.price,
-				progress: '선택주문',
-			};
-
-			await addDoc(itemsCollection, itemToBeAdded);
-		}
+			if (existingItemIndex >= 0) {
+				const updatedItem = {
+					...prev[existingItemIndex],
+					quantity: prev[existingItemIndex].quantity + 1,
+				};
+				const updatedItems = [...prev.slice(0, existingItemIndex), updatedItem, ...prev.slice(existingItemIndex + 1)];
+				return updatedItems;
+			} else {
+				return [...prev, newItem];
+			}
+		});
 	};
-	const handleClick = async (item: Item) => {
-		setSelectedItem(item);
-		if (item.category === '스무디' || item.category === '디저트') {
-			await saveToSelectedItem(item);
+	const handleClickMenuItem = (item: Item) => {
+		if (['스무디', '디저트'].includes(item.category)) {
+			addSelectedItem(item);
 		} else {
+			setClickedMenuItem(item);
 			onClickToggleModal();
 		}
 	};
+
 	return (
 		<>
 			{items.map((item) => (
 				<MenuItemWrapper key={item.id}>
-					<button onClick={() => handleClick(item)}>
+					<button onClick={() => handleClickMenuItem(item)}>
 						<img src={item.imageUrl} alt={item.imageName} />
 						<p className="menu-name">{item.name}</p>
 						<p className="menu-price">{item.price}</p>
 					</button>
 				</MenuItemWrapper>
 			))}
-			{mode === 'user' ||
-				(isOpenModal && <OptionMenu onClickToggleModal={onClickToggleModal} selected={selectedItem} />)}
+			{isOpenModal && <OptionMenu onClickToggleModal={onClickToggleModal} clickedItem={clickedMenuItem} />}
 		</>
 	);
 }

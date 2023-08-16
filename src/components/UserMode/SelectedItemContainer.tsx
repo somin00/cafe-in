@@ -1,80 +1,51 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { styled } from 'styled-components';
 import { defaultTheme, darkTheme } from '../../style/theme';
 
-import { db } from '../../firebase/firebaseConfig';
-import { selectedItem } from '../../state/OptinalState';
-import {
-	collection,
-	doc,
-	writeBatch,
-	updateDoc,
-	deleteDoc,
-	addDoc,
-	onSnapshot,
-	increment,
-	getDocs,
-} from 'firebase/firestore';
+import { useRecoilState } from 'recoil';
+import { selectedItemsState } from '../../firebase/FirStoreDoc';
+import { orderListStateAtom } from '../../state/OrderListAtom';
+import { OrderProgress } from '../../types/Order';
 type StyledProps = {
 	$quantity: number;
 };
 
-type OrderProgress = '선택주문' | '진행중' | '완료주문';
-
 function SelectedItemContainer() {
 	const navigate = useNavigate();
 
-	const [selectedItems, setSelectedItems] = useState<selectedItem[]>([]);
-
-	useEffect(() => {
-		const selectedItemsCol = collection(db, 'selectedItem');
-
-		const unsub = onSnapshot(selectedItemsCol, (snapshot) => {
-			const updatedItems: (selectedItem | undefined)[] = snapshot.docs.map((doc) => {
-				const data = doc.data();
-				if (data.quantity !== undefined) {
-					return { ...data, id: doc.id, options: data.options } as selectedItem;
-				}
-			});
-			setSelectedItems(updatedItems.filter((item) => item !== undefined) as selectedItem[]);
-		});
-		return () => unsub();
-	}, []);
-
+	const [selectedItems, setSelectedItems] = useRecoilState(selectedItemsState);
+	const [orderList, setOrderList] = useRecoilState(orderListStateAtom);
 	const handleItemDelete = (itemName: string) => {
-		deleteDoc(doc(db, 'selectedItem', itemName));
+		setSelectedItems((prev) => prev.filter((item) => item.id.toString() !== itemName));
 	};
 
 	const handleIncreaseCount = async (itemName: string) => {
-		const docRef = doc(db, 'selectedItem', itemName);
-		await updateDoc(docRef, {
-			quantity: increment(1),
-		});
+		setSelectedItems((prev) =>
+			prev.map((item) => {
+				if (item.id.toString() === itemName) {
+					return { ...item, quantity: item.quantity + 1 };
+				}
+				return item;
+			}),
+		);
 	};
 
 	const handleDecreaseCount = async (itemName: string) => {
-		const docRef = doc(db, 'selectedItem', itemName);
-		await updateDoc(docRef, {
-			quantity: increment(-1),
-		});
+		setSelectedItems((prev) =>
+			prev.map((item) => {
+				if (item.id.toString() === itemName && item.quantity > 1) {
+					return { ...item, quantity: item.quantity - 1 };
+				}
+				return item;
+			}),
+		);
 	};
 
 	const totalPrice = selectedItems.reduce((acc, item) => acc + item.totalPrice * item.quantity, 0);
-	const handleDeleteAll = useCallback(async () => {
-		const selectedItemsCol = collection(db, 'selectedItem');
-		const snapshot = await getDocs(selectedItemsCol);
-
-		const batch = writeBatch(db);
-
-		snapshot.docs.forEach((doc) => {
-			batch.delete(doc.ref);
-		});
-
-		await batch.commit();
-
+	const handleDeleteAll = () => {
 		setSelectedItems([]);
-	}, [db]);
+	};
 
 	const handleAddOrderMoveTo = async () => {
 		navigate('/order');
@@ -93,7 +64,7 @@ function SelectedItemContainer() {
 			})),
 		};
 
-		await addDoc(collection(db, 'orderList'), newOrder);
+		setOrderList((prev) => [...prev, newOrder]);
 	};
 	useEffect(() => {
 		let lastInteraction = Date.now();
@@ -133,17 +104,21 @@ function SelectedItemContainer() {
 							<div className="first">
 								<p>{item.name}</p>
 								<div className="counter">
-									<button className="minus" disabled={item.quantity <= 1} onClick={() => handleDecreaseCount(item.id)}>
+									<button
+										className="minus"
+										disabled={item.quantity <= 1}
+										onClick={() => handleDecreaseCount(item.id.toString())}
+									>
 										-
 									</button>
 									<p>x{item.quantity}</p>
-									<button className="plus" onClick={() => handleIncreaseCount(item.id)}>
+									<button className="plus" onClick={() => handleIncreaseCount(item.id.toString())}>
 										+
 									</button>
 								</div>
 								<div className="price">
 									<p>{(item.totalPrice * item.quantity).toLocaleString()}원</p>
-									<button className="delete" onClick={() => handleItemDelete(item.id)}>
+									<button className="delete" onClick={() => handleItemDelete(item.id.toString())}>
 										x
 									</button>
 								</div>
