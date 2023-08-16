@@ -63,9 +63,23 @@ function MenuItem() {
 			totalPrice: item.price,
 			progress: '선택주문',
 		};
-		setSelectedItems((prev) => [...prev, newItem]);
-	};
+		setSelectedItems((prev) => {
+			const existingItemIndex = prev.findIndex(
+				(existingItem) => existingItem.name === newItem.name && existingItem.options === newItem.options,
+			);
 
+			if (existingItemIndex >= 0) {
+				const updatedItem = {
+					...prev[existingItemIndex],
+					quantity: prev[existingItemIndex].quantity + 1,
+				};
+				const updatedItems = [...prev.slice(0, existingItemIndex), updatedItem, ...prev.slice(existingItemIndex + 1)];
+				return updatedItems;
+			} else {
+				return [...prev, newItem];
+			}
+		});
+	};
 	const handleClickMenuItem = (item: Item) => {
 		if (['스무디', '디저트'].includes(item.category)) {
 			addSelectedItem(item);
