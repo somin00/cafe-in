@@ -40,7 +40,7 @@ function OrderCheck() {
 			const orderCollectionRef = collection(db, 'orderList');
 
 			// 새 문서 ID를 자동 생성하여 추가
-			const newDocRef = await addDoc(orderCollectionRef, { ...order, progress: '주문완료' });
+			const newDocRef = await addDoc(orderCollectionRef, { ...order, progress: '주문완료', totalOrderPay });
 			console.log(`Added document with ID ${newDocRef.id}`);
 		}
 
@@ -50,8 +50,8 @@ function OrderCheck() {
 		alert('결제되었습니다');
 	};
 
-	const totalOrderAmount = computeTotalOrderAmount();
-	const TotalOrderPrice = totalOrderAmount - (usedPoints || 0);
+	const totalOrderPay = computeTotalOrderAmount();
+	const TotalOrderPrice = totalOrderPay - (usedPoints || 0);
 
 	return (
 		<Layout>
@@ -100,7 +100,7 @@ function OrderCheck() {
 					<TotalPrice>
 						<div>
 							<h2>주문금액</h2>
-							<p>{totalOrderAmount.toLocaleString()}원</p>
+							<p>{totalOrderPay.toLocaleString()}원</p>
 						</div>
 						<div>
 							<h2>포인트 사용</h2>
