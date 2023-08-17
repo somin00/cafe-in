@@ -158,11 +158,11 @@ function Waiting() {
 					<ApplicationBox>
 						<ApplicationHeaderText>대기를 원하시면 번호를 입력해주세요.</ApplicationHeaderText>
 						<NumCheckBox>
-							<MinusBtn onClick={onDecrease} $decreaseDisable={decreaseDisable}>
+							<MinusBtn onClick={onDecrease} $decreaseDisable={decreaseDisable} aria-label="대기 인원 수 1 빼기">
 								<RenderMinusIcon theme={theme} decreaseDisable={decreaseDisable} />
 							</MinusBtn>
 							{waitingPersonNum}
-							<PlusBtn onClick={onIncrease}>
+							<PlusBtn onClick={onIncrease} aria-label="대기 인원 수 1 더하기">
 								<RenderPlusIcon theme={theme} />
 							</PlusBtn>
 						</NumCheckBox>
