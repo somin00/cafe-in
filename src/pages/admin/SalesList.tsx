@@ -13,8 +13,10 @@ interface Order {
 		quantity: number;
 		options: string;
 		isComplete: boolean;
+		imgUrl?: string;
+		totalPrice: number;
 	}[];
-	totalPrice: number;
+	totalOrderPay: number;
 	takeout: boolean;
 	progress: '진행중' | '완료주문';
 }
@@ -36,7 +38,7 @@ function SalesList() {
 
 	useEffect(() => {
 		const getSales = async () => {
-			const orderListCollection = collection(db, 'testOrderList');
+			const orderListCollection = collection(db, 'orderList');
 			const salesDocs = await getDocs(orderListCollection);
 			const salesDataList: Order[] = [];
 			salesDocs.forEach((doc) => {
@@ -58,7 +60,7 @@ function SalesList() {
 				salesByDate[date] = { salesData: [], totalPriceSum: 0 };
 			}
 			salesByDate[date].salesData.push(order);
-			salesByDate[date].totalPriceSum += order.totalPrice;
+			salesByDate[date].totalPriceSum += order.totalOrderPay;
 		});
 
 		const daySalesList: DaySalesData[] = [];
