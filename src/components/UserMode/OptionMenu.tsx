@@ -194,7 +194,7 @@ const CheckOption = styled.button`
 const CloseBtn = styled.button`
 	margin-top: 20px;
 	border-radius: 10px;
-	background-color: ${({ theme }) => (theme === defaultTheme ? theme.lightColor.sub : darkTheme.darkColor.sub)};
+	background-color: ${({ theme }) => (theme.lightColor ? theme.lightColor.sub : darkTheme.darkColor.sub)};
 	width: 110px;
 	height: 45px;
 	font-size: ${({ theme }) => theme.fontSize['2xl']};

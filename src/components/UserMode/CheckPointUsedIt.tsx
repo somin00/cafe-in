@@ -50,7 +50,7 @@ function CheckPointUsedIt({ isOpenModal, onClickOpenModal, points, onUsePoints, 
 					<p>{phoneLastFourDigits.slice(-4)} 님, </p>
 					<p>사용하실 포인트 입력 해주세요 </p>
 					<img
-						src={theme === defaultTheme ? '/assets/user/yellowcloud_light.svg' : '/assets/user/pinkcloud_dark.svg'}
+						src={theme.lightColor ? '/assets/user/yellowcloud_light.svg' : '/assets/user/pinkcloud_dark.svg'}
 						alt=""
 						width={95}
 					/>
@@ -94,7 +94,7 @@ const DialogBox = styled.dialog`
 	flex-direction: column;
 	justify-content: center;
 	align-items: center;
-	background-color: ${({ theme }) => (theme === defaultTheme ? theme.textColor.white : darkTheme.textColor.black)};
+	background-color: ${({ theme }) => (theme.lightColor ? theme.textColor.white : darkTheme.textColor.black)};
 	border: none;
 	border-radius: 10px;
 	box-sizing: border-box;
@@ -104,7 +104,7 @@ const DialogBox = styled.dialog`
 		text-align: center;
 		font-weight: ${({ theme }) => theme.fontWeight.bold};
 		font-size: ${({ theme }) => theme.fontSize['3xl']};
-		color: ${({ theme }) => (theme === defaultTheme ? theme.textColor.black : darkTheme.textColor.white)};
+		color: ${({ theme }) => (theme.lightColor ? theme.textColor.black : darkTheme.textColor.white)};
 		p {
 			padding-top: 10px;
 		}
@@ -128,7 +128,7 @@ const DialogBox = styled.dialog`
 			border-radius: 10px;
 		}
 		p {
-			color: ${({ theme }) => (theme === defaultTheme ? theme.textColor.black : darkTheme.textColor.lightgray)};
+			color: ${({ theme }) => (theme.lightColor ? theme.textColor.black : darkTheme.textColor.lightgray)};
 		}
 	}
 `;

@@ -152,7 +152,7 @@ function SelectedItemContainer() {
 }
 const Background = styled.div`
 	background-color: ${({ theme }) =>
-		theme === defaultTheme ? defaultTheme.textColor.white : darkTheme.darkColor.background};
+		theme.lightColor ? defaultTheme.textColor.white : darkTheme.darkColor.background};
 	padding: 10px;
 	height: fit-content;
 `;
@@ -168,7 +168,7 @@ const MenuSelectedContainer = styled.ul`
 	flex-direction: column;
 	height: 440px;
 	background-color: ${({ theme }) =>
-		theme === defaultTheme ? defaultTheme.lightColor?.yellow.background : darkTheme.darkColor.background};
+		theme.lightColor ? defaultTheme.lightColor?.yellow.background : darkTheme.darkColor.background};
 	border-radius: 10px;
 	overflow-y: auto;
 
@@ -219,16 +219,17 @@ const SelectedItem = styled.li<StyledProps>`
 		}
 		.plus {
 			background-color: ${({ theme }) =>
-				theme === defaultTheme ? defaultTheme.lightColor?.yellow.main : darkTheme.darkColor?.main};
+				theme.lightColor ? defaultTheme.lightColor?.yellow.main : darkTheme.darkColor?.main};
 		}
 		.minus {
-			background-color: ${({ theme, $quantity }) => {
-				if (theme === defaultTheme) {
-					return $quantity > 1 ? theme.lightColor?.yellow.main : defaultTheme.textColor.lightgray;
-				} else {
-					return $quantity > 1 ? darkTheme.darkColor?.main : darkTheme.textColor.darkgray;
-				}
-			}};
+			background-color: ${({ theme, $quantity }) =>
+				theme.lightColor
+					? $quantity > 1
+						? defaultTheme.lightColor?.yellow.main
+						: defaultTheme.textColor.lightgray
+					: $quantity > 1
+					? darkTheme.darkColor?.main
+					: darkTheme.textColor.darkgray};
 			&:disabled {
 				pointer-events: none;
 			}
@@ -243,9 +244,8 @@ const SelectedItem = styled.li<StyledProps>`
 			width: 25px;
 			height: 25px;
 			border: 2px solid
-				${({ theme }) => (theme === defaultTheme ? defaultTheme.lightColor?.yellow.sub : darkTheme.darkColor?.point)};
-			color: ${({ theme }) =>
-				theme === defaultTheme ? defaultTheme.lightColor?.yellow.sub : darkTheme.darkColor?.point};
+				${({ theme }) => (theme.lightColor ? defaultTheme.lightColor?.yellow.sub : darkTheme.darkColor?.point)};
+			color: ${({ theme }) => (theme.lightColor ? defaultTheme.lightColor?.yellow.sub : darkTheme.darkColor?.point)};
 			border-radius: 5px;
 		}
 	}
@@ -276,19 +276,17 @@ const TotalPrice = styled.div`
 	height: 110px;
 	padding: 20px 10px 10px 10px;
 	color: ${defaultTheme.lightColor.yellow.point};
-	background-color: ${({ theme }) =>
-		theme === defaultTheme ? theme.textColor.lightbrown : darkTheme.darkColor.background};
-	border-top: ${({ theme }) => (theme === darkTheme ? '1px solid  darkTheme.textColor.lightgray' : 'none')};
+	background-color: ${({ theme }) => (theme.lightColor ? theme.textColor.lightbrown : darkTheme.darkColor.background)};
+	border-top: ${({ theme }) => (theme.lightColor ? '1px solid  darkTheme.textColor.lightgray' : 'none')};
 	font-size: ${({ theme }) => theme.fontSize['2xl']};
 	font-weight: ${({ theme }) => theme.fontWeight.bold};
 	& p:first-child {
-		color: ${({ theme }) =>
-			theme === darkTheme ? defaultTheme.lightColor.yellow.point : darkTheme.textColor.lightbrown};
+		color: ${({ theme }) => (theme.lightColor ? defaultTheme.lightColor.yellow.point : darkTheme.textColor.lightbrown)};
 	}
 	.total-price {
 		float: right;
 		font-size: ${({ theme }) => theme.fontSize['4xl']};
-		color: ${({ theme }) => (theme === darkTheme ? theme.textColor.black : darkTheme.textColor.white)};
+		color: ${({ theme }) => (theme.lightColor ? theme.textColor.black : darkTheme.textColor.white)};
 		right: 15px;
 		bottom: 500px;
 	}
@@ -320,6 +318,6 @@ const OrderBtn = styled.button`
 	font-weight: ${({ theme }) => theme.fontWeight.semibold};
 	color: ${({ theme }) => theme.textColor.black};
 	background-color: ${({ theme }) =>
-		theme === defaultTheme ? theme.lightColor?.yellow.sub : darkTheme.darkColor?.point};
+		theme.lightColor ? defaultTheme.lightColor?.yellow.sub : darkTheme.darkColor?.point};
 `;
 export default SelectedItemContainer;

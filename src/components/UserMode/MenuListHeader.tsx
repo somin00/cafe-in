@@ -48,7 +48,7 @@ function MenuListHeader() {
 		<Layout>
 			<li>
 				<h1 onClick={handleLogoClick}>
-					<img src={theme === defaultTheme ? '/assets/logo.png' : '/assets/logo_dark.png'} alt="cafe-in" width={90} />
+					<img src={theme.lightColor ? '/assets/logo.png' : '/assets/logo_dark.png'} alt="cafe-in" width={90} />
 				</h1>
 			</li>
 			{categories.map((category) => (
@@ -88,8 +88,7 @@ const Layout = styled.ul`
 	height: 83px;
 	padding: 0 30px;
 	border-bottom: 1px solid ${({ theme }) => theme.textColor.lightgray};
-	background-color: ${({ theme }) =>
-		theme === defaultTheme ? defaultTheme.textColor.white : darkTheme.darkColor.background};
+	background-color: ${({ theme }) => (theme.lightColor ? theme.textColor.white : theme.darkColor.background)};
 `;
 
 export default MenuListHeader;

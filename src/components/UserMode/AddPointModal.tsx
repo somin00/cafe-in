@@ -75,7 +75,7 @@ function AddPointModal({ onClickToggleModal }: ModalDefaultType) {
 				</BtnContainer>
 			</DialogBox>
 			{isOpenModal &&
-				(theme === defaultTheme ? (
+				(theme.lightColor ? (
 					<PointAddCheckModal
 						onClickOpenModal={onClickOpenModal}
 						isOpenModal={isOpenModal}
@@ -83,7 +83,12 @@ function AddPointModal({ onClickToggleModal }: ModalDefaultType) {
 						isNewUser={isNewUser}
 					/>
 				) : (
-					<Dark_PointAddCheckModal onClickOpenModal={onClickOpenModal} isOpenModal={isOpenModal} />
+					<Dark_PointAddCheckModal
+						onClickOpenModal={onClickOpenModal}
+						isOpenModal={isOpenModal}
+						phoneNumber={phoneNumber}
+						isNewUser={isNewUser}
+					/>
 				))}
 			<Backdrop
 				onClick={(e: React.MouseEvent) => {
@@ -112,7 +117,7 @@ const DialogBox = styled.dialog`
 	justify-content: center;
 	align-items: center;
 	background-color: ${({ theme }) =>
-		theme === defaultTheme ? theme.lightColor?.yellow.background : darkTheme.textColor.black};
+		theme.lightColor ? defaultTheme.lightColor?.yellow.background : darkTheme.textColor.black};
 	border: none;
 	border-radius: 10px;
 	box-shadow: 0 0 30px rgba(30, 30, 30, 0.185);
@@ -157,11 +162,11 @@ export const CloseBtn = styled.button`
 	margin-top: 10px;
 	margin-left: 10px;
 	border-radius: 10px;
-	background-color: ${({ theme }) => (theme === defaultTheme ? theme.textColor.lightgray : darkTheme.darkColor?.sub)};
+	background-color: ${({ theme }) => (theme.lightColor ? theme.textColor.lightgray : darkTheme.darkColor?.sub)};
 	width: 110px;
 	height: 35px;
 	font-size: ${({ theme }) => theme.fontSize['xl']};
-	color: ${({ theme }) => (theme === defaultTheme ? theme.textColor.black : darkTheme.textColor.white)};
+	color: ${({ theme }) => (theme.lightColor ? theme.textColor.black : darkTheme.textColor.white)};
 `;
 const BtnContainer = styled.div`
 	display: flex;

@@ -5,14 +5,18 @@ import { darkTheme, defaultTheme } from '../../style/theme';
 interface Dark_PointAddCheckModal extends ModalAndModalType {
 	onClickOpenModal: () => void;
 	isOpenModal: boolean;
+	phoneNumber: string;
+	isNewUser: boolean | null;
 }
 
-function Dark_PointAddCheckModal({ isOpenModal, onClickOpenModal }: Dark_PointAddCheckModal) {
+function Dark_PointAddCheckModal({ isOpenModal, onClickOpenModal, phoneNumber, isNewUser }: Dark_PointAddCheckModal) {
 	return isOpenModal ? (
 		<ModalContainer onClick={onClickOpenModal}>
 			<DialogBox onClick={(e) => e.stopPropagation()}>
 				<div className="ment">
-					<p> 0 0 0 0 님, 환영합니다 !</p>
+					<p>
+						{phoneNumber.slice(-4)} 님,{isNewUser ? '환영합니다 !' : '적립되었습니다!'}
+					</p>
 					<p>포인트를 적립하여 혜택을 받아보세요 ! </p>
 				</div>
 				<img className="pink-girl" src="/assets/user/pink_girl_dark.svg" alt="로켓" width={550} />

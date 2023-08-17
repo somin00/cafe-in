@@ -1,6 +1,7 @@
 import React from 'react';
 import { styled } from 'styled-components';
 import { ModalAndModalType } from '../../types/ModalOpenTypes';
+import { defaultTheme } from '../../style/theme';
 interface PointAddCheckModalProps extends ModalAndModalType {
 	isOpenModal: boolean;
 	phoneNumber: string;
@@ -43,7 +44,7 @@ const DialogBox = styled.dialog`
 	box-sizing: border-box;
 	z-index: 10000;
 	.ment {
-		background-color: ${({ theme }) => theme.lightColor?.yellow.background};
+		background-color: ${defaultTheme.lightColor.yellow.background};
 		width: 450px;
 		display: flex;
 		flex-direction: column;
