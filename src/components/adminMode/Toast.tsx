@@ -14,7 +14,7 @@ export default Toast;
 const ToastWrapper = styled.div`
 	width: 340px;
 	height: 50px;
-	position: fixed;
+	position: absolute;
 	left: 50%;
 	top: 38px;
 	transform: translateX(-170px);

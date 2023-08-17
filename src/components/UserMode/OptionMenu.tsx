@@ -6,7 +6,8 @@ import { collection, getDocs } from 'firebase/firestore';
 import { Item } from '../../types/Category';
 import { darkTheme, defaultTheme } from '../../style/theme';
 import { selectedItemsState } from '../../firebase/FirStoreDoc';
-import { useRecoilState } from 'recoil';
+import { useRecoilState, useRecoilValue } from 'recoil';
+import { takeOutState } from '../../state/TakeOut';
 export interface OptionMenuProps {
 	clickedItem: Item | null;
 	onClickToggleModal: () => void;
@@ -17,7 +18,7 @@ function OptionMenu({ clickedItem, onClickToggleModal }: OptionMenuProps) {
 	const [activeOptions, setActiveOptions] = useState<string[]>([]);
 	const [selectedItems, setSelectedItems] = useRecoilState(selectedItemsState);
 	const [selectedItemOptions, setSelectedItemOptions] = useState<Option[]>([]);
-
+	const takeOut = useRecoilValue(takeOutState);
 	useEffect(() => {
 		const fetchOptions = async () => {
 			const optionsCollection = collection(db, 'options');
@@ -61,8 +62,10 @@ function OptionMenu({ clickedItem, onClickToggleModal }: OptionMenuProps) {
 		const newItem = {
 			...clickedItem!,
 			options: optionsStr,
+			takeOut: takeOut,
 			totalPrice: (clickedItem?.price || 0) + additionalPrice,
 			quantity: 1,
+			imageUrl: clickedItem?.imageUrl,
 		};
 
 		setSelectedItems((prev) => {
@@ -191,7 +194,7 @@ const CheckOption = styled.button`
 const CloseBtn = styled.button`
 	margin-top: 20px;
 	border-radius: 10px;
-	background-color: ${({ theme }) => (theme === defaultTheme ? theme.lightColor.sub : darkTheme.darkColor.sub)};
+	background-color: ${({ theme }) => (theme.lightColor ? theme.lightColor.sub : darkTheme.darkColor.sub)};
 	width: 110px;
 	height: 45px;
 	font-size: ${({ theme }) => theme.fontSize['2xl']};

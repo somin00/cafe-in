@@ -10,14 +10,16 @@ import { useRecoilState, useRecoilValue } from 'recoil';
 import { usedPointsState } from '../../state/PointState';
 import { Order } from '../../types/Order';
 import { orderListStateAtom } from '../../state/OrderListAtom';
+import Toast from '../../components/adminMode/Toast';
 
 function OrderCheck() {
 	const navigate = useNavigate();
 	const theme = useTheme();
-	const usedPoints = useRecoilValue(usedPointsState);
+	const [usedPoints, setUsedPoints] = useRecoilState(usedPointsState);
 	const [orderList, setOrderList] = useRecoilState(orderListStateAtom);
 	const [isOpenAddPointModal, setAddPointModalOpen] = useState<boolean>(false);
 	const [isOpenUsePointUserModal, setUsePointUserModalOpen] = useState<boolean>(false);
+	const [toastMessage, setToastMessage] = useState<string | null>(null);
 
 	const toggleModal = (modalSetter: React.Dispatch<React.SetStateAction<boolean>>) => () => {
 		modalSetter((prevState) => !prevState);
@@ -34,22 +36,32 @@ function OrderCheck() {
 	};
 
 	const handlePayment = async () => {
-		const ordersToUpdate = orderList.filter((order) => order.progress === '진행중');
+		const ordersToUpdate = orderList.filter((order) => order.progress === '주문완료');
 
 		for (const order of ordersToUpdate) {
 			const orderCollectionRef = collection(db, 'orderList');
 
 			// 새 문서 ID를 자동 생성하여 추가
-			const newDocRef = await addDoc(orderCollectionRef, { ...order, progress: '주문완료', totalOrderPay });
-			console.log(`Added document with ID ${newDocRef.id}`);
+			const newDocRef = await addDoc(orderCollectionRef, { ...order, progress: '진행중', totalOrderPay });
 		}
 
 		setOrderList((prevOrders) =>
-			prevOrders.map((order) => (order.progress === '진행중' ? { ...order, progress: '주문완료' } : order)),
+			prevOrders.map((order) => (order.progress === '주문완료' ? { ...order, progress: '진행중' } : order)),
 		);
-		alert('결제되었습니다');
+		setToastMessage('결제되었습니다');
+		// 상태 초기화
+		setOrderList([]); // 주문 목록 초기화
+		setUsedPoints(0); // 사용된 포인트 초기화
 	};
+	useEffect(() => {
+		if (toastMessage) {
+			const timer = setTimeout(() => {
+				setToastMessage(null);
+			}, 3000); // 3초 후에 실행
 
+			return () => clearTimeout(timer);
+		}
+	}, [toastMessage]);
 	const totalOrderPay = computeTotalOrderAmount();
 	const TotalOrderPrice = totalOrderPay - (usedPoints || 0);
 
@@ -64,7 +76,7 @@ function OrderCheck() {
 				>
 					<img
 						className="backBtn"
-						src={theme === defaultTheme ? '/assets/user/BackBtn_light.svg' : '/assets/user/BackBtn_dark.svg'}
+						src={theme.lightColor ? '/assets/user/BackBtn_light.svg' : '/assets/user/BackBtn_dark.svg'}
 						alt="메뉴페이지"
 					/>
 				</BackBTn>
@@ -79,13 +91,13 @@ function OrderCheck() {
 					</TableHead>
 					<Tbody>
 						{orderList
-							.filter((order) => order.progress === '진행중')
+							.filter((order) => order.progress === '주문완료')
 							.map((order) => (
 								<div key={order.id}>
 									{order.list.map((item, index) => (
 										<OrderMenuItem key={index}>
 											<div className="products-name">
-												<img src="/assets/user/IceCoffee.svg" alt="제품이미지" width={42} />
+												<img src={item.imgUrl} alt="제품이미지" width={42} />
 												<p>{item.menu}</p>
 											</div>
 											<p>{item.quantity}</p>
@@ -127,6 +139,7 @@ function OrderCheck() {
 							결제하기
 							<img src="/assets/user/buy.svg" />
 						</button>
+						{toastMessage && <Toast text={toastMessage} />}
 					</Payment>
 				</OrderTotalPriceContainer>
 			</Container>
@@ -137,14 +150,14 @@ const Layout = styled.div`
 	width: 1194px;
 	height: 100%;
 	position: relative;
-	background-color: ${({ theme }) => (theme === defaultTheme ? theme.textColor.white : darkTheme.darkColor.background)};
+	background-color: ${({ theme }) => (theme.lightColor ? theme.textColor.white : darkTheme.darkColor.background)};
 	overflow-y: hidden;
 `;
 const Header = styled.div`
 	display: flex;
 	border-bottom: 1px solid ${({ theme }) => theme.textColor.lightgray};
 	padding: 10px;
-	color: ${({ theme }) => (theme === defaultTheme ? theme.textColor.black : darkTheme.textColor.white)};
+	color: ${({ theme }) => (theme.lightColor ? theme.textColor.black : darkTheme.textColor.white)};
 
 	h1 {
 		width: 100%;
@@ -170,14 +183,13 @@ const TableHead = styled.ul`
 	width: 100%;
 	height: 69px;
 	border-radius: 10px;
-	background-color: ${({ theme }) =>
-		theme === defaultTheme ? theme.textColor.lightgray : darkTheme.textColor.lightbrown};
+	background-color: ${({ theme }) => (theme.lightColor ? theme.textColor.lightgray : darkTheme.textColor.lightbrown)};
 	font-weight: ${({ theme }) => theme.fontWeight.semibold};
 	font-size: ${({ theme }) => theme.fontSize.xl};
 `;
 const Tbody = styled.ul`
-	background-color: ${({ theme }) => (theme === defaultTheme ? theme.lightColor?.yellow.background : 'none')};
-	border: ${({ theme }) => (theme === darkTheme ? 'none' : `1px solid ${darkTheme.textColor.white}`)};
+	background-color: ${({ theme }) => (theme.lightColor ? defaultTheme.lightColor?.yellow.background : 'none')};
+	border: ${({ theme }) => (theme.lightColor ? 'none' : `1px solid ${darkTheme.textColor.white}`)};
 	border-radius: 10px;
 	height: 650px;
 	display: flex;
@@ -196,7 +208,8 @@ const Tbody = styled.ul`
 const OrderMenuItem = styled.li`
 	display: flex;
 	align-items: center;
-	background-color: ${({ theme }) => (theme === defaultTheme ? theme.textColor.white : darkTheme.textColor.lightbrown)};
+	background-color: ${({ theme }) =>
+		theme.lightColor ? defaultTheme.textColor.white : darkTheme.textColor.lightbrown};
 	margin: 10px 25px;
 	padding: 10px;
 	border-radius: 10px;
@@ -231,7 +244,7 @@ const BackBTn = styled.button`
 const OrderTotalPriceContainer = styled.div`
 	flex-grow: 1;
 	height: 100%;
-	color: ${({ theme }) => (theme === defaultTheme ? theme.textColor.black : darkTheme.textColor.white)};
+	color: ${({ theme }) => (theme.lightColor ? theme.textColor.black : darkTheme.textColor.white)};
 `;
 const TotalPrice = styled.div`
 	display: flex;
@@ -261,7 +274,7 @@ const Payment = styled.div`
 		align-items: center;
 		width: 230px;
 		background-color: ${({ theme }) =>
-			theme === defaultTheme ? theme.lightColor?.blue.background : darkTheme.darkColor?.sub};
+			theme.lightColor ? defaultTheme.lightColor?.blue.background : darkTheme.darkColor?.sub};
 		height: 120px;
 		border-radius: 10px;
 		margin-bottom: 40px;
@@ -274,7 +287,7 @@ const Payment = styled.div`
 		align-items: center;
 		width: 230px;
 		background-color: ${({ theme }) =>
-			theme === defaultTheme ? theme.lightColor?.blue.background : darkTheme.darkColor?.sub};
+			theme.lightColor ? defaultTheme.lightColor?.blue.background : darkTheme.darkColor?.sub};
 		border-radius: 10px;
 
 		img {
@@ -288,7 +301,7 @@ const Payment = styled.div`
 		align-items: center;
 		width: 230px;
 		background-color: ${({ theme }) =>
-			theme === defaultTheme ? theme.lightColor?.blue.background : darkTheme.darkColor?.sub};
+			theme.lightColor ? defaultTheme.lightColor?.blue.background : darkTheme.darkColor?.sub};
 		height: 120px;
 		border-radius: 10px;
 	}

@@ -20,8 +20,7 @@ function MenuList() {
 }
 
 const Layout = styled.div`
-	background-color: ${({ theme }) =>
-		theme === defaultTheme ? defaultTheme.textColor.lightgray : darkTheme.darkColor.background};
+	background-color: ${({ theme }) => (theme.lightColor ? theme.textColor.lightgray : theme.darkColor.background)};
 	width: 1194px;
 	height: 834px;
 	overflow-y: hidden;
@@ -36,7 +35,7 @@ const MenuListLayout = styled.ul`
 	display: grid;
 	grid-template-columns: 1fr 1fr 1fr;
 	gap: 8px;
-	height: 830px;
+	height: 700px;
 	margin: 30px 0;
 	overflow-y: auto;
 	overflow-x: hidden;

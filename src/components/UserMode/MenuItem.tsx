@@ -8,14 +8,14 @@ import { db } from '../../firebase/firebaseConfig';
 import { selectedCategoryState } from '../../state/CategoryList';
 import { selectedItemsState } from '../../firebase/FirStoreDoc';
 import { Option, selectedItem } from '../../types/OptinalState';
+import { takeOutState } from '../../state/TakeOut';
 function MenuItem() {
 	const selectedCategory = useRecoilValue(selectedCategoryState);
 	const [isOpenModal, setModalOpen] = useState<boolean>(false);
 	const [items, setItems] = useState<Item[]>([]);
 	const [selectedItems, setSelectedItems] = useRecoilState(selectedItemsState);
-
-	const [clickedMenuItem, setClickedMenuItem] = useState<Item | null>(null); // 추가: 클릭한 메뉴 아이템 저장용 상태
-
+	const takeOut = useRecoilValue(takeOutState);
+	const [clickedMenuItem, setClickedMenuItem] = useState<Item | null>(null);
 	const onClickToggleModal = useCallback(() => {
 		setModalOpen(!isOpenModal);
 	}, [isOpenModal]);
@@ -35,6 +35,7 @@ function MenuItem() {
 					const data = doc.data() as Item;
 					return {
 						...data,
+						takeOut,
 						price: Number(data.price),
 					} as Item;
 				});

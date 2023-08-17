@@ -4,28 +4,38 @@ import { useNavigate } from 'react-router-dom';
 import { darkTheme, defaultTheme } from '../../style/theme';
 import { Category } from '../../types/Category';
 import { db } from '../../firebase/firebaseConfig';
-import { getDocs, collection } from 'firebase/firestore';
+import { getDocs, collection, query, orderBy } from 'firebase/firestore';
 import { useSetRecoilState } from 'recoil';
 import { selectedCategoryState } from '../../state/CategoryList';
+import { DocumentData } from 'firebase/firestore';
 
 function MenuListHeader() {
 	const setCategory = useSetRecoilState(selectedCategoryState);
-	const [activeBtn] = useState<string>('');
+	const [activeBtn, setActiveBtn] = useState<string>('');
 	const [categories, setCategories] = useState<Category[]>([]);
 	const navigate = useNavigate();
 	const theme = useTheme();
 	useEffect(() => {
 		const loadCategories = async () => {
-			const querySnapshot = await getDocs(collection(db, 'categoryList'));
+			const categoryQuery = query(collection(db, 'categoryList'), orderBy('id', 'asc'));
+			const querySnapshot = await getDocs(categoryQuery);
 			const loadedCategories = querySnapshot.docs.map((doc) => ({
 				id: doc.id,
 				category: doc.data().category,
 			}));
+
 			setCategories(loadedCategories);
+
+			// 첫 번째 카테고리 (커피)를 기본으로 설정
+			if (loadedCategories.length > 0) {
+				setActiveBtn(loadedCategories[0].category); // 첫 번째 카테고리로 activeBtn 설정
+				setCategory(loadedCategories[0].category);
+			}
 		};
 		loadCategories();
 	}, []);
 	const onCategoryClick = (category: string) => {
+		setActiveBtn(category); // activeBtn 상태 업데이트
 		setCategory(category);
 	};
 	const setSelectedCategory = useSetRecoilState(selectedCategoryState);
@@ -33,11 +43,12 @@ function MenuListHeader() {
 	const handleLogoClick = () => {
 		setSelectedCategory(''); // 또는 null 등 초기화
 	};
+
 	return (
 		<Layout>
 			<li>
 				<h1 onClick={handleLogoClick}>
-					<img src={theme === defaultTheme ? '/assets/logo.png' : '/assets/logo_dark.png'} alt="cafe-in" width={90} />
+					<img src={theme.lightColor ? '/assets/logo.png' : '/assets/logo_dark.png'} alt="cafe-in" width={90} />
 				</h1>
 			</li>
 			{categories.map((category) => (
@@ -60,7 +71,7 @@ function MenuListHeader() {
 //prettier-ignore
 const TabButton = styled.button<{ $isActive: boolean }>`
 background-color: ${({ $isActive }) => ($isActive ? 'ghostwhite' : 'transparent')};
-	color: ${({ $isActive }) => ($isActive ? 'darkorange' : 'black')}; 
+	color: ${({ $isActive }) => ($isActive ? 'red' : 'black')}; 
 	font-size: ${({ theme }) => theme.fontSize['2xl']};
 	font-weight: ${({ theme }) => theme.fontWeight.semibold};
 	padding: 10px 30px;
@@ -77,8 +88,7 @@ const Layout = styled.ul`
 	height: 83px;
 	padding: 0 30px;
 	border-bottom: 1px solid ${({ theme }) => theme.textColor.lightgray};
-	background-color: ${({ theme }) =>
-		theme === defaultTheme ? defaultTheme.textColor.white : darkTheme.darkColor.background};
+	background-color: ${({ theme }) => (theme.lightColor ? theme.textColor.white : theme.darkColor.background)};
 `;
 
 export default MenuListHeader;

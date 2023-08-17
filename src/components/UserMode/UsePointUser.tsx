@@ -1,64 +1,93 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { ModalDefaultType } from '../../types/ModalOpenTypes';
 import { styled } from 'styled-components';
 import CheckPointUsedIt from './CheckPointUsedIt';
 import { darkTheme, defaultTheme } from '../../style/theme';
 import { collection, query, where, getDocs, doc, updateDoc } from 'firebase/firestore';
 import { db } from '../../firebase/firebaseConfig';
+import Toast from '../adminMode/Toast';
 
 function UsePointUser({ onClickToggleModal }: ModalDefaultType) {
 	const [isOpenModal, setModalOpen] = useState<boolean>(false);
 	const [phoneNumber, setPhoneNumber] = useState('');
 	const [userPoints, setUserPoints] = useState<number | null>(null);
-
-	const handlePhoneNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		setPhoneNumber(e.target.value);
-	};
+	const [toastMessage, setToastMessage] = useState<string>('');
+	useEffect(() => {
+		if (toastMessage) {
+			const timer = setTimeout(() => {
+				console.log('메세지 있냐? ', toastMessage);
+				setToastMessage(toastMessage);
+			}, 5000);
+			return () => clearTimeout(timer);
+		}
+	}, [toastMessage]);
+	const handlePhoneNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => setPhoneNumber(e.target.value);
 
 	const handleCloseBtnClick = (e: React.MouseEvent) => {
 		e.stopPropagation();
 		onClickToggleModal();
 	};
+	const fetchUserPoints = async (): Promise<number | null> => {
+		try {
+			const pointsCollection = collection(db, 'point');
+			const q = query(pointsCollection, where('phoneNumber', '==', phoneNumber));
+			const matchingDocs = await getDocs(q);
+			if (!matchingDocs.empty) {
+				const existingDoc = matchingDocs.docs[0];
+				return existingDoc.data().point || 0;
+			}
+			return null;
+		} catch (error) {
+			console.error('포인트 가져오기 오류:', error);
+			return null;
+		}
+	};
+	const checkPointsAndSetMessage = async () => {
+		const points = await fetchUserPoints();
+		if (points === null) {
+			setToastMessage('회원만 포인트 사용이 가능합니다!');
+			return false;
+		} else if (points === 0) {
+			setToastMessage('사용할 수 있는 포인트가 없습니다.');
+			return false;
+		} else if (points < 1000) {
+			setToastMessage(`1000포인트 이상 사용할 수 있습니다. 현재 ${points} 포인트 입니다.`);
+			return false;
+		} else {
+			setUserPoints(points);
+			return true;
+		}
+	};
 
 	const onClickOpenModal = useCallback(async () => {
-		const pointsCollection = collection(db, 'point');
-		const q = query(pointsCollection, where('phoneNumber', '==', phoneNumber));
-
-		const matchingDocs = await getDocs(q);
-		if (!matchingDocs.empty) {
-			const existingDoc = matchingDocs.docs[0];
-			const points = existingDoc.data().point || 0;
-			if (points === 0) {
-				alert('사용할 수 있는 포인트가 없습니다.');
-				onClickToggleModal();
-				return;
-			}
-			setUserPoints(points);
-			setModalOpen(true);
-		} else {
-			alert('회원만 포인트 사용이 가능합니다!');
-			setModalOpen(false);
-			onClickToggleModal();
-		}
+		const isPointsValid = await checkPointsAndSetMessage();
+		setModalOpen(isPointsValid);
+		onClickToggleModal();
 	}, [phoneNumber]);
 
 	const handleUsePoints = async (usedPoints: number) => {
-		if (userPoints !== null && userPoints >= usedPoints) {
+		try {
+			if (!userPoints || userPoints < usedPoints) {
+				setToastMessage('회원만 포인트 사용이 가능합니다!');
+				return;
+			}
 			const remainingPoints = userPoints - usedPoints;
 			setUserPoints(remainingPoints);
 
 			const pointsCollection = collection(db, 'point');
 			const q = query(pointsCollection, where('phoneNumber', '==', phoneNumber));
 			const matchingDocs = await getDocs(q);
+
 			if (!matchingDocs.empty) {
 				const existingDoc = matchingDocs.docs[0];
 				const docRef = doc(db, 'point', existingDoc.id);
 				await updateDoc(docRef, { point: remainingPoints });
 			}
-		} else {
-			alert('포인트가 부족합니다.');
+		} catch (error) {
+			console.error('포인트 사용 오류:', error);
 		}
 	};
+
 	return (
 		<ModalContainer onClick={onClickToggleModal}>
 			<DialogBox onClick={(e) => e.stopPropagation()}>
@@ -91,6 +120,7 @@ function UsePointUser({ onClickToggleModal }: ModalDefaultType) {
 					phoneNumber={phoneNumber}
 				/>
 			)}
+			{toastMessage && <Toast text={toastMessage} />}
 			<Backdrop
 				onClick={(e: React.MouseEvent) => {
 					e.preventDefault();
@@ -116,7 +146,7 @@ const DialogBox = styled.dialog`
 	flex-direction: column;
 	justify-content: center;
 	align-items: center;
-	background-color: ${({ theme }) => (theme === defaultTheme ? theme.textColor.white : darkTheme.textColor.black)};
+	background-color: ${({ theme }) => (theme.lightColor ? theme.textColor.white : darkTheme.textColor.black)};
 	border: none;
 	border-radius: 10px;
 	box-shadow: 0 0 30px rgba(30, 30, 30, 0.185);
@@ -125,7 +155,7 @@ const DialogBox = styled.dialog`
 	p {
 		font-size: ${({ theme }) => theme.fontSize.xl};
 		font-weight: ${({ theme }) => theme.fontWeight.semibold};
-		color: ${({ theme }) => (theme === defaultTheme ? theme.textColor.black : darkTheme.textColor.white)};
+		color: ${({ theme }) => (theme.lightColor ? theme.textColor.black : darkTheme.textColor.white)};
 	}
 `;
 
@@ -133,9 +163,8 @@ const PointInput = styled.div`
 	font-size: ${({ theme }) => theme.fontSize.base};
 	margin-top: 50px;
 	input {
-		background-color: ${({ theme }) =>
-			theme === defaultTheme ? theme.textColor.lightgray : darkTheme.textColor.white};
-		border: 1px solid ${({ theme }) => (theme === defaultTheme ? theme.textColor.lightbrown : 'none')};
+		background-color: ${({ theme }) => (theme.lightColor ? theme.textColor.lightgray : darkTheme.textColor.white)};
+		border: 1px solid ${({ theme }) => (theme.lightColor ? theme.textColor.lightbrown : 'none')};
 		position: relative;
 		width: 390px;
 		padding: 20px;
@@ -146,8 +175,7 @@ const PointInput = styled.div`
 		margin-top: 6px;
 		padding: 7px;
 		right: 60px;
-		background-color: ${({ theme }) =>
-			theme === defaultTheme ? theme.textColor.lightgray : darkTheme.textColor.white};
+		background-color: ${({ theme }) => (theme.lightColor ? theme.textColor.lightgray : darkTheme.textColor.white)};
 		border-radius: 10px;
 	}
 	input:focus {
@@ -164,11 +192,11 @@ const CloseBtn = styled.button`
 	margin-top: 50px;
 	margin-left: 20px;
 	border-radius: 10px;
-	background-color: ${({ theme }) => (theme === defaultTheme ? theme.textColor.lightgray : darkTheme.darkColor?.sub)};
+	background-color: ${({ theme }) => (theme.lightColor ? theme.textColor.lightgray : darkTheme.darkColor?.sub)};
 	width: 110px;
 	height: 35px;
 	font-size: ${({ theme }) => theme.fontSize.xl};
-	color: ${({ theme }) => (theme === defaultTheme ? theme.textColor.black : darkTheme.textColor.white)};
+	color: ${({ theme }) => (theme.lightColor ? theme.textColor.black : darkTheme.textColor.white)};
 `;
 const BtnContainer = styled.div`
 	display: flex;
