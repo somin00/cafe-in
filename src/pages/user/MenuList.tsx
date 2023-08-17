@@ -36,7 +36,7 @@ const MenuListLayout = styled.ul`
 	display: grid;
 	grid-template-columns: 1fr 1fr 1fr;
 	gap: 8px;
-	height: 830px;
+	height: 700px;
 	margin: 30px 0;
 	overflow-y: auto;
 	overflow-x: hidden;
