@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import styled from 'styled-components';
 import ModalInput from './ModalInput';
 import { MenuType } from '../../types/menuMangementType';
@@ -13,6 +13,7 @@ interface EditModalPropType {
 	onCloseModal: () => void;
 }
 function EditMenuModal({ menu, onCloseModal }: EditModalPropType) {
+	const backgroundRef = useRef<HTMLDivElement>(null);
 	const [menuInfo, setMenuInfo] = useState<MenuType>(menu);
 	const [file, setFile] = useState<File>();
 	const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
@@ -55,9 +56,14 @@ function EditMenuModal({ menu, onCloseModal }: EditModalPropType) {
 		onCloseModal();
 	};
 
+	const handleClickOutside = (e: React.MouseEvent<HTMLDivElement>) => {
+		if (e.target === backgroundRef.current) {
+			onCloseModal();
+		}
+	};
 	return (
 		<>
-			<EditModalWrapper>
+			<EditModalWrapper ref={backgroundRef} onClick={handleClickOutside}>
 				<EditModalContent>
 					<ModalInput menuInfo={menu} setMenuState={setMenuInfo} setFile={setFile} />
 					<div>
@@ -85,12 +91,13 @@ function EditMenuModal({ menu, onCloseModal }: EditModalPropType) {
 export default EditMenuModal;
 
 const EditModalWrapper = styled.div`
-	width: 100%;
-	height: 100%;
+	width: 1194px;
+	height: 834px;
 	background-color: rgba(0, 0, 0, 0.2);
 	position: fixed;
-	left: 0;
+	left: 50%;
 	top: 0;
+	transform: translateX(-597px);
 	display: flex;
 	align-items: center;
 	justify-content: center;
