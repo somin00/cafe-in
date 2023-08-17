@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useCallback, useState } from 'react';
+import React, { ChangeEvent, useCallback, useRef, useState } from 'react';
 import { styled } from 'styled-components';
 import CategoryItem from './CategoryItem';
 import { ModalDefaultType } from '../../types/ModalOpenTypes';
@@ -6,7 +6,9 @@ import { db } from '../../firebase/firebaseConfig';
 import { addDoc, collection } from 'firebase/firestore';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { categoryListState, selectedCategoryState } from '../../state/CategoryList';
+
 function CategoryManagementModal({ onClickToggleModal }: ModalDefaultType) {
+	const backgroundRef = useRef<HTMLDivElement>(null);
 	const [categoryName, setCategoryName] = useState<string>('');
 	const [isDuplicate, setIsDuplicate] = useState<boolean>(false);
 	const categoryListRef = collection(db, 'categoryList');
@@ -37,8 +39,13 @@ function CategoryManagementModal({ onClickToggleModal }: ModalDefaultType) {
 		}
 	}, [categoryListRef, categoryName, setSelectedCategory]);
 
+	const handleClickOutside = (e: React.MouseEvent<HTMLDivElement>) => {
+		if (e.target === backgroundRef.current) {
+			onClickToggleModal();
+		}
+	};
 	return (
-		<CategoryManagementWrapper>
+		<CategoryManagementWrapper ref={backgroundRef} onClick={handleClickOutside}>
 			<CategoryModalContent>
 				<GuidText>* 이미 존재하는 카테고리는 추가 불가능합니다.</GuidText>
 				<AddContainer>
@@ -70,12 +77,13 @@ function CategoryManagementModal({ onClickToggleModal }: ModalDefaultType) {
 export default CategoryManagementModal;
 
 const CategoryManagementWrapper = styled.div`
-	width: 100%;
-	height: 100%;
+	width: 1194px;
+	height: 834px;
 	background-color: rgba(0, 0, 0, 0.2);
 	position: fixed;
-	left: 0;
+	left: 50%;
 	top: 0;
+	transform: translateX(-597px);
 	display: flex;
 	align-items: center;
 	justify-content: center;

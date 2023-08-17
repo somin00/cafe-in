@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction } from 'react';
+import React, { Dispatch, SetStateAction, useRef } from 'react';
 import { styled } from 'styled-components';
 import { db } from '../../firebase/firebaseConfig';
 import { getDocs, query, where, collection, deleteDoc } from 'firebase/firestore';
@@ -10,6 +10,7 @@ interface DeletePropType {
 	onCloseModal: () => void;
 }
 function DeleteModal({ menu, setIsDeleteModalOpen, onCloseModal }: DeletePropType) {
+	const backgroundRef = useRef<HTMLDivElement>(null);
 	const menuItemRef = collection(db, 'menuItem');
 	const storage = getStorage();
 
@@ -37,8 +38,14 @@ function DeleteModal({ menu, setIsDeleteModalOpen, onCloseModal }: DeletePropTyp
 	const handleCancelRemove = () => {
 		setIsDeleteModalOpen(false);
 	};
+
+	const handleClickOutside = (e: React.MouseEvent<HTMLDivElement>) => {
+		if (e.target === backgroundRef.current) {
+			onCloseModal();
+		}
+	};
 	return (
-		<DeleteModalWrapper>
+		<DeleteModalWrapper ref={backgroundRef} onClick={handleClickOutside}>
 			<DeleteContent>
 				<p>{`${menu.name}을 삭제하시겠습니까?`}</p>
 				<div>
@@ -57,12 +64,13 @@ function DeleteModal({ menu, setIsDeleteModalOpen, onCloseModal }: DeletePropTyp
 export default DeleteModal;
 
 const DeleteModalWrapper = styled.div`
-	width: 100%;
-	height: 100%;
+	width: 1194px;
+	height: 834px;
 	background-color: rgba(0, 0, 0, 0.2);
 	position: fixed;
-	left: 0;
+	left: 50%;
 	top: 0;
+	transform: translateX(-597px);
 	display: flex;
 	align-items: center;
 	justify-content: center;
