@@ -20,6 +20,7 @@ function OrderItem({ idx, itemInfo, toggleComplete }: OrderItemPropType) {
 				<span>{itemInfo.quantity}개</span>
 			</Info>
 			<MenuName className={itemInfo.isComplete ? 'is-checked' : ''}>{itemInfo.menu}</MenuName>
+			<MenuOptions>{itemInfo.options !== '없음' && itemInfo.options}</MenuOptions>
 		</OrderItemWrapper>
 	);
 }
@@ -29,7 +30,7 @@ export default OrderItem;
 const OrderItemWrapper = styled.li`
 	background-color: ${({ theme }) => theme.textColor.white};
 	border-radius: 10px;
-	margin-bottom: 19px;
+	margin-bottom: 10px;
 	font-size: ${({ theme }) => theme.fontSize['2xl']};
 	display: flex;
 	flex-direction: column;
@@ -59,4 +60,11 @@ const MenuName = styled.span`
 		text-decoration: line-through;
 		color: ${({ theme }) => theme.textColor.darkgray};
 	}
+`;
+
+const MenuOptions = styled.span`
+	margin-top: 10px;
+	font-size: ${({ theme }) => theme.fontSize['xl']};
+	font-weight: ${({ theme }) => theme.fontWeight.semibold};
+	color: ${({ theme }) => theme.textColor.darkgray};
 `;
