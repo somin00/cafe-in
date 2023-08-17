@@ -6,7 +6,8 @@ import { collection, getDocs } from 'firebase/firestore';
 import { Item } from '../../types/Category';
 import { darkTheme, defaultTheme } from '../../style/theme';
 import { selectedItemsState } from '../../firebase/FirStoreDoc';
-import { useRecoilState } from 'recoil';
+import { useRecoilState, useRecoilValue } from 'recoil';
+import { takeOutState } from '../../state/TakeOut';
 export interface OptionMenuProps {
 	clickedItem: Item | null;
 	onClickToggleModal: () => void;
@@ -17,7 +18,7 @@ function OptionMenu({ clickedItem, onClickToggleModal }: OptionMenuProps) {
 	const [activeOptions, setActiveOptions] = useState<string[]>([]);
 	const [selectedItems, setSelectedItems] = useRecoilState(selectedItemsState);
 	const [selectedItemOptions, setSelectedItemOptions] = useState<Option[]>([]);
-
+	const takeOut = useRecoilValue(takeOutState);
 	useEffect(() => {
 		const fetchOptions = async () => {
 			const optionsCollection = collection(db, 'options');
@@ -61,6 +62,7 @@ function OptionMenu({ clickedItem, onClickToggleModal }: OptionMenuProps) {
 		const newItem = {
 			...clickedItem!,
 			options: optionsStr,
+			takeOut: takeOut,
 			totalPrice: (clickedItem?.price || 0) + additionalPrice,
 			quantity: 1,
 			imageUrl: clickedItem?.imageUrl,

@@ -3,17 +3,18 @@ import { useNavigate } from 'react-router-dom';
 import { styled } from 'styled-components';
 import { defaultTheme, darkTheme } from '../../style/theme';
 
-import { useRecoilState } from 'recoil';
+import { useRecoilState, useRecoilValue } from 'recoil';
 import { selectedItemsState } from '../../firebase/FirStoreDoc';
 import { orderListStateAtom } from '../../state/OrderListAtom';
 import { OrderProgress } from '../../types/Order';
+import { takeOutState } from '../../state/TakeOut';
 type StyledProps = {
 	$quantity: number;
 };
 
 function SelectedItemContainer() {
 	const navigate = useNavigate();
-
+	const takeOut = useRecoilValue(takeOutState);
 	const [selectedItems, setSelectedItems] = useRecoilState(selectedItemsState);
 	const [orderList, setOrderList] = useRecoilState(orderListStateAtom);
 	const handleItemDelete = (itemName: string) => {
@@ -54,7 +55,7 @@ function SelectedItemContainer() {
 			id: Date.now(),
 			date: Date(),
 			progress: '주문완료' as OrderProgress,
-			takeOut: true,
+			takeOut: takeOut,
 			list: selectedItems.map((item) => ({
 				menu: item.name,
 				imgUrl: item.imageUrl || '/assets/user/IceCoffee.svg',

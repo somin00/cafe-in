@@ -1,13 +1,14 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useRecoilValue } from 'recoil';
+import { useRecoilState, useRecoilValue } from 'recoil';
 import { styled } from 'styled-components';
 import { isWaitingAvailableState } from '../../state/WaitingState';
+import { takeOutState } from '../../state/TakeOut';
 
 function Start() {
 	const navigate = useNavigate();
 	const isWaitingAvailable = useRecoilValue<boolean>(isWaitingAvailableState);
-
+	const [takeOut, setTakeOut] = useRecoilState(takeOutState);
 	return (
 		<StartWrapper>
 			<BackIconWrapper>
@@ -33,6 +34,7 @@ function Start() {
 					<TakeOutBox
 						onClick={() => {
 							navigate('/menu');
+							setTakeOut(false);
 						}}
 						aria-label="매장에서 먹고 가기 선택"
 					>
@@ -43,6 +45,7 @@ function Start() {
 				<TakeOutBox
 					onClick={() => {
 						navigate('/menu');
+						setTakeOut(true);
 					}}
 					aria-label="테이크 아웃 선택"
 				>
