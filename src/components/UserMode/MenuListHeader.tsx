@@ -4,9 +4,10 @@ import { useNavigate } from 'react-router-dom';
 import { darkTheme, defaultTheme } from '../../style/theme';
 import { Category } from '../../types/Category';
 import { db } from '../../firebase/firebaseConfig';
-import { getDocs, collection } from 'firebase/firestore';
+import { getDocs, collection, query, orderBy } from 'firebase/firestore';
 import { useSetRecoilState } from 'recoil';
 import { selectedCategoryState } from '../../state/CategoryList';
+import { DocumentData } from 'firebase/firestore';
 
 function MenuListHeader() {
 	const setCategory = useSetRecoilState(selectedCategoryState);
@@ -16,12 +17,19 @@ function MenuListHeader() {
 	const theme = useTheme();
 	useEffect(() => {
 		const loadCategories = async () => {
-			const querySnapshot = await getDocs(collection(db, 'categoryList'));
+			const categoryQuery = query(collection(db, 'categoryList'), orderBy('id', 'asc'));
+			const querySnapshot = await getDocs(categoryQuery);
 			const loadedCategories = querySnapshot.docs.map((doc) => ({
 				id: doc.id,
 				category: doc.data().category,
 			}));
+
 			setCategories(loadedCategories);
+
+			// 첫 번째 카테고리 (커피)를 기본으로 설정
+			if (loadedCategories.length > 0) {
+				setCategory(loadedCategories[0].category);
+			}
 		};
 		loadCategories();
 	}, []);
@@ -60,7 +68,7 @@ function MenuListHeader() {
 //prettier-ignore
 const TabButton = styled.button<{ $isActive: boolean }>`
 background-color: ${({ $isActive }) => ($isActive ? 'ghostwhite' : 'transparent')};
-	color: ${({ $isActive }) => ($isActive ? 'darkorange' : 'black')}; 
+	 color: ${({ $isActive }) => ($isActive ? 'red' : 'black')}; 
 	font-size: ${({ theme }) => theme.fontSize['2xl']};
 	font-weight: ${({ theme }) => theme.fontWeight.semibold};
 	padding: 10px 30px;
