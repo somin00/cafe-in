@@ -61,6 +61,8 @@ const WaitingManagement = () => {
 						>
 							<img
 								alt="대기 중 명단 선택 상태 안내"
+								width={24}
+								height={24}
 								src={
 									isWaiting
 										? process.env.PUBLIC_URL +
@@ -87,6 +89,8 @@ const WaitingManagement = () => {
 										: process.env.PUBLIC_URL +
 										  (theme.lightColor ? '/assets/admin/check-able_light.svg' : '/assets/admin/check-able_dark.svg')
 								}
+								width={24}
+								height={24}
 								alt="대기 완료 명단 선택 상태 안내"
 							/>
 							대기 완료 명단
