@@ -150,14 +150,14 @@ const Layout = styled.div`
 	width: 1194px;
 	height: 100%;
 	position: relative;
-	background-color: ${({ theme }) => (theme.lightColor ? theme.textColor.white : darkTheme.darkColor.background)};
+	background-color: ${({ theme }) => (theme.lightColor ? theme.textColor.white : theme.darkColor.background)};
 	overflow-y: hidden;
 `;
 const Header = styled.div`
 	display: flex;
 	border-bottom: 1px solid ${({ theme }) => theme.textColor.lightgray};
 	padding: 10px;
-	color: ${({ theme }) => (theme.lightColor ? theme.textColor.black : darkTheme.textColor.white)};
+	color: ${({ theme }) => (theme.lightColor ? theme.textColor.black : theme.textColor.white)};
 
 	h1 {
 		width: 100%;
@@ -183,13 +183,13 @@ const TableHead = styled.ul`
 	width: 100%;
 	height: 69px;
 	border-radius: 10px;
-	background-color: ${({ theme }) => (theme.lightColor ? theme.textColor.lightgray : darkTheme.textColor.lightbrown)};
+	background-color: ${({ theme }) => (theme.lightColor ? theme.textColor.lightgray : theme.textColor.lightbrown)};
 	font-weight: ${({ theme }) => theme.fontWeight.semibold};
 	font-size: ${({ theme }) => theme.fontSize.xl};
 `;
 const Tbody = styled.ul`
-	background-color: ${({ theme }) => (theme.lightColor ? defaultTheme.lightColor?.yellow.background : 'none')};
-	border: ${({ theme }) => (theme.lightColor ? 'none' : `1px solid ${darkTheme.textColor.white}`)};
+	background-color: ${({ theme }) => (theme.lightColor ? theme.lightColor?.background : 'none')};
+	border: ${({ theme }) => (theme.lightColor ? 'none' : `1px solid ${theme.textColor.white}`)};
 	border-radius: 10px;
 	height: 650px;
 	display: flex;
@@ -208,8 +208,7 @@ const Tbody = styled.ul`
 const OrderMenuItem = styled.li`
 	display: flex;
 	align-items: center;
-	background-color: ${({ theme }) =>
-		theme.lightColor ? defaultTheme.textColor.white : darkTheme.textColor.lightbrown};
+	background-color: ${({ theme }) => (theme.lightColor ? defaultTheme.textColor.white : theme.textColor.lightbrown)};
 	margin: 10px 25px;
 	padding: 10px;
 	border-radius: 10px;
@@ -244,7 +243,7 @@ const BackBTn = styled.button`
 const OrderTotalPriceContainer = styled.div`
 	flex-grow: 1;
 	height: 100%;
-	color: ${({ theme }) => (theme.lightColor ? theme.textColor.black : darkTheme.textColor.white)};
+	color: ${({ theme }) => (theme.lightColor ? theme.textColor.black : theme.textColor.white)};
 `;
 const TotalPrice = styled.div`
 	display: flex;
@@ -273,8 +272,7 @@ const Payment = styled.div`
 		justify-content: center;
 		align-items: center;
 		width: 230px;
-		background-color: ${({ theme }) =>
-			theme.lightColor ? defaultTheme.lightColor?.blue.background : darkTheme.darkColor?.sub};
+		background-color: ${({ theme }) => (theme.lightColor ? theme.lightColor?.sub : theme.darkColor?.sub)};
 		height: 120px;
 		border-radius: 10px;
 		margin-bottom: 40px;
@@ -286,8 +284,7 @@ const Payment = styled.div`
 		justify-content: center;
 		align-items: center;
 		width: 230px;
-		background-color: ${({ theme }) =>
-			theme.lightColor ? defaultTheme.lightColor?.blue.background : darkTheme.darkColor?.sub};
+		background-color: ${({ theme }) => (theme.lightColor ? theme.lightColor?.sub : theme.darkColor?.sub)};
 		border-radius: 10px;
 
 		img {
@@ -300,8 +297,7 @@ const Payment = styled.div`
 		justify-content: center;
 		align-items: center;
 		width: 230px;
-		background-color: ${({ theme }) =>
-			theme.lightColor ? defaultTheme.lightColor?.blue.background : darkTheme.darkColor?.sub};
+		background-color: ${({ theme }) => (theme.lightColor ? theme.lightColor?.sub : theme.darkColor?.sub)};
 		height: 120px;
 		border-radius: 10px;
 	}

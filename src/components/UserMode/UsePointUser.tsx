@@ -146,7 +146,7 @@ const DialogBox = styled.dialog`
 	flex-direction: column;
 	justify-content: center;
 	align-items: center;
-	background-color: ${({ theme }) => (theme.lightColor ? theme.textColor.white : darkTheme.textColor.black)};
+	background-color: ${({ theme }) => (theme.lightColor ? theme.textColor.white : theme.textColor.black)};
 	border: none;
 	border-radius: 10px;
 	box-shadow: 0 0 30px rgba(30, 30, 30, 0.185);
@@ -155,7 +155,7 @@ const DialogBox = styled.dialog`
 	p {
 		font-size: ${({ theme }) => theme.fontSize.xl};
 		font-weight: ${({ theme }) => theme.fontWeight.semibold};
-		color: ${({ theme }) => (theme.lightColor ? theme.textColor.black : darkTheme.textColor.white)};
+		color: ${({ theme }) => (theme.lightColor ? theme.textColor.black : theme.textColor.white)};
 	}
 `;
 
@@ -163,7 +163,7 @@ const PointInput = styled.div`
 	font-size: ${({ theme }) => theme.fontSize.base};
 	margin-top: 50px;
 	input {
-		background-color: ${({ theme }) => (theme.lightColor ? theme.textColor.lightgray : darkTheme.textColor.white)};
+		background-color: ${({ theme }) => (theme.lightColor ? theme.textColor.lightgray : theme.textColor.white)};
 		border: 1px solid ${({ theme }) => (theme.lightColor ? theme.textColor.lightbrown : 'none')};
 		position: relative;
 		width: 390px;
@@ -175,7 +175,7 @@ const PointInput = styled.div`
 		margin-top: 6px;
 		padding: 7px;
 		right: 60px;
-		background-color: ${({ theme }) => (theme.lightColor ? theme.textColor.lightgray : darkTheme.textColor.white)};
+		background-color: ${({ theme }) => (theme.lightColor ? theme.textColor.lightgray : theme.textColor.white)};
 		border-radius: 10px;
 	}
 	input:focus {
@@ -192,11 +192,11 @@ const CloseBtn = styled.button`
 	margin-top: 50px;
 	margin-left: 20px;
 	border-radius: 10px;
-	background-color: ${({ theme }) => (theme.lightColor ? theme.textColor.lightgray : darkTheme.darkColor?.sub)};
+	background-color: ${({ theme }) => (theme.lightColor ? theme.textColor.lightgray : theme.darkColor?.sub)};
 	width: 110px;
 	height: 35px;
 	font-size: ${({ theme }) => theme.fontSize.xl};
-	color: ${({ theme }) => (theme.lightColor ? theme.textColor.black : darkTheme.textColor.white)};
+	color: ${({ theme }) => (theme.lightColor ? theme.textColor.black : theme.textColor.white)};
 `;
 const BtnContainer = styled.div`
 	display: flex;

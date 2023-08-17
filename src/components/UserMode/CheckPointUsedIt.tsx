@@ -128,7 +128,7 @@ const DialogBox = styled.dialog`
 			border-radius: 10px;
 		}
 		p {
-			color: ${({ theme }) => (theme.lightColor ? theme.textColor.black : darkTheme.textColor.lightgray)};
+			color: ${({ theme }) => (theme.lightColor ? theme.textColor.black : theme.textColor.lightgray)};
 		}
 	}
 `;

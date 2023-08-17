@@ -44,7 +44,7 @@ const DialogBox = styled.dialog`
 	box-sizing: border-box;
 	z-index: 10000;
 	.ment {
-		background-color: ${defaultTheme.lightColor.yellow.background};
+		background-color: ${({ theme }) => theme.lightColor?.background};
 		width: 450px;
 		display: flex;
 		flex-direction: column;
