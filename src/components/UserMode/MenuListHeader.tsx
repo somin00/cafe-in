@@ -11,7 +11,7 @@ import { DocumentData } from 'firebase/firestore';
 
 function MenuListHeader() {
 	const setCategory = useSetRecoilState(selectedCategoryState);
-	const [activeBtn] = useState<string>('');
+	const [activeBtn, setActiveBtn] = useState<string>('');
 	const [categories, setCategories] = useState<Category[]>([]);
 	const navigate = useNavigate();
 	const theme = useTheme();
@@ -28,12 +28,14 @@ function MenuListHeader() {
 
 			// 첫 번째 카테고리 (커피)를 기본으로 설정
 			if (loadedCategories.length > 0) {
+				setActiveBtn(loadedCategories[0].category); // 첫 번째 카테고리로 activeBtn 설정
 				setCategory(loadedCategories[0].category);
 			}
 		};
 		loadCategories();
 	}, []);
 	const onCategoryClick = (category: string) => {
+		setActiveBtn(category); // activeBtn 상태 업데이트
 		setCategory(category);
 	};
 	const setSelectedCategory = useSetRecoilState(selectedCategoryState);
@@ -41,6 +43,7 @@ function MenuListHeader() {
 	const handleLogoClick = () => {
 		setSelectedCategory(''); // 또는 null 등 초기화
 	};
+
 	return (
 		<Layout>
 			<li>
@@ -68,7 +71,7 @@ function MenuListHeader() {
 //prettier-ignore
 const TabButton = styled.button<{ $isActive: boolean }>`
 background-color: ${({ $isActive }) => ($isActive ? 'ghostwhite' : 'transparent')};
-	 color: ${({ $isActive }) => ($isActive ? 'red' : 'black')}; 
+	color: ${({ $isActive }) => ($isActive ? 'red' : 'black')}; 
 	font-size: ${({ theme }) => theme.fontSize['2xl']};
 	font-weight: ${({ theme }) => theme.fontWeight.semibold};
 	padding: 10px 30px;
