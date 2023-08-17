@@ -10,6 +10,7 @@ import { useRecoilState, useRecoilValue } from 'recoil';
 import { usedPointsState } from '../../state/PointState';
 import { Order } from '../../types/Order';
 import { orderListStateAtom } from '../../state/OrderListAtom';
+import Toast from '../../components/adminMode/Toast';
 
 function OrderCheck() {
 	const navigate = useNavigate();
@@ -18,6 +19,7 @@ function OrderCheck() {
 	const [orderList, setOrderList] = useRecoilState(orderListStateAtom);
 	const [isOpenAddPointModal, setAddPointModalOpen] = useState<boolean>(false);
 	const [isOpenUsePointUserModal, setUsePointUserModalOpen] = useState<boolean>(false);
+	const [toastMessage, setToastMessage] = useState<string | null>(null);
 
 	const toggleModal = (modalSetter: React.Dispatch<React.SetStateAction<boolean>>) => () => {
 		modalSetter((prevState) => !prevState);
@@ -46,12 +48,20 @@ function OrderCheck() {
 		setOrderList((prevOrders) =>
 			prevOrders.map((order) => (order.progress === '주문완료' ? { ...order, progress: '진행중' } : order)),
 		);
-		alert('결제되었습니다');
+		setToastMessage('결제되었습니다');
 		// 상태 초기화
 		setOrderList([]); // 주문 목록 초기화
 		setUsedPoints(0); // 사용된 포인트 초기화
 	};
+	useEffect(() => {
+		if (toastMessage) {
+			const timer = setTimeout(() => {
+				setToastMessage(null);
+			}, 3000); // 3초 후에 실행
 
+			return () => clearTimeout(timer);
+		}
+	}, [toastMessage]);
 	const totalOrderPay = computeTotalOrderAmount();
 	const TotalOrderPrice = totalOrderPay - (usedPoints || 0);
 
@@ -129,6 +139,7 @@ function OrderCheck() {
 							결제하기
 							<img src="/assets/user/buy.svg" />
 						</button>
+						{toastMessage && <Toast text={toastMessage} />}
 					</Payment>
 				</OrderTotalPriceContainer>
 			</Container>

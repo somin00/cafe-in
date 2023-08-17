@@ -1,72 +1,93 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { ModalDefaultType } from '../../types/ModalOpenTypes';
 import { styled } from 'styled-components';
 import CheckPointUsedIt from './CheckPointUsedIt';
 import { darkTheme, defaultTheme } from '../../style/theme';
 import { collection, query, where, getDocs, doc, updateDoc } from 'firebase/firestore';
 import { db } from '../../firebase/firebaseConfig';
+import Toast from '../adminMode/Toast';
 
 function UsePointUser({ onClickToggleModal }: ModalDefaultType) {
 	const [isOpenModal, setModalOpen] = useState<boolean>(false);
 	const [phoneNumber, setPhoneNumber] = useState('');
 	const [userPoints, setUserPoints] = useState<number | null>(null);
-
-	const handlePhoneNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		setPhoneNumber(e.target.value);
-	};
+	const [toastMessage, setToastMessage] = useState<string>('');
+	useEffect(() => {
+		if (toastMessage) {
+			const timer = setTimeout(() => {
+				console.log('메세지 있냐? ', toastMessage);
+				setToastMessage(toastMessage);
+			}, 5000);
+			return () => clearTimeout(timer);
+		}
+	}, [toastMessage]);
+	const handlePhoneNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => setPhoneNumber(e.target.value);
 
 	const handleCloseBtnClick = (e: React.MouseEvent) => {
 		e.stopPropagation();
 		onClickToggleModal();
 	};
+	const fetchUserPoints = async (): Promise<number | null> => {
+		try {
+			const pointsCollection = collection(db, 'point');
+			const q = query(pointsCollection, where('phoneNumber', '==', phoneNumber));
+			const matchingDocs = await getDocs(q);
+			if (!matchingDocs.empty) {
+				const existingDoc = matchingDocs.docs[0];
+				return existingDoc.data().point || 0;
+			}
+			return null;
+		} catch (error) {
+			console.error('포인트 가져오기 오류:', error);
+			return null;
+		}
+	};
+	const checkPointsAndSetMessage = async () => {
+		const points = await fetchUserPoints();
+		if (points === null) {
+			setToastMessage('회원만 포인트 사용이 가능합니다!');
+			return false;
+		} else if (points === 0) {
+			setToastMessage('사용할 수 있는 포인트가 없습니다.');
+			return false;
+		} else if (points < 1000) {
+			setToastMessage(`1000포인트 이상 사용할 수 있습니다. 현재 ${points} 포인트 입니다.`);
+			return false;
+		} else {
+			setUserPoints(points);
+			return true;
+		}
+	};
 
 	const onClickOpenModal = useCallback(async () => {
-		const pointsCollection = collection(db, 'point');
-		const q = query(pointsCollection, where('phoneNumber', '==', phoneNumber));
-
-		const matchingDocs = await getDocs(q);
-		if (!matchingDocs.empty) {
-			const existingDoc = matchingDocs.docs[0];
-			const points = existingDoc.data().point || 0;
-			if (points === 0) {
-				alert('사용할 수 있는 포인트가 없습니다.');
-				onClickToggleModal();
-				return;
-			}
-			if (points < 1000) {
-				alert(`1000포인트 이상 사용할 수 있습니다. 현재 ${points} 포인트 입니다.`);
-				onClickToggleModal();
-				return;
-			}
-			setUserPoints(points);
-			setModalOpen(true);
-		} else {
-			alert('회원만 포인트 사용이 가능합니다!');
-			setModalOpen(false);
-			onClickToggleModal();
-		}
+		const isPointsValid = await checkPointsAndSetMessage();
+		setModalOpen(isPointsValid);
+		onClickToggleModal();
 	}, [phoneNumber]);
 
 	const handleUsePoints = async (usedPoints: number) => {
-		if (userPoints === null || userPoints < usedPoints) {
-			alert('포인트가 부족합니다.');
-			return;
-		}
+		try {
+			if (!userPoints || userPoints < usedPoints) {
+				setToastMessage('회원만 포인트 사용이 가능합니다!');
+				return;
+			}
+			const remainingPoints = userPoints - usedPoints;
+			setUserPoints(remainingPoints);
 
-		const remainingPoints = userPoints - usedPoints;
+			const pointsCollection = collection(db, 'point');
+			const q = query(pointsCollection, where('phoneNumber', '==', phoneNumber));
+			const matchingDocs = await getDocs(q);
 
-		setUserPoints(remainingPoints);
-
-		const pointsCollection = collection(db, 'point');
-		const q = query(pointsCollection, where('phoneNumber', '==', phoneNumber));
-		const matchingDocs = await getDocs(q);
-
-		if (!matchingDocs.empty) {
-			const existingDoc = matchingDocs.docs[0];
-			const docRef = doc(db, 'point', existingDoc.id);
-			await updateDoc(docRef, { point: remainingPoints });
+			if (!matchingDocs.empty) {
+				const existingDoc = matchingDocs.docs[0];
+				const docRef = doc(db, 'point', existingDoc.id);
+				await updateDoc(docRef, { point: remainingPoints });
+			}
+		} catch (error) {
+			console.error('포인트 사용 오류:', error);
 		}
 	};
+
 	return (
 		<ModalContainer onClick={onClickToggleModal}>
 			<DialogBox onClick={(e) => e.stopPropagation()}>
@@ -99,6 +120,7 @@ function UsePointUser({ onClickToggleModal }: ModalDefaultType) {
 					phoneNumber={phoneNumber}
 				/>
 			)}
+			{toastMessage && <Toast text={toastMessage} />}
 			<Backdrop
 				onClick={(e: React.MouseEvent) => {
 					e.preventDefault();
