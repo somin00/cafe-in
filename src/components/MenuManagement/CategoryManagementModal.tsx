@@ -95,9 +95,14 @@ const CategoryModalContent = styled.div`
 		display: flex;
 		flex-direction: column;
 		height: 472px;
-		grid-row-gap: 26px;
+		grid-row-gap: 10px;
 		margin-bottom: 30px;
 		overflow-y: auto;
+		-ms-overflow-style: none;
+		scrollbar-width: none;
+		&::-webkit-scrollbar {
+			display: none;
+		}
 	}
 `;
 

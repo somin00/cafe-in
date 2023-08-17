@@ -52,7 +52,10 @@ function OrderList({ order, isProgressMode }: OrderListPropType) {
 					<span>{order.takeOut ? '포장' : '매장'}</span>
 					<span>{timeFormat(order.id)}</span>
 				</OrderInfo>
-				<ItemWrapper>
+				<ItemWrapper $isProgressMode={isProgressMode}>
+					{order.list.map((item, idx) => (
+						<OrderItem key={`${order.id}${idx}`} idx={idx} itemInfo={item} toggleComplete={handleToggleComplete} />
+					))}
 					{order.list.map((item, idx) => (
 						<OrderItem key={`${order.id}${idx}`} idx={idx} itemInfo={item} toggleComplete={handleToggleComplete} />
 					))}
@@ -95,7 +98,7 @@ const OrderListWrapper = styled.li`
 `;
 
 const OrderInfo = styled.div`
-	margin-bottom: 20px;
+	margin-bottom: 30px;
 	font-size: ${({ theme }) => theme.fontSize['4xl']};
 	color: ${({ theme }) => (theme.lightColor ? 'none' : theme.textColor.white)};
 	display: flex;
@@ -111,9 +114,14 @@ const OrderInfo = styled.div`
 		font-weight: ${({ theme }) => theme.fontWeight.regular};
 	}
 `;
-const ItemWrapper = styled.ul`
+const ItemWrapper = styled.ul<{ $isProgressMode: boolean }>`
 	width: 318px;
-	height: 376px;
+	height: ${({ $isProgressMode }) => ($isProgressMode ? '380px' : '460px')};
 	margin-bottom: 19px;
 	overflow-y: auto;
+	-ms-overflow-style: none;
+	scrollbar-width: none;
+	&::-webkit-scrollbar {
+		display: none;
+	}
 `;
