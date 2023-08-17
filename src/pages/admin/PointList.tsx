@@ -56,7 +56,7 @@ function PointList() {
 	const currentItems = points.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 	return (
 		<Layout>
-			<ManagementHeader headerText="관리자 메인 페이지" />
+			<ManagementHeader headerText="포인트 내역 조회" />
 			<Container>
 				<TotalMember>
 					<p className="totalMemberText">전체 회원수</p>
