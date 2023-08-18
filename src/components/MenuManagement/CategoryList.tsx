@@ -45,7 +45,12 @@ export const NavWrapper = styled.nav`
 	}
 
 	li.is-selected button {
-		color: ${({ theme }) => (theme.lightColor ? theme.lightColor.sub : theme.darkColor.main)};
+		color: ${({ theme }) =>
+			theme.lightColor
+				? theme.color === 'blue'
+					? theme.lightColor.main
+					: theme.lightColor.point
+				: theme.darkColor.main};
 		font-weight: ${({ theme }) => theme.fontWeight.semibold};
 	}
 `;

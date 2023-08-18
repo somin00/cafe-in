@@ -54,9 +54,8 @@ function CategoryManagementModal({ onClickToggleModal }: ModalDefaultType) {
 							e.preventDefault();
 						}}
 					>
-						<label htmlFor="categoryName">
-							<input type="text" id="categoryName" value={categoryName} onChange={handleChangeCategoryName} />
-						</label>
+						<label htmlFor="categoryName">카테고리이름</label>
+						<input type="text" id="categoryName" value={categoryName} onChange={handleChangeCategoryName} />
 					</form>
 					<button type="button" onClick={handleAddCategory} disabled={!categoryName || isDuplicate ? true : false}>
 						추가
@@ -118,6 +117,14 @@ const AddContainer = styled.div`
 	display: flex;
 	margin-bottom: 25px;
 
+	label {
+		position: absolute;
+		width: 1px;
+		height: 1px;
+		overflow: hidden;
+		clip-path: polygon(0 0, 0 0, 0 0);
+	}
+
 	input {
 		width: 262px;
 		height: 66px;
@@ -138,7 +145,7 @@ const AddContainer = styled.div`
 					? theme.lightColor.sub
 					: theme.lightColor.main
 				: theme.darkColor.main};
-		color: ${({ theme }) => theme.textColor.white};
+		color: ${({ theme }) => (theme.lightColor ? theme.textColor.black : theme.textColor.white)};
 		border-radius: 10px;
 		font-size: ${({ theme }) => theme.fontSize['3xl']};
 		font-weight: ${({ theme }) => theme.fontWeight.regular};
@@ -146,6 +153,7 @@ const AddContainer = styled.div`
 		&:disabled {
 			cursor: not-allowed;
 			background-color: ${({ theme }) => theme.textColor.darkgray};
+			color: ${({ theme }) => theme.textColor.white};
 		}
 	}
 `;
@@ -156,7 +164,7 @@ const CloseButton = styled.button`
 	height: 57px;
 	background-color: ${({ theme }) =>
 		theme.lightColor ? (theme.color === 'green' ? theme.lightColor.sub : theme.lightColor.main) : theme.darkColor.main};
-	color: ${({ theme }) => theme.textColor.white};
+	color: ${({ theme }) => (theme.lightColor ? theme.textColor.black : theme.textColor.white)};
 	border-radius: 10px;
 	font-size: ${({ theme }) => theme.fontSize['3xl']};
 	font-weight: ${({ theme }) => theme.fontWeight.regular};

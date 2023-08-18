@@ -98,7 +98,7 @@ function ModalInput({ menuInfo, setMenuState, setFile }: ModalInputPropType) {
 				{imgSrc ? (
 					<ImageContainer>
 						<img src={imgSrc} alt={`${menuInfo.name} 이미지`} />
-						<label htmlFor="file" tabIndex={0} onKeyDown={handleKeyDown}>
+						<label htmlFor={`${menuInfo.name} 이미지 변경하기`} tabIndex={0} onKeyDown={handleKeyDown}>
 							이미지 변경하기
 						</label>
 						<input
@@ -106,7 +106,7 @@ function ModalInput({ menuInfo, setMenuState, setFile }: ModalInputPropType) {
 							ref={imageInputRef}
 							name="file"
 							accept="image/*"
-							id="file"
+							id={`${menuInfo.name} 이미지 변경하기`}
 							onChange={handleRegisterImage}
 						></input>
 						<CloseButton type="button" onClick={deleteImage}>
@@ -116,7 +116,7 @@ function ModalInput({ menuInfo, setMenuState, setFile }: ModalInputPropType) {
 				) : (
 					<ImageContainer>
 						<div>이미지 없음</div>
-						<label htmlFor="file" tabIndex={0} onKeyDown={handleKeyDown}>
+						<label htmlFor={`${menuInfo.name} 이미지 등록하기`} tabIndex={0} onKeyDown={handleKeyDown}>
 							이미지 등록하기
 						</label>
 						<input
@@ -124,29 +124,40 @@ function ModalInput({ menuInfo, setMenuState, setFile }: ModalInputPropType) {
 							ref={imageInputRef}
 							name="file"
 							accept="image/*"
-							id="file"
+							id={`${menuInfo.name} 이미지 등록하기`}
 							onChange={handleRegisterImage}
 						></input>
 					</ImageContainer>
 				)}
 				<InputList>
 					<li>
-						<label htmlFor="name">메뉴명</label>
-						<input type="text" name="name" id="name" defaultValue={menuInfo.name || ''} onChange={handleChangeInput} />
+						<label htmlFor={`${menuInfo.name} name`}>메뉴명</label>
+						<input
+							type="text"
+							name="name"
+							id={`${menuInfo.name} name`}
+							defaultValue={menuInfo.name || ''}
+							onChange={handleChangeInput}
+						/>
 					</li>
 					<li>
-						<label htmlFor="price">금액</label>
+						<label htmlFor={`${menuInfo.name} price`}>금액</label>
 						<input
 							type="text"
 							name="price"
-							id="price"
+							id={`${menuInfo.name} price`}
 							defaultValue={menuInfo.price || ''}
 							onChange={handleChangeInput}
 						/>
 					</li>
 					<li>
-						<label htmlFor="category">카테고리</label>
-						<select name="category" id="category" defaultValue={menuInfo.category || ''} onChange={handleChangeInput}>
+						<label htmlFor={`${menuInfo.name} category`}>카테고리</label>
+						<select
+							name="category"
+							id={`${menuInfo.name} category`}
+							defaultValue={menuInfo.category || ''}
+							onChange={handleChangeInput}
+						>
 							{categoryList.map((category) => (
 								<option key={category.id} value={category.category}>
 									{category.category}
