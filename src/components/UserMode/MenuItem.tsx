@@ -7,7 +7,7 @@ import { collection, getDocs, query, where } from 'firebase/firestore';
 import { db } from '../../firebase/firebaseConfig';
 import { selectedCategoryState } from '../../state/CategoryList';
 import { selectedItemsState } from '../../firebase/FirStoreDoc';
-import { Option, selectedItem } from '../../types/OptinalState';
+import { Option } from '../../types/OptinalState';
 import { takeOutState } from '../../state/TakeOut';
 function MenuItem() {
 	const selectedCategory = useRecoilValue(selectedCategoryState);

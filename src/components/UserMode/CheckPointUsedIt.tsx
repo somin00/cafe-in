@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { styled, useTheme } from 'styled-components';
 import { ModalContainer } from './UsePointUser';
 import { CloseBtn, PointInput } from './AddPointModal';
-import { darkTheme, defaultTheme } from '../../style/theme';
+import { darkTheme } from '../../style/theme';
 import { ModalAndModalType } from '../../types/ModalOpenTypes';
 import { useSetRecoilState } from 'recoil';
 import { usedPointsState } from '../../state/PointState';
@@ -53,6 +53,11 @@ function CheckPointUsedIt({ isOpenModal, onClickOpenModal, points, onUsePoints, 
 		setPoint(points?.toString() ?? '');
 		setUsedPoints(points);
 	};
+
+	const handleCloseBtnClick = (e: React.MouseEvent) => {
+		e.stopPropagation();
+		onClickOpenModal();
+	};
 	const phoneLastFourDigits = phoneNumber.slice(-4);
 	return isOpenModal ? (
 		<ModalContainer onClick={onClickOpenModal}>
@@ -83,6 +88,7 @@ function CheckPointUsedIt({ isOpenModal, onClickOpenModal, points, onUsePoints, 
 					<p>1,000 포인트 이상 사용 가능합니다. </p>
 				</InputExplain>
 				<BtnContainer>
+					<CloseBtn onClick={handleCloseBtnClick}>취소</CloseBtn>
 					<CloseBtn onClick={() => handleConfirmClick()}>확인</CloseBtn>
 				</BtnContainer>
 				{toastMessage && (
@@ -105,6 +111,7 @@ const DialogBox = styled.dialog`
 	height: 500px;
 	position: absolute;
 	bottom: 0;
+	top: 150px;
 	left: 350px;
 	display: flex;
 	flex-direction: column;
