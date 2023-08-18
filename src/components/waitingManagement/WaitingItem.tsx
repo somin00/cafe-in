@@ -22,13 +22,14 @@ const WaitingItem = (props: WaitingItemProps) => {
 	const setIsOpenModal = useSetRecoilState<boolean>(modalState);
 	const [modalType, setModalType] = useRecoilState<string>(modalTypeState);
 	const [itemId, setItemId] = useRecoilState<string | undefined>(modalItemId);
-	const modalUpdate = useRecoilValue<boolean>(modalUpdateState);
+	const [modalUpdate, setModalUpdate] = useRecoilState<boolean>(modalUpdateState);
 	const setNotificationUser = useSetRecoilState<string>(notificationUserState);
 
 	const updateStatus = async (id: string, type: string) => {
 		const statusDoc = doc(db, 'waitingList', id);
 		try {
 			await updateDoc(statusDoc, { status: type });
+			setModalUpdate(false);
 		} catch (e) {
 			console.log(e);
 		}
@@ -38,6 +39,7 @@ const WaitingItem = (props: WaitingItemProps) => {
 		if (itemId && modalUpdate && modalType !== 'notification') {
 			updateStatus(itemId, modalType);
 		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [modalUpdate, itemId, modalType]);
 
 	const formatTel = (tel: string) => {
