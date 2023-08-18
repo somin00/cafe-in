@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { styled } from 'styled-components';
 import { db } from '../../firebase/firebaseConfig';
 import { collection, onSnapshot } from 'firebase/firestore';
@@ -37,7 +37,10 @@ const WaitingTableBox = (props: waitingDataProps) => {
 	}, []);
 
 	const waitingInfo = filterTodayWaiting(waitingList, waitingDataStatus);
-	const todayWaitingNum = waitingInfo.length;
+	const todayWaitingNum = useMemo(() => waitingInfo.length, [waitingInfo]);
+
+	const MemoizedWaitingItem = React.memo(WaitingItem);
+	const MemoizedTableMesesage = React.memo(TableMesesage);
 
 	return (
 		<TableBox>
@@ -58,11 +61,11 @@ const WaitingTableBox = (props: waitingDataProps) => {
 					</TableHeader>
 				</thead>
 				<WaitingItemList>
-					<WaitingItem waitingInfo={waitingInfo} waitingDataStatus={waitingDataStatus} />
+					<MemoizedWaitingItem waitingInfo={waitingInfo} waitingDataStatus={waitingDataStatus} />
 					{!isWaitingAvailable ? (
-						<TableMesesage>
+						<MemoizedTableMesesage>
 							<td>대기가 마감되었습니다.</td>
-						</TableMesesage>
+						</MemoizedTableMesesage>
 					) : (
 						<></>
 					)}
