@@ -2,7 +2,6 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { ModalDefaultType } from '../../types/ModalOpenTypes';
 import { styled } from 'styled-components';
 import CheckPointUsedIt from './CheckPointUsedIt';
-import { darkTheme, defaultTheme } from '../../style/theme';
 import { collection, query, where, getDocs, doc, updateDoc } from 'firebase/firestore';
 import { db } from '../../firebase/firebaseConfig';
 import Toast from '../adminMode/Toast';

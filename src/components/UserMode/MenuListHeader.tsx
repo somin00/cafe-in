@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import styled, { useTheme } from 'styled-components';
 import { useNavigate } from 'react-router-dom';
-import { darkTheme, defaultTheme } from '../../style/theme';
+import { defaultTheme } from '../../style/theme';
 import { Category } from '../../types/Category';
 import { db } from '../../firebase/firebaseConfig';
 import { getDocs, collection, query, orderBy } from 'firebase/firestore';
 import { useSetRecoilState } from 'recoil';
 import { selectedCategoryState } from '../../state/CategoryList';
-import { DocumentData } from 'firebase/firestore';
 
 function MenuListHeader() {
 	const setCategory = useSetRecoilState(selectedCategoryState);

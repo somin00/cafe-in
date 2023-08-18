@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { styled, useTheme } from 'styled-components';
 import { ModalContainer } from './UsePointUser';
 import { CloseBtn, PointInput } from './AddPointModal';
-import { darkTheme, defaultTheme } from '../../style/theme';
+import { darkTheme } from '../../style/theme';
 import { ModalAndModalType } from '../../types/ModalOpenTypes';
 import { useSetRecoilState } from 'recoil';
 import { usedPointsState } from '../../state/PointState';
