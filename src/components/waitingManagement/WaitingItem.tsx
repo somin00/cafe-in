@@ -90,7 +90,7 @@ const WaitingItem = (props: WaitingItemProps) => {
 								</LongBtn>
 							</>
 						) : (
-							<span>{value.status === 'seated' ? '착석 완료' : '취소'}</span>
+							<span className="waitingStatus">{value.status === 'seated' ? '착석 완료' : '취소'}</span>
 						)}
 					</WatingBtnWrapper>
 				</WaitingItemWrapper>
@@ -135,6 +135,10 @@ const WatingBtnWrapper = styled.td`
 	display: flex;
 	justify-content: center;
 	align-items: center;
+
+	.waitingStatus {
+		color: ${({ theme }) => (theme.lightColor ? theme.lightColor.point : theme.darkColor.main)};
+	}
 `;
 
 const ShortBtn = styled.button`
