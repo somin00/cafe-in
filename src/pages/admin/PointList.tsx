@@ -165,6 +165,7 @@ const Item = styled.td`
 	padding: 20px;
 	margin-bottom: 20px;
 	background-color: ${({ theme }) => theme.textColor.white};
+	color: ${({ theme }) => theme.textColor.black};
 	font-size: ${({ theme }) => theme.fontSize['xl']};
 
 	p {
@@ -187,6 +188,8 @@ const Pagination = styled.td`
 	bottom: 10px;
 	left: 400px;
 	font-size: ${({ theme }) => theme.fontSize['2xl']};
+
+	color: ${({ theme }) => (theme.lightColor ? theme.textColor.black : theme.textColor.white)};
 
 	button {
 		margin: 0 5px;
