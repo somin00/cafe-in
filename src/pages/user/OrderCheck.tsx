@@ -57,7 +57,7 @@ function OrderCheck() {
 		if (toastMessage) {
 			const timer = setTimeout(() => {
 				setToastMessage(null);
-			}, 3000); // 3초 후에 실행
+			}, 2000); // 3초 후에 실행
 
 			return () => clearTimeout(timer);
 		}
@@ -139,7 +139,9 @@ function OrderCheck() {
 							className="payment"
 							onClick={() => {
 								handlePayment();
-								navigate('/');
+								setTimeout(() => {
+									navigate('/');
+								}, 3000);
 							}}
 						>
 							결제하기
