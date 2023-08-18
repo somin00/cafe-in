@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useRecoilState, useRecoilValue } from 'recoil';
+import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { styled } from 'styled-components';
 import { isWaitingAvailableState } from '../../state/WaitingState';
 import { takeOutState } from '../../state/TakeOut';
@@ -8,7 +8,7 @@ import { takeOutState } from '../../state/TakeOut';
 function Start() {
 	const navigate = useNavigate();
 	const isWaitingAvailable = useRecoilValue<boolean>(isWaitingAvailableState);
-	const [takeOut, setTakeOut] = useRecoilState(takeOutState);
+	const setTakeOut = useSetRecoilState(takeOutState);
 	return (
 		<StartWrapper>
 			<BackIconWrapper>

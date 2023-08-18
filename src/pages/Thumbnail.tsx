@@ -27,7 +27,7 @@ function Thumbnail() {
 		}
 		const timer = setTimeout(() => setIsShowToast(false), 3000);
 		return () => clearTimeout(timer);
-	}, [state]);
+	}, [redirectPath, state]);
 
 	return (
 		<>
