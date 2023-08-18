@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { styled } from 'styled-components';
 import { collection, getDocs } from 'firebase/firestore';
 import { db } from '../../firebase/firebaseConfig';
@@ -54,38 +54,49 @@ function PointList() {
 
 	// 현재 페이지의 항목 선택
 	const currentItems = points.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+
+	const MemoizedTotalMember = React.memo(TotalMember);
+
 	return (
 		<Layout>
-			<ManagementHeader headerText="관리자 메인 페이지" />
+			<ManagementHeader headerText="포인트 내역 조회" />
 			<Container>
-				<TotalMember>
+				<MemoizedTotalMember>
 					<p className="totalMemberText">전체 회원수</p>
 					<p>{points.length}명</p>
-				</TotalMember>
+				</MemoizedTotalMember>
 				<Table>
 					<THead>
-						<p>전화 번호</p>
-						<p>포인트</p>
+						<tr>
+							<th>전화 번호</th>
+							<th>포인트</th>
+						</tr>
 					</THead>
-					{currentItems.map((point) => (
-						<Item key={point.id}>
-							<p className="phoneNum">{underBarPhoneNumber(point.phoneNumber)}</p>
-							<p className="point">{point.point.toLocaleString()}</p>
-						</Item>
-					))}
-					<Pagination>
-						<button onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}>이전</button>
-						{Array.from({ length: totalPages }).map((_, index) => (
-							<button
-								key={index}
-								onClick={() => setCurrentPage(index + 1)}
-								className={currentPage === index + 1 ? 'currentPage' : ''}
-							>
-								{index + 1}
-							</button>
-						))}
-						<button onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}>다음</button>
-					</Pagination>
+					<tbody>
+						<tr>
+							{currentItems.map((point) => (
+								<Item key={point.id}>
+									<p className="phoneNum">{underBarPhoneNumber(point.phoneNumber)}</p>
+									<p className="point">{point.point.toLocaleString()}</p>
+								</Item>
+							))}
+						</tr>
+						<tr>
+							<Pagination>
+								<button onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}>이전</button>
+								{Array.from({ length: totalPages }).map((_, index) => (
+									<button
+										key={index}
+										onClick={() => setCurrentPage(index + 1)}
+										className={currentPage === index + 1 ? 'currentPage' : ''}
+									>
+										{index + 1}
+									</button>
+								))}
+								<button onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}>다음</button>
+							</Pagination>
+						</tr>
+					</tbody>
 				</Table>
 			</Container>
 		</Layout>
@@ -121,8 +132,8 @@ const TotalMember = styled.div`
 		}
 	}
 `;
-const Table = styled.div`
-	background-color: ${({ theme }) => (theme.lightColor ? theme.lightColor.background : theme.textColor.lightbrown)};
+const Table = styled.table`
+	background-color: ${({ theme }) => (theme.lightColor ? theme.lightColor.background : 'none')};
 	height: 610px;
 	border-radius: 10px;
 	margin-top: 25px;
@@ -132,19 +143,21 @@ const Table = styled.div`
 	align-items: center;
 	padding-bottom: 30px;
 `;
-const THead = styled.div`
+const THead = styled.thead`
 	width: 100%;
 	display: flex;
 	margin-top: 15px;
 	justify-content: center;
 	font-size: ${({ theme }) => theme.fontSize['2xl']};
 	font-weight: ${({ theme }) => theme.fontWeight.semibold};
-	p {
+	color: ${({ theme }) => (theme.lightColor ? theme.textColor.black : theme.textColor.white)};
+
+	th {
 		padding: 20px 180px;
 	}
 `;
 
-const Item = styled.li`
+const Item = styled.td`
 	width: 900px;
 	display: flex;
 	justify-content: space-around;
@@ -158,22 +171,23 @@ const Item = styled.li`
 		text-align: center;
 
 		&.phoneNum {
-			width: 500px;
+			width: 470px;
 		}
 
 		&.point {
-			width: 400px;
+			width: 430px;
 		}
 	}
 `;
-const Pagination = styled.div`
+const Pagination = styled.td`
 	display: flex;
 	justify-content: center;
 	align-items: center;
 	position: absolute;
 	bottom: 10px;
 	left: 400px;
-	font-size: ${({ theme }) => theme.fontSize['xl']};
+	font-size: ${({ theme }) => theme.fontSize['2xl']};
+
 	button {
 		margin: 0 5px;
 		padding: 5px 10px;

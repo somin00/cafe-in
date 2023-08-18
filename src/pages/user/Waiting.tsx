@@ -158,11 +158,11 @@ function Waiting() {
 					<ApplicationBox>
 						<ApplicationHeaderText>대기를 원하시면 번호를 입력해주세요.</ApplicationHeaderText>
 						<NumCheckBox>
-							<MinusBtn onClick={onDecrease} $decreaseDisable={decreaseDisable}>
+							<MinusBtn onClick={onDecrease} $decreaseDisable={decreaseDisable} aria-label="대기 인원 수 1 빼기">
 								<RenderMinusIcon theme={theme} decreaseDisable={decreaseDisable} />
 							</MinusBtn>
 							{waitingPersonNum}
-							<PlusBtn onClick={onIncrease}>
+							<PlusBtn onClick={onIncrease} aria-label="대기 인원 수 1 더하기">
 								<RenderPlusIcon theme={theme} />
 							</PlusBtn>
 						</NumCheckBox>
@@ -274,7 +274,7 @@ const ApplicationHeaderText = styled.h2`
 
 const NumCheckBox = styled.div`
 	width: 327px;
-	height: 96px;
+	height: 120px;
 	font-size: ${({ theme }) => theme.fontSize['6xl']};
 	display: flex;
 	justify-content: space-between;
@@ -292,12 +292,15 @@ const PlusBtn = styled.button``;
 
 const InputBoxWrapper = styled.div`
 	width: 400px;
-	height: 220px;
+	height: 165px;
+	position: static;
 
 	h1 {
 		padding-left: 5px;
 		font-size: ${({ theme }) => theme.fontSize.lg};
 		color: ${({ theme }) => (theme.lightColor ? theme.lightColor.point : theme.darkColor?.point)};
+		position: absolute;
+		bottom: 185px;
 	}
 `;
 const InputBox = styled.input`
@@ -308,6 +311,7 @@ const InputBox = styled.input`
 	margin-bottom: 26px;
 	font-size: ${({ theme }) => theme.fontSize['2xl']};
 	border: none;
+	outline-color: ${({ theme }) => theme.textColor.black};
 	padding-left: 15px;
 
 	::placeholder {
@@ -317,7 +321,7 @@ const InputBox = styled.input`
 `;
 
 const ApplicationButtnoWrapper = styled.div`
-	width: 359px;
+	width: 400px;
 	height: 64px;
 	display: flex;
 	justify-content: space-between;
@@ -325,7 +329,7 @@ const ApplicationButtnoWrapper = styled.div`
 `;
 
 const ApplicationBtn = styled.button`
-	width: 168px;
+	width: 180px;
 	height: 64px;
 	border-radius: 10px;
 	color: ${({ theme }) => theme.textColor.white};

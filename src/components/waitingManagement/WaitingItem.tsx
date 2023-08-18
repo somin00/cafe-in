@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { styled } from 'styled-components';
-import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
+import { useRecoilState, useSetRecoilState } from 'recoil';
 import { db } from '../../firebase/firebaseConfig';
 import { updateDoc, doc } from 'firebase/firestore';
 import {
@@ -22,13 +22,14 @@ const WaitingItem = (props: WaitingItemProps) => {
 	const setIsOpenModal = useSetRecoilState<boolean>(modalState);
 	const [modalType, setModalType] = useRecoilState<string>(modalTypeState);
 	const [itemId, setItemId] = useRecoilState<string | undefined>(modalItemId);
-	const modalUpdate = useRecoilValue<boolean>(modalUpdateState);
+	const [modalUpdate, setModalUpdate] = useRecoilState<boolean>(modalUpdateState);
 	const setNotificationUser = useSetRecoilState<string>(notificationUserState);
 
 	const updateStatus = async (id: string, type: string) => {
 		const statusDoc = doc(db, 'waitingList', id);
 		try {
 			await updateDoc(statusDoc, { status: type });
+			setModalUpdate(false);
 		} catch (e) {
 			console.log(e);
 		}
@@ -38,6 +39,7 @@ const WaitingItem = (props: WaitingItemProps) => {
 		if (itemId && modalUpdate && modalType !== 'notification') {
 			updateStatus(itemId, modalType);
 		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [modalUpdate, itemId, modalType]);
 
 	const formatTel = (tel: string) => {
@@ -90,7 +92,7 @@ const WaitingItem = (props: WaitingItemProps) => {
 								</LongBtn>
 							</>
 						) : (
-							<span>{value.status === 'seated' ? '착석 완료' : '취소'}</span>
+							<span className="waitingStatus">{value.status === 'seated' ? '착석 완료' : '취소'}</span>
 						)}
 					</WatingBtnWrapper>
 				</WaitingItemWrapper>
@@ -125,14 +127,19 @@ const WaitingItemWrapper = styled.tr`
 const WatingBtnWrapper = styled.td`
 	width: 300px;
 	height: 48px;
-	color: ${({ theme }) => (theme.lightColor ? theme.textColor.white : theme.textColor.white)};
+	color: ${({ theme }) =>
+		theme.lightColor
+			? theme.color === 'purple'
+				? theme.textColor.black
+				: theme.textColor.white
+			: theme.textColor.white};
 	font-weight: ${({ theme }) => theme.fontWeight.semibold};
 	display: flex;
 	justify-content: center;
 	align-items: center;
 
-	span {
-		color: ${({ theme }) => (theme.lightColor ? theme.lightColor.point : theme.darkColor?.point)};
+	.waitingStatus {
+		color: ${({ theme }) => (theme.lightColor ? theme.lightColor.point : theme.darkColor.main)};
 	}
 `;
 
@@ -141,12 +148,22 @@ const ShortBtn = styled.button`
 	height: 48px;
 	margin-right: 14px;
 	border-radius: 10px;
-	background-color: ${({ theme }) => (theme.lightColor ? theme.lightColor.sub : theme.darkColor?.main)};
+	background-color: ${({ theme }) =>
+		theme.lightColor
+			? theme.color === 'purple' || theme.color === 'blue'
+				? theme.lightColor.sub
+				: theme.lightColor.point
+			: theme.darkColor?.main};
 `;
 
 const LongBtn = styled.button`
 	width: 113px;
 	height: 48px;
 	border-radius: 10px;
-	background-color: ${({ theme }) => (theme.lightColor ? theme.lightColor.sub : theme.darkColor?.main)};
+	background-color: ${({ theme }) =>
+		theme.lightColor
+			? theme.color === 'purple' || theme.color === 'blue'
+				? theme.lightColor.sub
+				: theme.lightColor.point
+			: theme.darkColor?.main};
 `;
