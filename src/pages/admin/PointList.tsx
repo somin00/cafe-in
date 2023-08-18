@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { styled } from 'styled-components';
 import { collection, getDocs } from 'firebase/firestore';
 import { db } from '../../firebase/firebaseConfig';
@@ -54,14 +54,17 @@ function PointList() {
 
 	// 현재 페이지의 항목 선택
 	const currentItems = points.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+
+	const MemoizedTotalMember = React.memo(TotalMember);
+
 	return (
 		<Layout>
 			<ManagementHeader headerText="포인트 내역 조회" />
 			<Container>
-				<TotalMember>
+				<MemoizedTotalMember>
 					<p className="totalMemberText">전체 회원수</p>
 					<p>{points.length}명</p>
-				</TotalMember>
+				</MemoizedTotalMember>
 				<Table>
 					<THead>
 						<tr>
