@@ -1,8 +1,6 @@
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { styled } from 'styled-components';
-import { defaultTheme, darkTheme } from '../../style/theme';
-
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { selectedItemsState } from '../../firebase/FirStoreDoc';
 import { orderListStateAtom } from '../../state/OrderListAtom';
@@ -72,7 +70,7 @@ function SelectedItemContainer() {
 	};
 	useEffect(() => {
 		let lastInteraction = Date.now();
-		const timeoutDuration = 10000; // 10초
+		const timeoutDuration = 20000;
 		let timeoutRef: string | number | NodeJS.Timeout | undefined;
 
 		const handleUserInteraction = () => {
@@ -194,7 +192,14 @@ const SelectedItem = styled.li<StyledProps>`
 		align-items: center;
 		justify-content: space-between;
 		overflow: hidden;
+	}
+
+	.first p {
+		flex: 3; /* 아이템 이름에 대한 flex 값 */
+		overflow: hidden;
+		white-space: nowrap;
 		text-overflow: ellipsis;
+		margin-right: 10px; /* 필요에 따라 간격을 조절할 수 있습니다. */
 	}
 	.counter,
 	.price {
@@ -205,11 +210,12 @@ const SelectedItem = styled.li<StyledProps>`
 	.counter {
 		display: flex;
 		align-items: center;
+		justify-content: space-around;
 		p {
 			margin: 0 10px;
 		}
 		button {
-			margin: 0 5px;
+			margin: 0 2px;
 			width: 25px;
 			height: 25px;
 			border-radius: 5px;
@@ -235,9 +241,10 @@ const SelectedItem = styled.li<StyledProps>`
 	.price {
 		display: flex;
 		align-items: center;
-		justify-content: center;
+		justify-content: flex-end;
+		flex: 3;
+		text-align: right;
 		.delete {
-			margin-left: 10px;
 			width: 25px;
 			height: 25px;
 			border: 2px solid ${({ theme }) => (theme.lightColor ? theme.lightColor?.sub : theme.darkColor?.point)};

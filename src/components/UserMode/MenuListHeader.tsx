@@ -70,7 +70,7 @@ function MenuListHeader() {
 const TabButton = styled.button<{ $isActive: boolean }>`
 color: ${({ theme, $isActive }) => 
     $isActive 
-        ? (JSON.stringify(theme.lightColor) === JSON.stringify(defaultTheme.lightColor.blue)
+        ? (theme.color === 'blue'
             ? defaultTheme.lightColor.blue.main 
             : theme.lightColor 
                 ? theme.lightColor.point 

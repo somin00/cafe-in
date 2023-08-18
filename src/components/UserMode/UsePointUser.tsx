@@ -139,12 +139,14 @@ function UsePointUser({ onClickToggleModal }: ModalDefaultType) {
 export const ModalContainer = styled.div`
 	width: 100%;
 	height: 100%;
+	overflow-y: hidden;
 `;
 const DialogBox = styled.dialog`
 	width: 500px;
 	height: 500px;
 	position: absolute;
 	bottom: 0;
+	top: 150px;
 	left: 350px;
 	display: flex;
 	flex-direction: column;
@@ -210,7 +212,7 @@ const BtnContainer = styled.div`
 `;
 const Backdrop = styled.div`
 	width: 1194px;
-	height: 834px;
+	height: 838px;
 	position: fixed;
 	top: 0;
 	left: 50%;
