@@ -130,7 +130,7 @@ const TotalMember = styled.div`
 	}
 `;
 const Table = styled.table`
-	background-color: ${({ theme }) => (theme.lightColor ? theme.lightColor.background : theme.textColor.lightbrown)};
+	background-color: ${({ theme }) => (theme.lightColor ? theme.lightColor.background : 'none')};
 	height: 610px;
 	border-radius: 10px;
 	margin-top: 25px;
@@ -147,6 +147,7 @@ const THead = styled.thead`
 	justify-content: center;
 	font-size: ${({ theme }) => theme.fontSize['2xl']};
 	font-weight: ${({ theme }) => theme.fontWeight.semibold};
+	color: ${({ theme }) => (theme.lightColor ? theme.textColor.black : theme.textColor.white)};
 
 	th {
 		padding: 20px 180px;
@@ -182,7 +183,8 @@ const Pagination = styled.td`
 	position: absolute;
 	bottom: 10px;
 	left: 400px;
-	font-size: ${({ theme }) => theme.fontSize['xl']};
+	font-size: ${({ theme }) => theme.fontSize['2xl']};
+
 	button {
 		margin: 0 5px;
 		padding: 5px 10px;
