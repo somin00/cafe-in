@@ -125,15 +125,16 @@ const WaitingItemWrapper = styled.tr`
 const WatingBtnWrapper = styled.td`
 	width: 300px;
 	height: 48px;
-	color: ${({ theme }) => (theme.lightColor ? theme.textColor.white : theme.textColor.white)};
+	color: ${({ theme }) =>
+		theme.lightColor
+			? theme.color === 'purple'
+				? theme.textColor.black
+				: theme.textColor.white
+			: theme.textColor.white};
 	font-weight: ${({ theme }) => theme.fontWeight.semibold};
 	display: flex;
 	justify-content: center;
 	align-items: center;
-
-	span {
-		color: ${({ theme }) => (theme.lightColor ? theme.lightColor.point : theme.darkColor?.point)};
-	}
 `;
 
 const ShortBtn = styled.button`
@@ -141,12 +142,22 @@ const ShortBtn = styled.button`
 	height: 48px;
 	margin-right: 14px;
 	border-radius: 10px;
-	background-color: ${({ theme }) => (theme.lightColor ? theme.lightColor.sub : theme.darkColor?.main)};
+	background-color: ${({ theme }) =>
+		theme.lightColor
+			? theme.color === 'purple' || theme.color === 'blue'
+				? theme.lightColor.sub
+				: theme.lightColor.point
+			: theme.darkColor?.main};
 `;
 
 const LongBtn = styled.button`
 	width: 113px;
 	height: 48px;
 	border-radius: 10px;
-	background-color: ${({ theme }) => (theme.lightColor ? theme.lightColor.sub : theme.darkColor?.main)};
+	background-color: ${({ theme }) =>
+		theme.lightColor
+			? theme.color === 'purple' || theme.color === 'blue'
+				? theme.lightColor.sub
+				: theme.lightColor.point
+			: theme.darkColor?.main};
 `;

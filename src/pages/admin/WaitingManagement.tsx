@@ -185,14 +185,28 @@ const WaitingAbleBtn = styled.button<styleProps>`
 	width: 137px;
 	height: 54px;
 	background-color: ${({ theme, $isWaitingAvailable }) =>
-		$isWaitingAvailable ? (theme.lightColor ? theme.lightColor.point : theme.textColor.darkgray) : 'none'};
+		$isWaitingAvailable
+			? theme.lightColor
+				? theme.color === 'blue'
+					? theme.lightColor.sub
+					: theme.lightColor.point
+				: theme.textColor.darkgray
+			: 'none'};
 	color: ${({ theme, $isWaitingAvailable }) =>
-		$isWaitingAvailable ? theme.textColor.white : theme.lightColor ? theme.lightColor.point : theme.textColor.darkgray};
+		$isWaitingAvailable
+			? theme.textColor.white
+			: theme.lightColor
+			? theme.color === 'blue'
+				? theme.lightColor.sub
+				: theme.lightColor.point
+			: theme.textColor.darkgray};
 	border: ${({ theme, $isWaitingAvailable }) =>
 		$isWaitingAvailable
 			? 'none'
 			: theme.lightColor
-			? `2px solid ${theme.lightColor.point}`
+			? theme.color === 'blue'
+				? `2px solid ${theme.lightColor.sub}`
+				: `2px solid ${theme.lightColor.point}`
 			: `2px solid ${theme.textColor.darkgray}`};
 	border-radius: 10px;
 	margin-right: 8px;
@@ -203,13 +217,25 @@ const WaitingDisableBtn = styled.button<styleProps>`
 	height: 54px;
 	border-radius: 10px;
 	background-color: ${({ theme, $isWaitingAvailable }) =>
-		$isWaitingAvailable ? 'none' : theme.lightColor ? theme.lightColor.point : theme.textColor.darkgray};
+		$isWaitingAvailable
+			? 'none'
+			: theme.lightColor
+			? theme.color === 'blue'
+				? theme.lightColor.sub
+				: theme.lightColor.point
+			: theme.textColor.darkgray};
 	border: ${({ theme }) =>
-		theme.lightColor ? `2px solid ${theme.lightColor.point}` : `2px solid ${theme.textColor.darkgray}`};
+		theme.lightColor
+			? theme.color === 'blue'
+				? `2px solid ${theme.lightColor.sub}`
+				: `2px solid ${theme.lightColor.point}`
+			: `2px solid ${theme.textColor.darkgray}`};
 	color: ${({ theme, $isWaitingAvailable }) =>
 		$isWaitingAvailable
 			? theme.lightColor
-				? theme.lightColor.point
+				? theme.color === 'blue'
+					? theme.lightColor.sub
+					: theme.lightColor.point
 				: theme.textColor.darkgray
 			: theme.textColor.white};
 `;
