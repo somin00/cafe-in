@@ -56,7 +56,7 @@ const MenuItemWrapper = styled.li`
 	}
 
 	img {
-		margin-top: 20px;
+		margin-top: 10px;
 		width: 218px;
 		height: 204px;
 	}

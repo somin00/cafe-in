@@ -32,16 +32,24 @@ export const NavWrapper = styled.nav`
 	background-color: ${({ theme }) => (theme.lightColor ? theme.textColor.white : theme.darkColor.background)};
 	height: 60px;
 	ul {
-		margin-left: 50px;
+		width: 1144px;
 		display: flex;
 		align-items: center;
+		overflow-y: auto;
+		-ms-overflow-style: none;
+		scrollbar-width: none;
+		&::-webkit-scrollbar {
+			display: none;
+		}
 	}
 
 	button {
 		font-size: ${({ theme }) => theme.fontSize['4xl']};
 		color: ${({ theme }) => (theme.lightColor ? theme.textColor.black : theme.textColor.white)};
+		width: 100%;
 		height: 60px;
-		margin-right: 50px;
+		margin: 0 20px;
+		word-break: keep-all;
 	}
 
 	li.is-selected button {
