@@ -41,8 +41,7 @@ function OrderCheck() {
 		for (const order of ordersToUpdate) {
 			const orderCollectionRef = collection(db, 'orderList');
 
-			// 새 문서 ID를 자동 생성하여 추가
-			const newDocRef = await addDoc(orderCollectionRef, { ...order, progress: '진행중', totalOrderPay });
+			await addDoc(orderCollectionRef, { ...order, progress: '진행중', totalOrderPay });
 		}
 
 		setOrderList((prevOrders) =>
@@ -135,7 +134,13 @@ function OrderCheck() {
 							{isOpenAddPointModal && <AddPointModal onClickToggleModal={onClickToggleAddPointModal} />}
 							{isOpenUsePointUserModal && <UsePointUser onClickToggleModal={onClickToggleUsePointUserModal} />}
 						</div>
-						<button className="payment" onClick={handlePayment}>
+						<button
+							className="payment"
+							onClick={() => {
+								handlePayment();
+								navigate('/');
+							}}
+						>
 							결제하기
 							<img src="/assets/user/buy.svg" />
 						</button>

@@ -70,7 +70,6 @@ function MenuListHeader() {
 }
 //prettier-ignore
 const TabButton = styled.button<{ $isActive: boolean }>`
-background-color: ${({ theme, $isActive }) => ($isActive ? theme.textColor.lightBeige : 'transparent')};
 color: ${({ theme, $isActive }) => ($isActive ? theme.lightColor?.sub : 'black')};
 	font-size: ${({ theme }) => theme.fontSize['2xl']};
 	font-weight: ${({ theme }) => theme.fontWeight.semibold};

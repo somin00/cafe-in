@@ -62,7 +62,6 @@ function UsePointUser({ onClickToggleModal }: ModalDefaultType) {
 	const onClickOpenModal = useCallback(async () => {
 		const isPointsValid = await checkPointsAndSetMessage();
 		setModalOpen(isPointsValid);
-		onClickToggleModal();
 	}, [phoneNumber]);
 
 	const handleUsePoints = async (usedPoints: number) => {
