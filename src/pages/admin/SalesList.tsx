@@ -5,20 +5,10 @@ import ManagementHeader from '../../components/adminMode/ManagementHeader';
 import { db } from '../../firebase/firebaseConfig';
 import { collection, getDocs } from 'firebase/firestore';
 import { changePriceFormat } from '../../utils/changeFormat';
+import { Order } from '../../types/Order';
 
-interface Order {
-	id: number;
-	list: {
-		menu: string;
-		quantity: number;
-		options: string;
-		isComplete: boolean;
-		imgUrl?: string;
-		totalPrice: number;
-	}[];
+interface totalOrder extends Order {
 	totalOrderPay: number;
-	takeout: boolean;
-	progress: '진행중' | '완료주문';
 }
 
 interface DaySalesData {
@@ -30,7 +20,7 @@ interface DaySalesData {
 function SalesList() {
 	const currentDate = new Date();
 	const todayDate = currentDate.toISOString().split('T')[0];
-	const [salesList, setSalesList] = useState<Order[]>([]);
+	const [salesList, setSalesList] = useState<totalOrder[]>([]);
 	const [daySalesData, setDaySalesData] = useState<DaySalesData[]>([]);
 	const [displayDate, setDisplayDate] = useState(todayDate);
 	const [targetYear, setTargetYear] = useState(currentDate.getFullYear());
@@ -40,9 +30,9 @@ function SalesList() {
 		const getSales = async () => {
 			const orderListCollection = collection(db, 'orderList');
 			const salesDocs = await getDocs(orderListCollection);
-			const salesDataList: Order[] = [];
+			const salesDataList: totalOrder[] = [];
 			salesDocs.forEach((doc) => {
-				salesDataList.push({ ...(doc.data() as Order) });
+				salesDataList.push({ ...(doc.data() as totalOrder) });
 			});
 			setSalesList(salesDataList);
 		};
@@ -52,7 +42,7 @@ function SalesList() {
 
 	// 같은 날짜 별로 데이터 그룹화하고 필요한 데이터만 저장
 	useEffect(() => {
-		const salesByDate: { [date: string]: { salesData: Order[]; totalPriceSum: number } } = {};
+		const salesByDate: { [date: string]: { salesData: totalOrder[]; totalPriceSum: number } } = {};
 
 		salesList.forEach((order) => {
 			const date = new Date(order.id).toISOString().split('T')[0];
