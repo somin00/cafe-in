@@ -26,6 +26,7 @@ function OrderHistory() {
 export default withAuth(OrderHistory);
 
 const HistoryWrapper = styled.div`
+	user-select: none;
 	width: 1194px;
 	height: 834px;
 	padding-bottom: 30px;

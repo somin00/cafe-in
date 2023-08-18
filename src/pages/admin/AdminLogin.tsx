@@ -71,6 +71,7 @@ function AdminLogin() {
 export default AdminLogin;
 
 const AdminLoginWrapper = styled.div`
+	user-select: none;
 	position: relative;
 	display: flex;
 	align-items: center;
