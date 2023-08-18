@@ -52,13 +52,11 @@ function MenuListHeader() {
 				</h1>
 			</li>
 			{categories.map((category) => (
-				<TabButton
-					key={category.id}
-					$isActive={activeBtn === category.category}
-					onClick={() => onCategoryClick(category.category)}
-				>
-					{category.category}
-				</TabButton>
+				<li key={category.id}>
+					<TabButton $isActive={activeBtn === category.category} onClick={() => onCategoryClick(category.category)}>
+						{category.category}
+					</TabButton>
+				</li>
 			))}
 			<li>
 				<button>
@@ -70,7 +68,10 @@ function MenuListHeader() {
 }
 //prettier-ignore
 const TabButton = styled.button<{ $isActive: boolean }>`
-color: ${({ theme, $isActive }) => ($isActive ? theme.lightColor?.sub : 'black')};
+color: ${({ theme, $isActive }) =>    $isActive 
+        ? (theme.lightColor ? theme.lightColor.point : theme.darkColor.sub)
+        : 'black'
+};
 	font-size: ${({ theme }) => theme.fontSize['2xl']};
 	font-weight: ${({ theme }) => theme.fontWeight.semibold};
 	padding: 10px 30px;
