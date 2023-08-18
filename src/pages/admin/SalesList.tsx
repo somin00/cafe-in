@@ -194,18 +194,18 @@ const SalesContent = styled.div`
 	p {
 		font-size: ${({ theme }) => theme.fontSize['4xl']};
 		color: ${({ theme }) => (theme.lightColor ? theme.textColor.black : theme.textColor.white)};
-		margin-bottom: 30px;
+		margin-bottom: 20px;
 		display: flex;
 		justify-content: space-between;
 	}
 `;
 
 const SalesBoxWrapper = styled.div`
-	background-color: ${({ theme }) => (theme.lightColor ? theme.lightColor.background : theme.darkColor.background)};
 	height: 239px;
 	display: flex;
 	justify-content: center;
 	align-items: center;
+	border-radius: 10px;
 
 	.totalOrder {
 		margin-right: 46px;
@@ -213,9 +213,10 @@ const SalesBoxWrapper = styled.div`
 `;
 
 const SalesBox = styled.div`
-	width: 194px;
+	width: 300px;
 	height: 194px;
-	background-color: ${({ theme }) => (theme.lightColor ? theme.textColor.white : theme.darkColor.main)};
+	background-color: ${({ theme }) => (theme.lightColor ? theme.lightColor.background : theme.darkColor.main)};
+	border-radius: 10px;
 	display: flex;
 	flex-flow: column nowrap;
 	align-items: center;
@@ -223,16 +224,29 @@ const SalesBox = styled.div`
 	line-height: 50px;
 	font-size: ${({ theme }) => theme.fontSize['3xl']};
 	color: ${({ theme }) => (theme.lightColor ? theme.textColor.black : theme.textColor.white)};
+	padding-top: 20px;
 `;
 
 const DailySalesWrapper = styled.div`
-	width: 486px;
+	width: 500px;
 	height: 288px;
 	text-align: center;
+
+	> p {
+		font-weight: ${({ theme }) => theme.fontWeight.semibold};
+		padding-left: 5px;
+		padding-right: 5px;
+	}
 `;
 
 const MonthlySalesWrapper = styled.div`
-	width: 260px;
+	width: 300px;
 	height: 288px;
 	text-align: center;
+
+	> p {
+		font-weight: ${({ theme }) => theme.fontWeight.semibold};
+		padding-left: 5px;
+		padding-right: 5px;
+	}
 `;
