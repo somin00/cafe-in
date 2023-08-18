@@ -263,21 +263,22 @@ const OptionsSelected = styled.div<{ $noOptions: boolean }>`
 const PayContainer = styled.div`
 	flex: 0.3;
 	overflow: hidden;
-	margin-left: 10px;
 	border-top: ${({ theme }) => (theme.mode === 'dark' ? 'none' : ' 1px solid white')};
 `;
 
 const TotalPrice = styled.div`
 	margin-top: 20px;
 	height: 110px;
+	border-radius: 10px;
+
 	padding: 20px 10px 10px 10px;
-	color: ${({ theme }) => theme.lightColor.point};
+	color: ${({ theme }) => (theme.lightColor ? theme.lightColor.point : theme.darkColor.point)};
 	background-color: ${({ theme }) => (theme.lightColor ? theme.textColor.lightbrown : theme.darkColor.background)};
 	border-top: ${({ theme }) => (theme.lightColor ? '1px solid  theme.textColor.lightgray' : 'none')};
 	font-size: ${({ theme }) => theme.fontSize['2xl']};
 	font-weight: ${({ theme }) => theme.fontWeight.bold};
 	& p:first-child {
-		color: ${({ theme }) => (theme.lightColor ? theme.lightColor.point : theme.textColor.lightbrown)};
+		color: ${({ theme }) => (theme.lightColor ? theme.textColor.black : theme.textColor.lightbrown)};
 	}
 	.total-price {
 		float: right;

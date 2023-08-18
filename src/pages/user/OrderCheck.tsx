@@ -145,7 +145,7 @@ function OrderCheck() {
 							}}
 						>
 							결제하기
-							<img src="/assets/user/buy.svg" />
+							<img src="/assets/user/buy.svg" alt="결제하기" />
 						</button>
 						{toastMessage && (
 							<ModalPortal>
