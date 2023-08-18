@@ -151,8 +151,7 @@ function SelectedItemContainer() {
 	);
 }
 const Background = styled.div`
-	background-color: ${({ theme }) =>
-		theme.lightColor ? defaultTheme.textColor.white : darkTheme.darkColor.background};
+	background-color: ${({ theme }) => (theme.lightColor ? theme.textColor.white : theme.darkColor.background)};
 	padding: 10px;
 	height: fit-content;
 `;
@@ -167,8 +166,7 @@ const MenuSelectedContainer = styled.ul`
 	display: flex;
 	flex-direction: column;
 	height: 440px;
-	background-color: ${({ theme }) =>
-		theme.lightColor ? defaultTheme.lightColor?.yellow.background : darkTheme.darkColor.background};
+	background-color: ${({ theme }) => (theme.lightColor ? theme.lightColor?.background : theme.darkColor?.background)};
 	border-radius: 10px;
 	overflow-y: auto;
 
@@ -218,18 +216,17 @@ const SelectedItem = styled.li<StyledProps>`
 			color: ${({ theme }) => theme.textColor?.white};
 		}
 		.plus {
-			background-color: ${({ theme }) =>
-				theme.lightColor ? defaultTheme.lightColor?.yellow.main : darkTheme.darkColor?.main};
+			background-color: ${({ theme }) => (theme.lightColor ? theme.lightColor?.main : theme.darkColor?.main)};
 		}
 		.minus {
 			background-color: ${({ theme, $quantity }) =>
 				theme.lightColor
 					? $quantity > 1
-						? defaultTheme.lightColor?.yellow.main
-						: defaultTheme.textColor.lightgray
+						? theme.lightColor?.main
+						: theme.textColor.lightgray
 					: $quantity > 1
-					? darkTheme.darkColor?.main
-					: darkTheme.textColor.darkgray};
+					? theme.darkColor?.main
+					: theme.textColor.darkgray};
 			&:disabled {
 				pointer-events: none;
 			}
@@ -243,9 +240,8 @@ const SelectedItem = styled.li<StyledProps>`
 			margin-left: 10px;
 			width: 25px;
 			height: 25px;
-			border: 2px solid
-				${({ theme }) => (theme.lightColor ? defaultTheme.lightColor?.yellow.sub : darkTheme.darkColor?.point)};
-			color: ${({ theme }) => (theme.lightColor ? defaultTheme.lightColor?.yellow.sub : darkTheme.darkColor?.point)};
+			border: 2px solid ${({ theme }) => (theme.lightColor ? theme.lightColor?.sub : theme.darkColor?.point)};
+			color: ${({ theme }) => (theme.lightColor ? theme.lightColor?.sub : theme.darkColor?.point)};
 			border-radius: 5px;
 		}
 	}
@@ -275,18 +271,18 @@ const TotalPrice = styled.div`
 	margin-top: 20px;
 	height: 110px;
 	padding: 20px 10px 10px 10px;
-	color: ${defaultTheme.lightColor.yellow.point};
-	background-color: ${({ theme }) => (theme.lightColor ? theme.textColor.lightbrown : darkTheme.darkColor.background)};
-	border-top: ${({ theme }) => (theme.lightColor ? '1px solid  darkTheme.textColor.lightgray' : 'none')};
+	color: ${({ theme }) => theme.lightColor.point};
+	background-color: ${({ theme }) => (theme.lightColor ? theme.textColor.lightbrown : theme.darkColor.background)};
+	border-top: ${({ theme }) => (theme.lightColor ? '1px solid  theme.textColor.lightgray' : 'none')};
 	font-size: ${({ theme }) => theme.fontSize['2xl']};
 	font-weight: ${({ theme }) => theme.fontWeight.bold};
 	& p:first-child {
-		color: ${({ theme }) => (theme.lightColor ? defaultTheme.lightColor.yellow.point : darkTheme.textColor.lightbrown)};
+		color: ${({ theme }) => (theme.lightColor ? theme.lightColor.point : theme.textColor.lightbrown)};
 	}
 	.total-price {
 		float: right;
 		font-size: ${({ theme }) => theme.fontSize['4xl']};
-		color: ${({ theme }) => (theme.lightColor ? theme.textColor.black : darkTheme.textColor.white)};
+		color: ${({ theme }) => (theme.lightColor ? theme.textColor.black : theme.textColor.white)};
 		right: 15px;
 		bottom: 500px;
 	}
@@ -317,7 +313,6 @@ const OrderBtn = styled.button`
 	font-size: ${({ theme }) => theme.fontSize?.['3xl']};
 	font-weight: ${({ theme }) => theme.fontWeight.semibold};
 	color: ${({ theme }) => theme.textColor.black};
-	background-color: ${({ theme }) =>
-		theme.lightColor ? defaultTheme.lightColor?.yellow.sub : darkTheme.darkColor?.point};
+	background-color: ${({ theme }) => (theme.lightColor ? theme.lightColor?.sub : theme.darkColor?.point)};
 `;
 export default SelectedItemContainer;
