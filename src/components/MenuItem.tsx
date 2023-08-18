@@ -19,7 +19,11 @@ function MenuItem({ menu }: ItemPropType) {
 		<>
 			<MenuItemWrapper>
 				<button onClick={onClickToggleModal}>
-					{menu.imageUrl ? <img src={menu.imageUrl} alt={`${menu.name}이미지`} /> : <div>이미지 없음</div>}
+					{menu.imageUrl ? (
+						<img src={menu.imageUrl} alt={`${menu.name}이미지`} width={218} height={204} />
+					) : (
+						<div>이미지 없음</div>
+					)}
 					<p className="menu-name"> {menu.name}</p>
 					<p className="menu-price">{changePriceFormat(menu.price)}원</p>
 				</button>
@@ -52,6 +56,7 @@ const MenuItemWrapper = styled.li`
 	}
 
 	img {
+		margin-top: 20px;
 		width: 218px;
 		height: 204px;
 	}

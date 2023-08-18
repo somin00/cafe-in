@@ -97,7 +97,7 @@ function ModalInput({ menuInfo, setMenuState, setFile }: ModalInputPropType) {
 				<legend>about Beverage</legend>
 				{imgSrc ? (
 					<ImageContainer>
-						<img src={imgSrc} alt={`${menuInfo.name} 이미지`} />
+						<img src={imgSrc} alt={`${menuInfo.name} 이미지`} width={273} height={350} />
 						<label htmlFor={`${menuInfo.name} 이미지 변경하기`} tabIndex={0} onKeyDown={handleKeyDown}>
 							이미지 변경하기
 						</label>
