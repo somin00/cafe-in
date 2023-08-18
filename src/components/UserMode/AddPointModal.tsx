@@ -125,7 +125,7 @@ const DialogBox = styled.dialog`
 	z-index: 10000;
 	p {
 		font-size: ${({ theme }) => theme.fontSize.sm};
-		color: ${({ theme }) => theme.textColor.lightgray};
+		color: ${({ theme }) => theme.textColor.darkgray};
 	}
 `;
 
@@ -133,7 +133,7 @@ export const PointInput = styled.div`
 	font-size: ${({ theme }) => theme.fontSize.base};
 	margin-top: 10px;
 	input {
-		background-color: ${({ theme }) => theme.textColor.white};
+		background-color: ${({ theme }) => theme.textColor.lightbrown};
 		border: 1px solid ${({ theme }) => theme.textColor.lightbrown};
 		position: relative;
 		width: 390px;
@@ -145,7 +145,7 @@ export const PointInput = styled.div`
 		margin-top: 6px;
 		padding: 7px;
 		right: 160px;
-		background-color: ${({ theme }) => theme.textColor.white};
+		background-color: ${({ theme }) => theme.textColor.lightbrown};
 		border-radius: 10px;
 	}
 	input:focus {

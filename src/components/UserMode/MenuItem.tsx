@@ -97,7 +97,7 @@ function MenuItem() {
 					<button onClick={() => handleClickMenuItem(item)}>
 						<img src={item.imageUrl} alt={item.imageName} />
 						<p className="menu-name">{item.name}</p>
-						<p className="menu-price">{item.price}</p>
+						<p className="menu-price">{item.price.toLocaleString()}</p>
 					</button>
 				</MenuItemWrapper>
 			))}
