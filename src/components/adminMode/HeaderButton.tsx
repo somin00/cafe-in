@@ -23,21 +23,16 @@ const Button = styled.button`
 	font-size: ${({ theme }) => theme.fontSize['2xl']};
 	font-weight: ${({ theme }) => theme.fontWeight.medium};
 	background-color: ${({ theme }) => (theme.lightColor ? theme.textColor.white : theme.darkColor.background)};
-	border: ${({ theme }) => (theme.lightColor ? theme.lightColor.point : theme.textColor.darkgray)} 1px solid;
-	color: ${({ theme }) => (theme.lightColor ? theme.lightColor.point : theme.textColor.darkgray)};
+	border: ${({ theme }) => (theme.lightColor ? theme.lightColor.point : theme.textColor.white)} 1px solid;
+	color: ${({ theme }) => (theme.lightColor ? theme.lightColor.point : theme.textColor.white)};
 
 	&:first-child {
 		margin-right: 6px;
 	}
 
 	&.is-selected {
-		background-color: ${({ theme }) =>
-			theme.lightColor
-				? theme.color === 'blue'
-					? theme.lightColor.main
-					: theme.lightColor.point
-				: theme.textColor.white};
-		color: ${({ theme }) => (theme.lightColor ? theme.textColor.white : theme.textColor.black)};
+		background-color: ${({ theme }) => (theme.lightColor ? theme.lightColor.point : theme.textColor.white)};
+		color: ${({ theme }) => (theme.lightColor ? theme.textColor.black : theme.textColor.black)};
 		border: none;
 	}
 `;

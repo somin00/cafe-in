@@ -54,10 +54,13 @@ function OrderList({ order, isProgressMode }: OrderListPropType) {
 				</OrderInfo>
 				<ItemWrapper $isProgressMode={isProgressMode}>
 					{order.list.map((item, idx) => (
-						<OrderItem key={`${order.id}${idx}`} idx={idx} itemInfo={item} toggleComplete={handleToggleComplete} />
-					))}
-					{order.list.map((item, idx) => (
-						<OrderItem key={`${order.id}${idx}`} idx={idx} itemInfo={item} toggleComplete={handleToggleComplete} />
+						<OrderItem
+							key={`${order.id}${idx}`}
+							idx={idx}
+							itemInfo={item}
+							time={order.id}
+							toggleComplete={handleToggleComplete}
+						/>
 					))}
 				</ItemWrapper>
 				{isProgressMode && (
@@ -93,7 +96,7 @@ const OrderListWrapper = styled.li`
 		font-size: ${({ theme }) => theme.fontSize['2xl']};
 		font-weight: ${({ theme }) => theme.fontWeight.semibold};
 		margin-left: 90px;
-		color: ${({ theme }) => theme.textColor.white};
+		color: ${({ theme }) => (theme.lightColor ? theme.textColor.black : theme.textColor.white)};
 	}
 `;
 
