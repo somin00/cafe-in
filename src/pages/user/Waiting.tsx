@@ -293,14 +293,14 @@ const PlusBtn = styled.button``;
 const InputBoxWrapper = styled.div`
 	width: 400px;
 	height: 165px;
-	position: relative;
+	position: static;
 
 	h1 {
 		padding-left: 5px;
 		font-size: ${({ theme }) => theme.fontSize.lg};
 		color: ${({ theme }) => (theme.lightColor ? theme.lightColor.point : theme.darkColor?.point)};
 		position: absolute;
-		top: 175px;
+		bottom: 185px;
 	}
 `;
 const InputBox = styled.input`
