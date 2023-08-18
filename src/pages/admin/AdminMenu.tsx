@@ -65,7 +65,7 @@ const AdminMenuBox = styled.button`
 	border-radius: 15px;
 	width: 300px;
 	height: 236px;
-	border: 1px solid ${({ theme }) => theme.textColor.lightgray};
+	border: 1px solid ${({ theme }) => (theme.lightColor ? theme.textColor.lightgray : 'none')};
 	background-color: ${({ theme }) => (theme.lightColor ? theme.lightColor.background : theme.darkColor?.main)};
 	color: ${({ theme }) => (theme.lightColor ? theme.textColor.black : theme.textColor.white)};
 	text-align: center;
