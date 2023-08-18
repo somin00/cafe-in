@@ -26,7 +26,7 @@ export const defaultTheme: DefaultTheme = {
 			background: '#EEFBD2',
 			main: '#CDE88F',
 			sub: '#7CBE76',
-			point: '#7CBF3C',
+			point: '#6fa24d',
 		},
 		purple: {
 			background: '#EDE4FF',

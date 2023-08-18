@@ -68,9 +68,14 @@ function MenuListHeader() {
 }
 //prettier-ignore
 const TabButton = styled.button<{ $isActive: boolean }>`
-color: ${({ theme, $isActive }) =>    $isActive 
-        ? (theme.lightColor ? theme.lightColor.point : theme.darkColor.sub)
-        : 'black'
+color: ${({ theme, $isActive }) => 
+    $isActive 
+        ? (JSON.stringify(theme.lightColor) === JSON.stringify(defaultTheme.lightColor.blue)
+            ? defaultTheme.lightColor.blue.main 
+            : theme.lightColor 
+                ? theme.lightColor.point 
+                : theme.darkColor.point)
+        : (theme.lightColor ? theme.textColor.black : theme.textColor.lightgray)
 };
 	font-size: ${({ theme }) => theme.fontSize['2xl']};
 	font-weight: ${({ theme }) => theme.fontWeight.semibold};
