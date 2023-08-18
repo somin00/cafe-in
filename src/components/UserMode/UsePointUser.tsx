@@ -6,6 +6,7 @@ import { darkTheme, defaultTheme } from '../../style/theme';
 import { collection, query, where, getDocs, doc, updateDoc } from 'firebase/firestore';
 import { db } from '../../firebase/firebaseConfig';
 import Toast from '../adminMode/Toast';
+import ModalPortal from '../ModalPortal';
 
 function UsePointUser({ onClickToggleModal }: ModalDefaultType) {
 	const [isOpenModal, setModalOpen] = useState<boolean>(false);
@@ -17,7 +18,7 @@ function UsePointUser({ onClickToggleModal }: ModalDefaultType) {
 			const timer = setTimeout(() => {
 				console.log('메세지 있냐? ', toastMessage);
 				setToastMessage(toastMessage);
-			}, 5000);
+			}, 2000);
 			return () => clearTimeout(timer);
 		}
 	}, [toastMessage]);
@@ -119,7 +120,11 @@ function UsePointUser({ onClickToggleModal }: ModalDefaultType) {
 					phoneNumber={phoneNumber}
 				/>
 			)}
-			{toastMessage && <Toast text={toastMessage} />}
+			{toastMessage && (
+				<ModalPortal>
+					<Toast text={toastMessage} />
+				</ModalPortal>
+			)}
 			<Backdrop
 				onClick={(e: React.MouseEvent) => {
 					e.preventDefault();
@@ -210,7 +215,7 @@ const Backdrop = styled.div`
 	top: 0;
 	left: 50%;
 	transform: translate(-50%, 0);
-	z-index: 9999;
+	z-index: 1;
 	background-color: rgba(0, 0, 0, 0.2);
 `;
 export default UsePointUser;

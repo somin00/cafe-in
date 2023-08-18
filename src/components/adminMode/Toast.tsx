@@ -26,4 +26,5 @@ const ToastWrapper = styled.div`
 	color: ${({ theme }) => theme.textColor.white};
 	font-weight: ${({ theme }) => theme.fontWeight.semibold};
 	font-size: ${({ theme }) => theme.fontSize['lg']};
+	z-index: 10000;
 `;

@@ -23,6 +23,7 @@ const Layout = styled.div`
 	background-color: ${({ theme }) => (theme.lightColor ? theme.textColor.lightbrown : theme.darkColor.background)};
 	width: 1194px;
 	height: 834px;
+	userselect: none;
 	overflow-y: hidden;
 `;
 const Main = styled.div`
