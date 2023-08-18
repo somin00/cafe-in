@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { styled, useTheme } from 'styled-components';
 import { Routes, Route, NavLink } from 'react-router-dom';
-import { useRecoilState, useRecoilValue } from 'recoil';
+import { useRecoilState } from 'recoil';
 import ManagementHeader from '../../components/adminMode/ManagementHeader';
 import WaitingTableBox from '../../components/waitingManagement/WaitingTableBox';
 import WaitingModal from '../../components/waitingManagement/WaitingModal';

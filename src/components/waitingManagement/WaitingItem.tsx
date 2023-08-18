@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { styled } from 'styled-components';
-import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
+import { useRecoilState, useSetRecoilState } from 'recoil';
 import { db } from '../../firebase/firebaseConfig';
 import { updateDoc, doc } from 'firebase/firestore';
 import {
