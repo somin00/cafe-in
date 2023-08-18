@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
-import { styled } from 'styled-components';
+import { styled, useTheme } from 'styled-components';
 import { isWaitingAvailableState } from '../../state/WaitingState';
 import { takeOutState } from '../../state/TakeOut';
 
@@ -9,6 +9,7 @@ function Start() {
 	const navigate = useNavigate();
 	const isWaitingAvailable = useRecoilValue<boolean>(isWaitingAvailableState);
 	const setTakeOut = useSetRecoilState(takeOutState);
+	const theme = useTheme();
 	return (
 		<StartWrapper>
 			<BackIconWrapper>
@@ -17,7 +18,13 @@ function Start() {
 						navigate('/');
 					}}
 				>
-					<img src={process.env.PUBLIC_URL + '/assets/admin/back_light.svg'} alt="뒤로가기 버튼" />
+					<img
+						src={
+							process.env.PUBLIC_URL +
+							(theme.lightColor ? '/assets/admin/back_light.svg' : '/assets/admin/back_dark.svg')
+						}
+						alt="뒤로가기 버튼"
+					/>
 				</BackIcon>
 			</BackIconWrapper>
 			<TakeOutBoxWrapper>
