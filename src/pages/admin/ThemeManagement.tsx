@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { styled } from 'styled-components';
 import ManagementHeader from '../../components/adminMode/ManagementHeader';
 import { useSetRecoilState } from 'recoil';
@@ -13,15 +13,22 @@ interface ThemeManagementProps {
 
 function ThemeManagement({ setIsDarkmode }: ThemeManagementProps) {
 	const setSelectedColor = useSetRecoilState<SelectedColorType>(selectedColorState);
-	const handleColorSelected = (color: SelectedColorType) => {
-		setSelectedColor(color);
-		localStorage.setItem('selectedColor', color);
-	};
 
-	const handleDarkmode = (isDarkmode: boolean) => {
-		setIsDarkmode(isDarkmode);
-		localStorage.setItem('isDarkmode', JSON.stringify(isDarkmode));
-	};
+	const handleColorSelected = useCallback(
+		(color: SelectedColorType) => {
+			setSelectedColor(color);
+			localStorage.setItem('selectedColor', color);
+		},
+		[setSelectedColor],
+	);
+
+	const handleDarkmode = useCallback(
+		(isDarkmode: boolean) => {
+			setIsDarkmode(isDarkmode);
+			localStorage.setItem('isDarkmode', JSON.stringify(isDarkmode));
+		},
+		[setIsDarkmode],
+	);
 
 	return (
 		<ThemeManagementWrapper>
