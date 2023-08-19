@@ -30,11 +30,14 @@ function CheckPointUsedIt({ isOpenModal, onClickOpenModal, points, onUsePoints, 
 			return () => clearTimeout(timer);
 		}
 	}, [toastMessage]);
+
 	const handleConfirmClick = async () => {
 		try {
 			const enteredPoints = parseInt(point, 10);
 			if (points && enteredPoints >= 1000 && enteredPoints <= points) {
+				setUsedPoints(enteredPoints);
 				await onUsePoints(enteredPoints);
+
 				onClickOpenModal();
 			} else {
 				setToastMessage('포인트를 확인하세요');
@@ -45,9 +48,7 @@ function CheckPointUsedIt({ isOpenModal, onClickOpenModal, points, onUsePoints, 
 	};
 
 	const handlePointChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		const value = e.target.value ? parseInt(e.target.value, 10) : null;
 		setPoint(e.target.value);
-		setUsedPoints(value);
 	};
 	const handlePointClick = () => {
 		setPoint(points?.toString() ?? '');
