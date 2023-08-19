@@ -13,5 +13,6 @@ export function useSelectedColor() {
 		} else {
 			setSelectedColor('yellow');
 		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 }
