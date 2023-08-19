@@ -71,6 +71,7 @@ function AdminLogin() {
 export default AdminLogin;
 
 const AdminLoginWrapper = styled.div`
+	user-select: none;
 	position: relative;
 	display: flex;
 	align-items: center;
@@ -138,9 +139,9 @@ const FormWrapper = styled.div`
 		height: 54px;
 		background-color: ${({ theme }) =>
 			theme.lightColor
-				? theme.color === 'green'
-					? theme.lightColor.sub
-					: theme.lightColor.main
+				? theme.color === 'blue' || theme.color === 'purple'
+					? theme.lightColor.main
+					: theme.lightColor.point
 				: theme.darkColor.main};
 		border-radius: 20px;
 		color: ${({ theme }) => theme.textColor.white};

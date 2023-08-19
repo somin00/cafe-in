@@ -84,7 +84,14 @@ function CategoryItem() {
 				<CategoryItemWrapper key={id} data-id={id}>
 					{id === selectedId ? (
 						<>
-							<input type="text" placeholder={category} value={editedCategoryName} onChange={handleEditCategoryName} />
+							<label htmlFor="editCategoryName">수정할 카테고리 이름</label>
+							<input
+								type="text"
+								id="editCategoryName"
+								placeholder={category}
+								value={editedCategoryName}
+								onChange={handleEditCategoryName}
+							/>
 							<EditCategoryButton
 								type="button"
 								onClick={() => {
@@ -125,6 +132,14 @@ export default CategoryItem;
 const CategoryItemWrapper = styled.li`
 	display: flex;
 
+	label {
+		position: absolute;
+		width: 1px;
+		height: 1px;
+		overflow: hidden;
+		clip-path: polygon(0 0, 0 0, 0 0);
+	}
+
 	span,
 	input {
 		display: flex;
@@ -150,13 +165,14 @@ const CategoryItemWrapper = styled.li`
 					? theme.lightColor.sub
 					: theme.lightColor.main
 				: theme.darkColor.main};
-		color: ${({ theme }) => theme.textColor.white};
+		color: ${({ theme }) => (theme.lightColor ? theme.textColor.black : theme.textColor.white)};
 		border-radius: 10px;
 		font-size: ${({ theme }) => theme.fontSize['2xl']};
 		font-weight: ${({ theme }) => theme.fontWeight.regular};
 
 		&:disabled {
 			cursor: not-allowed;
+			color: ${({ theme }) => theme.textColor.white};
 			background-color: ${({ theme }) => theme.textColor.darkgray};
 		}
 	}

@@ -72,6 +72,7 @@ function MenuManagement() {
 export default withAuth(MenuManagement);
 
 const MenuManagementWrapper = styled.div`
+	user-select: none;
 	width: 1194px;
 	height: 834px;
 	background-color: ${({ theme }) => (theme.lightColor ? '#f9f9f9' : theme.darkColor.background)};

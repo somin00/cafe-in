@@ -6,8 +6,9 @@ interface OrderItemPropType {
 	idx: number;
 	itemInfo: OrderListItemType;
 	toggleComplete: (id: number, checked: boolean) => void;
+	time: number;
 }
-function OrderItem({ idx, itemInfo, toggleComplete }: OrderItemPropType) {
+function OrderItem({ idx, itemInfo, toggleComplete, time }: OrderItemPropType) {
 	const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
 		const checked = e.currentTarget.checked;
 		toggleComplete(idx, checked);
@@ -16,7 +17,13 @@ function OrderItem({ idx, itemInfo, toggleComplete }: OrderItemPropType) {
 	return (
 		<OrderItemWrapper>
 			<Info>
-				<input type="checkbox" checked={itemInfo.isComplete} onChange={handleChange} />
+				<label htmlFor={`${time} ${itemInfo.menu} ${idx} checkbox`}>완료 체크</label>
+				<input
+					type="checkbox"
+					id={`${time} ${itemInfo.menu} ${idx} checkbox`}
+					checked={itemInfo.isComplete}
+					onChange={handleChange}
+				/>
 				<span>{itemInfo.quantity}개</span>
 			</Info>
 			<MenuName className={itemInfo.isComplete ? 'is-checked' : ''}>{itemInfo.menu}</MenuName>
@@ -43,6 +50,14 @@ const Info = styled.div`
 	display: flex;
 	align-items: center;
 	margin-bottom: 10px;
+
+	label {
+		position: absolute;
+		width: 1px;
+		height: 1px;
+		overflow: hidden;
+		clip-path: polygon(0 0, 0 0, 0 0);
+	}
 
 	span {
 		font-size: ${({ theme }) => theme.fontSize['xl']};

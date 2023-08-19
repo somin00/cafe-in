@@ -129,7 +129,7 @@ const Button = styled.button`
 	border-radius: 10px;
 	font-size: ${({ theme }) => theme.fontSize['3xl']};
 	font-weight: ${({ theme }) => theme.fontWeight.regular};
-	color: ${({ theme }) => theme.textColor.white};
+	color: ${({ theme }) => (theme.lightColor ? theme.textColor.black : theme.textColor.white)};
 	background-color: ${({ theme }) => (theme.lightColor ? theme.lightColor.sub : theme.darkColor.main)};
 
 	&:first-child {
@@ -139,5 +139,6 @@ const Button = styled.button`
 	&:disabled {
 		cursor: not-allowed;
 		background-color: ${({ theme }) => theme.textColor.darkgray};
+		color: ${({ theme }) => theme.textColor.white};
 	}
 `;
