@@ -159,6 +159,7 @@ const Layout = styled.div`
 	flex-direction: column;
 	justify-content: space-between;
 	border-left: ${({ theme }) => (theme.mode === 'dark' ? 'none' : ' 1px solid white')};
+	padding-left: ${({ theme }) => (theme.lightColor ? 'none' : '10px')};
 `;
 const MenuSelectedContainer = styled.ul`
 	display: flex;
@@ -186,6 +187,7 @@ const SelectedItem = styled.li<StyledProps>`
 	border: 1px solid ${({ theme }) => theme.textColor?.lightbrown};
 	background-color: ${({ theme }) => theme.textColor?.white};
 	border-radius: 10px;
+
 	.first {
 		width: 100%;
 		display: flex;
@@ -195,11 +197,11 @@ const SelectedItem = styled.li<StyledProps>`
 	}
 
 	.first p {
-		flex: 3; /* 아이템 이름에 대한 flex 값 */
+		flex: 3;
 		overflow: hidden;
 		white-space: nowrap;
 		text-overflow: ellipsis;
-		margin-right: 10px; /* 필요에 따라 간격을 조절할 수 있습니다. */
+		margin-right: 10px;
 	}
 	.counter,
 	.price {
@@ -245,8 +247,9 @@ const SelectedItem = styled.li<StyledProps>`
 		flex: 3;
 		text-align: right;
 		.delete {
-			width: 25px;
-			height: 25px;
+			width: 26px;
+			padding: 2px;
+			text-align: center;
 			border: 2px solid ${({ theme }) => (theme.lightColor ? theme.lightColor?.sub : theme.darkColor?.point)};
 			color: ${({ theme }) => (theme.lightColor ? theme.lightColor?.sub : theme.darkColor?.point)};
 			border-radius: 5px;
@@ -276,12 +279,12 @@ const PayContainer = styled.div`
 const TotalPrice = styled.div`
 	margin-top: 20px;
 	height: 110px;
-	border-radius: 10px;
-
-	padding: 20px 10px 10px 10px;
+	border-radius: ${({ theme }) => (theme.lightColor ? '10px' : 'none')};
+	padding: ${({ theme }) => (theme.lightColor ? '20px 10px 10px 10px' : '10px')};
 	color: ${({ theme }) => (theme.lightColor ? theme.lightColor.point : theme.darkColor.point)};
-	background-color: ${({ theme }) => (theme.lightColor ? theme.textColor.lightbrown : theme.darkColor.background)};
+	background-color: ${({ theme }) => (theme.lightColor ? theme.textColor.lightbrown : 'none')};
 	border-top: ${({ theme }) => (theme.lightColor ? '1px solid  theme.textColor.lightgray' : 'none')};
+	border-bottom: 1px solid ${({ theme }) => theme.textColor.white};
 	font-size: ${({ theme }) => theme.fontSize['2xl']};
 	font-weight: ${({ theme }) => theme.fontWeight.bold};
 	& p:first-child {
@@ -298,7 +301,7 @@ const TotalPrice = styled.div`
 const AllDeleteBtn = styled.button`
 	display: flex;
 	justify-content: center;
-	margin-top: 20px;
+	margin-top: 15px;
 	width: 100%;
 	padding: 15px;
 	border: 1px solid ${({ theme }) => theme.textColor.darkgray};
