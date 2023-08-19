@@ -33,6 +33,7 @@ function OrderCheck() {
 
 	const handleDeleteAll = () => {
 		setOrderList([]);
+		setUsedPoints(0);
 	};
 
 	const handlePayment = async () => {
