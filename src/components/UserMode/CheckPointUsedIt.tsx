@@ -1,11 +1,13 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { styled, useTheme } from 'styled-components';
 import { ModalContainer } from './UsePointUser';
 import { CloseBtn, PointInput } from './AddPointModal';
-import { darkTheme, defaultTheme } from '../../style/theme';
+import { darkTheme } from '../../style/theme';
 import { ModalAndModalType } from '../../types/ModalOpenTypes';
 import { useSetRecoilState } from 'recoil';
 import { usedPointsState } from '../../state/PointState';
+import ModalPortal from '../ModalPortal';
+import Toast from '../adminMode/Toast';
 interface CheckPointUsedIt extends ModalAndModalType {
 	onClickOpenModal: () => void;
 	isOpenModal: boolean;
@@ -18,7 +20,16 @@ function CheckPointUsedIt({ isOpenModal, onClickOpenModal, points, onUsePoints, 
 
 	const theme = useTheme();
 	const [point, setPoint] = useState('');
-
+	const [toastMessage, setToastMessage] = useState<string>('');
+	useEffect(() => {
+		if (toastMessage) {
+			const timer = setTimeout(() => {
+				console.log('메세지 있냐? ', toastMessage);
+				setToastMessage(toastMessage);
+			}, 5000);
+			return () => clearTimeout(timer);
+		}
+	}, [toastMessage]);
 	const handleConfirmClick = async () => {
 		try {
 			const enteredPoints = parseInt(point, 10);
@@ -26,7 +37,7 @@ function CheckPointUsedIt({ isOpenModal, onClickOpenModal, points, onUsePoints, 
 				await onUsePoints(enteredPoints);
 				onClickOpenModal();
 			} else {
-				alert('포인트를 확인하세요');
+				setToastMessage('포인트를 확인하세요');
 			}
 		} catch (error) {
 			console.error('err:', error);
@@ -41,6 +52,11 @@ function CheckPointUsedIt({ isOpenModal, onClickOpenModal, points, onUsePoints, 
 	const handlePointClick = () => {
 		setPoint(points?.toString() ?? '');
 		setUsedPoints(points);
+	};
+
+	const handleCloseBtnClick = (e: React.MouseEvent) => {
+		e.stopPropagation();
+		onClickOpenModal();
 	};
 	const phoneLastFourDigits = phoneNumber.slice(-4);
 	return isOpenModal ? (
@@ -72,8 +88,14 @@ function CheckPointUsedIt({ isOpenModal, onClickOpenModal, points, onUsePoints, 
 					<p>1,000 포인트 이상 사용 가능합니다. </p>
 				</InputExplain>
 				<BtnContainer>
+					<CloseBtn onClick={handleCloseBtnClick}>취소</CloseBtn>
 					<CloseBtn onClick={() => handleConfirmClick()}>확인</CloseBtn>
 				</BtnContainer>
+				{toastMessage && (
+					<ModalPortal>
+						<Toast text={toastMessage} />
+					</ModalPortal>
+				)}
 			</DialogBox>
 		</ModalContainer>
 	) : null;
@@ -89,6 +111,7 @@ const DialogBox = styled.dialog`
 	height: 500px;
 	position: absolute;
 	bottom: 0;
+	top: 150px;
 	left: 350px;
 	display: flex;
 	flex-direction: column;

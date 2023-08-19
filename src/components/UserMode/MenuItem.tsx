@@ -7,7 +7,7 @@ import { collection, getDocs, query, where } from 'firebase/firestore';
 import { db } from '../../firebase/firebaseConfig';
 import { selectedCategoryState } from '../../state/CategoryList';
 import { selectedItemsState } from '../../firebase/FirStoreDoc';
-import { Option, selectedItem } from '../../types/OptinalState';
+import { Option } from '../../types/OptinalState';
 import { takeOutState } from '../../state/TakeOut';
 function MenuItem() {
 	const selectedCategory = useRecoilValue(selectedCategoryState);
@@ -97,7 +97,7 @@ function MenuItem() {
 					<button onClick={() => handleClickMenuItem(item)}>
 						<img src={item.imageUrl} alt={item.imageName} />
 						<p className="menu-name">{item.name}</p>
-						<p className="menu-price">{item.price}</p>
+						<p className="menu-price">{item.price.toLocaleString()}</p>
 					</button>
 				</MenuItemWrapper>
 			))}

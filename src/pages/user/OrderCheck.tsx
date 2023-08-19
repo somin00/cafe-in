@@ -1,16 +1,16 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled, { useTheme } from 'styled-components';
 import AddPointModal from '../../components/UserMode/AddPointModal';
 import UsePointUser from '../../components/UserMode/UsePointUser';
-import { darkTheme, defaultTheme } from '../../style/theme';
-import { addDoc, collection, doc, getDoc, getDocs, writeBatch } from 'firebase/firestore';
+import { defaultTheme } from '../../style/theme';
+import { addDoc, collection } from 'firebase/firestore';
 import { db } from '../../firebase/firebaseConfig';
-import { useRecoilState, useRecoilValue } from 'recoil';
+import { useRecoilState } from 'recoil';
 import { usedPointsState } from '../../state/PointState';
-import { Order } from '../../types/Order';
 import { orderListStateAtom } from '../../state/OrderListAtom';
 import Toast from '../../components/adminMode/Toast';
+import ModalPortal from '../../components/ModalPortal';
 
 function OrderCheck() {
 	const navigate = useNavigate();
@@ -56,7 +56,7 @@ function OrderCheck() {
 		if (toastMessage) {
 			const timer = setTimeout(() => {
 				setToastMessage(null);
-			}, 3000); // 3초 후에 실행
+			}, 2000); // 3초 후에 실행
 
 			return () => clearTimeout(timer);
 		}
@@ -96,11 +96,11 @@ function OrderCheck() {
 									{order.list.map((item, index) => (
 										<OrderMenuItem key={index}>
 											<div className="products-name">
-												<img src={item.imgUrl} alt="제품이미지" width={42} />
+												<img src={item.imgUrl} alt="제품이미지" width={42} height={42} />
 												<p>{item.menu}</p>
 											</div>
 											<p>{item.quantity}</p>
-											<p>{item.totalPrice}원</p>
+											<p>{item.totalPrice.toLocaleString()}원</p>
 										</OrderMenuItem>
 									))}
 								</div>
@@ -138,13 +138,19 @@ function OrderCheck() {
 							className="payment"
 							onClick={() => {
 								handlePayment();
-								navigate('/');
+								setTimeout(() => {
+									navigate('/');
+								}, 3000);
 							}}
 						>
 							결제하기
-							<img src="/assets/user/buy.svg" />
+							<img src="/assets/user/buy.svg" alt="결제하기" />
 						</button>
-						{toastMessage && <Toast text={toastMessage} />}
+						{toastMessage && (
+							<ModalPortal>
+								<Toast text={toastMessage} />
+							</ModalPortal>
+						)}
 					</Payment>
 				</OrderTotalPriceContainer>
 			</Container>
@@ -157,6 +163,7 @@ const Layout = styled.div`
 	position: relative;
 	background-color: ${({ theme }) => (theme.lightColor ? theme.textColor.white : theme.darkColor.background)};
 	overflow-y: hidden;
+	userselect: none;
 `;
 const Header = styled.div`
 	display: flex;

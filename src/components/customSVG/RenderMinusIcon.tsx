@@ -13,6 +13,8 @@ function RenderMinusIcon({ decreaseDisable, theme }: RenderMinusIconProps) {
 				<img
 					alt="1 빼기 버튼"
 					aria-label="1 빼기"
+					width={75}
+					height={91}
 					src={process.env.PUBLIC_URL + '/assets/user/minusIcon_disable.svg'}
 				/>
 			);
@@ -20,7 +22,13 @@ function RenderMinusIcon({ decreaseDisable, theme }: RenderMinusIconProps) {
 			return <MinusSVG />;
 		} else {
 			return (
-				<img alt="1 빼기 버튼" aria-label="1 빼기" src={process.env.PUBLIC_URL + '/assets/user/minusIcon_dark.svg'} />
+				<img
+					alt="1 빼기 버튼"
+					aria-label="1 빼기"
+					src={process.env.PUBLIC_URL + '/assets/user/minusIcon_dark.svg'}
+					width={75}
+					height={91}
+				/>
 			);
 		}
 	};

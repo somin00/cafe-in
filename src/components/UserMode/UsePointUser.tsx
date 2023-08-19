@@ -2,10 +2,10 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { ModalDefaultType } from '../../types/ModalOpenTypes';
 import { styled } from 'styled-components';
 import CheckPointUsedIt from './CheckPointUsedIt';
-import { darkTheme, defaultTheme } from '../../style/theme';
 import { collection, query, where, getDocs, doc, updateDoc } from 'firebase/firestore';
 import { db } from '../../firebase/firebaseConfig';
 import Toast from '../adminMode/Toast';
+import ModalPortal from '../ModalPortal';
 
 function UsePointUser({ onClickToggleModal }: ModalDefaultType) {
 	const [isOpenModal, setModalOpen] = useState<boolean>(false);
@@ -17,7 +17,7 @@ function UsePointUser({ onClickToggleModal }: ModalDefaultType) {
 			const timer = setTimeout(() => {
 				console.log('메세지 있냐? ', toastMessage);
 				setToastMessage(toastMessage);
-			}, 5000);
+			}, 2000);
 			return () => clearTimeout(timer);
 		}
 	}, [toastMessage]);
@@ -119,7 +119,11 @@ function UsePointUser({ onClickToggleModal }: ModalDefaultType) {
 					phoneNumber={phoneNumber}
 				/>
 			)}
-			{toastMessage && <Toast text={toastMessage} />}
+			{toastMessage && (
+				<ModalPortal>
+					<Toast text={toastMessage} />
+				</ModalPortal>
+			)}
 			<Backdrop
 				onClick={(e: React.MouseEvent) => {
 					e.preventDefault();
@@ -134,12 +138,14 @@ function UsePointUser({ onClickToggleModal }: ModalDefaultType) {
 export const ModalContainer = styled.div`
 	width: 100%;
 	height: 100%;
+	overflow-y: hidden;
 `;
 const DialogBox = styled.dialog`
 	width: 500px;
 	height: 500px;
 	position: absolute;
 	bottom: 0;
+	top: 150px;
 	left: 350px;
 	display: flex;
 	flex-direction: column;
@@ -205,12 +211,12 @@ const BtnContainer = styled.div`
 `;
 const Backdrop = styled.div`
 	width: 1194px;
-	height: 834px;
+	height: 838px;
 	position: fixed;
 	top: 0;
 	left: 50%;
 	transform: translate(-50%, 0);
-	z-index: 9999;
+	z-index: 1;
 	background-color: rgba(0, 0, 0, 0.2);
 `;
 export default UsePointUser;

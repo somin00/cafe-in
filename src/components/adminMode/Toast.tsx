@@ -13,8 +13,9 @@ export default Toast;
 
 const ToastWrapper = styled.div`
 	width: 340px;
-	height: 50px;
+	padding: 16px;
 	position: absolute;
+	word-spacing: 5px;
 	left: 50%;
 	top: 38px;
 	transform: translateX(-170px);
@@ -26,4 +27,5 @@ const ToastWrapper = styled.div`
 	color: ${({ theme }) => theme.textColor.white};
 	font-weight: ${({ theme }) => theme.fontWeight.semibold};
 	font-size: ${({ theme }) => theme.fontSize['lg']};
+	z-index: 10000;
 `;
