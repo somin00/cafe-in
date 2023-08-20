@@ -8,6 +8,7 @@ import { useSetRecoilState } from 'recoil';
 import { usedPointsState } from '../../state/PointState';
 import ModalPortal from '../ModalPortal';
 import Toast from '../adminMode/Toast';
+import { changePriceFormat } from '../../utils/changeFormat';
 interface CheckPointUsedIt extends ModalAndModalType {
 	onClickOpenModal: () => void;
 	isOpenModal: boolean;
@@ -74,7 +75,7 @@ function CheckPointUsedIt({ isOpenModal, onClickOpenModal, points, onUsePoints, 
 				</div>
 				<div className="point-check-allBtn">
 					<button onClick={handlePointClick}>전액</button>
-					<p>잔여 : {points?.toLocaleString() ?? '0'} point</p>
+					<p>잔여 : {changePriceFormat(String(point)) ?? '0'} point</p>
 				</div>
 				<InputExplain>
 					<label htmlFor="point" hidden />

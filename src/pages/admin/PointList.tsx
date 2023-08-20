@@ -4,6 +4,7 @@ import { collection, getDocs } from 'firebase/firestore';
 import { db } from '../../firebase/firebaseConfig';
 import withAuth from '../../components/adminMode/WithAuth';
 import ManagementHeader from '../../components/adminMode/ManagementHeader';
+import { changePriceFormat } from '../../utils/changeFormat';
 
 type Points = {
 	id?: string;
@@ -70,7 +71,7 @@ function PointList() {
 					{currentItems.map((point) => (
 						<Item key={point.id}>
 							<p className="phoneNum">{underBarPhoneNumber(point.phoneNumber)}</p>
-							<p className="point">{point.point.toLocaleString()}</p>
+							<p className="point">{changePriceFormat(String(point.point))}</p>
 						</Item>
 					))}
 					<Pagination>

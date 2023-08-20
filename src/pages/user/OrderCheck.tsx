@@ -11,6 +11,7 @@ import { usedPointsState } from '../../state/PointState';
 import { orderListStateAtom } from '../../state/OrderListAtom';
 import Toast from '../../components/adminMode/Toast';
 import ModalPortal from '../../components/ModalPortal';
+import { changePriceFormat } from '../../utils/changeFormat';
 
 function OrderCheck() {
 	const navigate = useNavigate();
@@ -51,6 +52,7 @@ function OrderCheck() {
 		setToastMessage('결제되었습니다');
 		// 상태 초기화
 		setOrderList([]); // 주문 목록 초기화
+
 		setUsedPoints(0); // 사용된 포인트 초기화
 	};
 	useEffect(() => {
@@ -112,7 +114,7 @@ function OrderCheck() {
 					<TotalPrice>
 						<div>
 							<h2>주문금액</h2>
-							<p>{totalOrderPay.toLocaleString()}원</p>
+							<p>{changePriceFormat(String(totalOrderPay))}원</p>
 						</div>
 						<div>
 							<h2>포인트 사용</h2>
@@ -120,7 +122,7 @@ function OrderCheck() {
 						</div>
 						<div>
 							<h2>총 결제 금액</h2>
-							<p>{TotalOrderPrice.toLocaleString()}원</p>
+							<p>{changePriceFormat(String(TotalOrderPrice))}원</p>
 						</div>
 					</TotalPrice>
 

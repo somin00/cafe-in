@@ -9,6 +9,7 @@ import { selectedCategoryState } from '../../state/CategoryList';
 import { selectedItemsState } from '../../firebase/FirStoreDoc';
 import { Option } from '../../types/OptinalState';
 import { takeOutState } from '../../state/TakeOut';
+import { changePriceFormat } from '../../utils/changeFormat';
 function MenuItem() {
 	const selectedCategory = useRecoilValue(selectedCategoryState);
 	const [isOpenModal, setModalOpen] = useState<boolean>(false);
@@ -97,7 +98,7 @@ function MenuItem() {
 					<button onClick={() => handleClickMenuItem(item)}>
 						<img src={item.imageUrl} alt={item.imageName} />
 						<p className="menu-name">{item.name}</p>
-						<p className="menu-price">{item.price.toLocaleString()}</p>
+						<p className="menu-price">{changePriceFormat(String(item.price))}원</p>
 					</button>
 				</MenuItemWrapper>
 			))}
@@ -124,6 +125,7 @@ const MenuItemWrapper = styled.li`
 	img {
 		width: 218px;
 		height: 204px;
+		object-fit: cover;
 	}
 
 	.menu-name {
