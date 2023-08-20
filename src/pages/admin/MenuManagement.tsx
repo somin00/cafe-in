@@ -39,7 +39,7 @@ function MenuManagement() {
 	useEffect(() => {
 		const fetchMenu = async () => {
 			const menuRef = collection(db, 'menuItem');
-			const unsub = onSnapshot(query(menuRef, orderBy('id')), (snapshot) => {
+			const unsub = onSnapshot(query(menuRef, orderBy('name')), (snapshot) => {
 				const list: MenuType[] = [];
 				snapshot.docs.map((doc) => {
 					const { id, name, price, category, soldout, imageUrl, imageName } = doc.data();
