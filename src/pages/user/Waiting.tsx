@@ -36,6 +36,8 @@ function Waiting() {
 	const storedWaitingNum = localStorage.getItem('waitingNum');
 	const waitingNum = storedWaitingNum ? parseInt(storedWaitingNum) : 1;
 
+	const [firstWaiting, setFirstWaiting] = useState<boolean>(true);
+
 	//* 당일 날짜의 현재 대기 팀 수
 	const filteredWaitingNum = useMemo(() => filterTodayWaiting(currentData, 'waiting').length, [currentData]);
 
@@ -91,6 +93,8 @@ function Waiting() {
 
 				if (firstWaitingData.docs.length === 0) {
 					localStorage.setItem('waitingNum', (0).toString());
+				} else {
+					localStorage.setItem('waitingNum', filteredWaitingNum.toString());
 				}
 			} catch (error) {
 				console.error('Error getting waiting data:', error);
@@ -98,13 +102,7 @@ function Waiting() {
 		};
 
 		getWaitingData();
-	}, []);
-
-	useEffect(() => {
-		if (currentData) {
-			localStorage.setItem('waitingNum', currentWaitingNum.toString());
-		}
-	}, [currentData, currentWaitingNum, waitingPersonNum]);
+	}, [currentWaitingNum, filteredWaitingNum]);
 
 	useEffect(() => {
 		if (waitingPersonNum === 1) {
