@@ -39,6 +39,11 @@ function Waiting() {
 	//* 당일 날짜의 현재 대기 팀 수
 	const filteredWaitingNum = useMemo(() => filterTodayWaiting(currentData, 'waiting').length, [currentData]);
 
+	const todayWaitingNum = useMemo(
+		() => filterTodayWaiting(currentData, 'waiting').length + filterTodayWaiting(currentData, 'waited').length,
+		[currentData],
+	);
+
 	//* 대기 신청 시 필수 입력 값
 	const [waitingPersonNum, setWaitingPersonNum] = useState<number>(1);
 	const [decreaseDisable, setDecreaseDisable] = useState<boolean>(false);
@@ -92,7 +97,7 @@ function Waiting() {
 				if (firstWaitingData.docs.length === 0) {
 					localStorage.setItem('waitingNum', (0).toString());
 				} else {
-					localStorage.setItem('waitingNum', filteredWaitingNum.toString());
+					localStorage.setItem('waitingNum', todayWaitingNum.toString());
 				}
 			} catch (error) {
 				console.error('Error getting waiting data:', error);
