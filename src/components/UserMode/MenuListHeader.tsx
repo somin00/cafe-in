@@ -107,6 +107,12 @@ const Layout = styled.ul`
 	padding: 0 30px;
 	border-bottom: 1px solid ${({ theme }) => theme.textColor.lightgray};
 	background-color: ${({ theme }) => (theme.lightColor ? theme.textColor.white : theme.darkColor.background)};
+	overflow-x: auto;
+	white-space: nowrap;
+
+	&::-webkit-scrollbar {
+		display: none;
+	}
 `;
 
 export default MenuListHeader;
