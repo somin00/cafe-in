@@ -115,7 +115,7 @@ const RightFireworks = styled.img`
 const WaitingNumText = styled.div`
 	position: absolute;
 	top: 40%;
-	left: 30%;
+	left: 32%;
 	display: flex;
 	justify-content: center;
 	align-items: center;

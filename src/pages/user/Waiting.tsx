@@ -2,7 +2,7 @@ import { useState, useEffect, useRef, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { styled, useTheme } from 'styled-components';
-import { collection, getDocs, addDoc } from 'firebase/firestore';
+import { collection, getDocs, addDoc, query, orderBy, limit, where } from 'firebase/firestore';
 import { db } from '../../firebase/firebaseConfig';
 import WaitingApplyModal from '../../components/waitingManagement/WaitingApplyModal';
 import RenderMinusIcon from '../../components/customSVG/RenderMinusIcon';
@@ -31,6 +31,10 @@ function Waiting() {
 
 	//* 기존 대기 데이터 수
 	const [currentWaitingNum, setCurrentWaitingNum] = useState<number>(0);
+
+	//* Localstorage로 관리되는 대기번호
+	const storedWaitingNum = localStorage.getItem('waitingNum');
+	const waitingNum = storedWaitingNum ? parseInt(storedWaitingNum) : 1;
 
 	//* 당일 날짜의 현재 대기 팀 수
 	const filteredWaitingNum = useMemo(() => filterTodayWaiting(currentData, 'waiting').length, [currentData]);
@@ -63,6 +67,9 @@ function Waiting() {
 
 	useEffect(() => {
 		const waitingCollection = collection(db, 'waitingList');
+		const today = new Date();
+		today.setHours(0, 0, 0, 0);
+
 		const getWaitingData = async () => {
 			try {
 				const data = await getDocs(waitingCollection);
@@ -71,8 +78,21 @@ function Waiting() {
 					...(doc.data() as WaitingDataType),
 				}));
 
+				const firstWaitingQuery = query(
+					waitingCollection,
+					where('date', '>=', today.getTime()),
+					orderBy('date'),
+					limit(1),
+				);
+				const firstWaitingData = await getDocs(firstWaitingQuery);
+
 				setCurrentData(dataArray);
 				setCurrentWaitingNum(dataArray.length);
+
+				if (firstWaitingData.docs.length === 0) {
+					localStorage.setItem('waitingNum', (0).toString());
+					// setWaitingNum(0);
+				}
 			} catch (error) {
 				console.error('Error getting waiting data:', error);
 			}
@@ -93,7 +113,7 @@ function Waiting() {
 		if (!isOpenModal && isNavigate && modalType === 'try') {
 			navigate('/waitingcheck', {
 				state: {
-					userWaitingNum: currentWaitingNum + 1,
+					userWaitingNum: waitingNum,
 				},
 			});
 		}
@@ -105,11 +125,18 @@ function Waiting() {
 		const waitingCollection = collection(db, 'waitingList');
 
 		// *유효성 검사
-		if (waitingName.length === 0 && nameInput.current != null) {
-			setInputError(true);
-			setMsg('이름을 입력해주세요.');
-			nameInput.current.focus();
-			return;
+		if (nameInput.current != null) {
+			if (waitingName.length === 0) {
+				setInputError(true);
+				setMsg('이름을 입력해주세요.');
+				nameInput.current.focus();
+				return;
+			} else if (waitingName.length > 5) {
+				setInputError(true);
+				setMsg('5글자 이하로 입력해주세요.');
+				nameInput.current.focus();
+				return;
+			}
 		}
 
 		const telRule = /^010[0-9]{3,4}[0-9]{4}$/;
@@ -134,10 +161,11 @@ function Waiting() {
 				tel: waitingTel,
 				date: new Date().getTime(),
 				personNum: waitingPersonNum,
-				no: currentWaitingNum + 1,
+				no: waitingNum + 1,
 				status: 'waiting',
 			});
 			setModalType('try');
+			localStorage.setItem('waitingNum', (waitingNum + 1).toString());
 		} catch (error) {
 			setModalType('error');
 			console.error(error);
