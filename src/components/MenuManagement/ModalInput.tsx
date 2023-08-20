@@ -219,6 +219,7 @@ const ImageContainer = styled.div`
 		margin-bottom: 22px;
 		background-color: ${({ theme }) => theme.textColor.white};
 		border-radius: 10px;
+		object-fit: cover;
 	}
 
 	input {
