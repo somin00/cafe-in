@@ -16,6 +16,7 @@ function MenuItem() {
 	const [items, setItems] = useState<Item[]>([]);
 	const [selectedItems, setSelectedItems] = useRecoilState(selectedItemsState);
 	const takeOut = useRecoilValue(takeOutState);
+
 	const [clickedMenuItem, setClickedMenuItem] = useState<Item | null>(null);
 	const onClickToggleModal = useCallback(() => {
 		setModalOpen(!isOpenModal);
@@ -40,7 +41,10 @@ function MenuItem() {
 						price: Number(data.price),
 					} as Item;
 				});
-				setItems(loadedItems);
+
+				// menuItem의 이름 순서대로 정렬
+				const sortedItems = loadedItems.sort((a, b) => a.name.localeCompare(b.name));
+				setItems(sortedItems);
 			} catch (err) {
 				console.error(err);
 			}
@@ -83,7 +87,7 @@ function MenuItem() {
 		});
 	};
 	const handleClickMenuItem = (item: Item) => {
-		if (['스무디', '디저트'].includes(item.category)) {
+		if (['스무디', '디저트', '푸드'].includes(item.category)) {
 			addSelectedItem(item);
 		} else {
 			setClickedMenuItem(item);
@@ -126,6 +130,7 @@ const MenuItemWrapper = styled.li`
 		width: 218px;
 		height: 204px;
 		object-fit: cover;
+		border-radius: 10px;
 	}
 
 	.menu-name {

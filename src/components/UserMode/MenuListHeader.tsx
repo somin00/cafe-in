@@ -5,13 +5,16 @@ import { defaultTheme } from '../../style/theme';
 import { Category } from '../../types/Category';
 import { db } from '../../firebase/firebaseConfig';
 import { getDocs, collection, query, orderBy } from 'firebase/firestore';
-import { useSetRecoilState } from 'recoil';
+import { useRecoilState, useSetRecoilState } from 'recoil';
 import { selectedCategoryState } from '../../state/CategoryList';
+import { selectedItemsState } from '../../firebase/FirStoreDoc';
 
 function MenuListHeader() {
 	const setCategory = useSetRecoilState(selectedCategoryState);
 	const [activeBtn, setActiveBtn] = useState<string>('');
 	const [categories, setCategories] = useState<Category[]>([]);
+	const [selectedItems, setSelectedItems] = useRecoilState(selectedItemsState);
+
 	const navigate = useNavigate();
 	const theme = useTheme();
 	useEffect(() => {
@@ -43,6 +46,9 @@ function MenuListHeader() {
 		setSelectedCategory(''); // 또는 null 등 초기화
 	};
 
+	const deletedSelectedItem = () => {
+		setSelectedItems([]);
+	};
 	return (
 		<Layout>
 			<li>
@@ -59,7 +65,15 @@ function MenuListHeader() {
 			))}
 			<li>
 				<button>
-					<img src="/assets/user/home_light.svg" alt="Home" width={30} onClick={() => navigate('/')} />
+					<img
+						src="/assets/user/home_light.svg"
+						alt="Home"
+						width={30}
+						onClick={() => {
+							deletedSelectedItem();
+							navigate('/');
+						}}
+					/>
 				</button>
 			</li>
 		</Layout>
