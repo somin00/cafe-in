@@ -40,7 +40,10 @@ function Waiting() {
 	const filteredWaitingNum = useMemo(() => filterTodayWaiting(currentData, 'waiting').length, [currentData]);
 
 	const todayWaitingNum = useMemo(
-		() => filterTodayWaiting(currentData, 'waiting').length + filterTodayWaiting(currentData, 'waited').length,
+		() =>
+			filterTodayWaiting(currentData, 'waiting').length +
+			filterTodayWaiting(currentData, 'waited').length +
+			filterTodayWaiting(currentData, 'seated').length,
 		[currentData],
 	);
 
@@ -105,7 +108,7 @@ function Waiting() {
 		};
 
 		getWaitingData();
-	}, [currentWaitingNum, filteredWaitingNum]);
+	}, [currentWaitingNum, filteredWaitingNum, todayWaitingNum]);
 
 	useEffect(() => {
 		if (waitingPersonNum === 1) {
