@@ -91,7 +91,6 @@ function Waiting() {
 
 				if (firstWaitingData.docs.length === 0) {
 					localStorage.setItem('waitingNum', (0).toString());
-					// setWaitingNum(0);
 				}
 			} catch (error) {
 				console.error('Error getting waiting data:', error);
@@ -100,6 +99,12 @@ function Waiting() {
 
 		getWaitingData();
 	}, []);
+
+	useEffect(() => {
+		if (currentData) {
+			localStorage.setItem('waitingNum', currentWaitingNum.toString());
+		}
+	}, [currentData, currentWaitingNum, waitingPersonNum]);
 
 	useEffect(() => {
 		if (waitingPersonNum === 1) {
