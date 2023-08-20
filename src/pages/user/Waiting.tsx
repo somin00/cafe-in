@@ -36,8 +36,6 @@ function Waiting() {
 	const storedWaitingNum = localStorage.getItem('waitingNum');
 	const waitingNum = storedWaitingNum ? parseInt(storedWaitingNum) : 1;
 
-	const [firstWaiting, setFirstWaiting] = useState<boolean>(true);
-
 	//* 당일 날짜의 현재 대기 팀 수
 	const filteredWaitingNum = useMemo(() => filterTodayWaiting(currentData, 'waiting').length, [currentData]);
 
