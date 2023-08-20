@@ -105,11 +105,18 @@ function Waiting() {
 		const waitingCollection = collection(db, 'waitingList');
 
 		// *유효성 검사
-		if (waitingName.length === 0 && nameInput.current != null) {
-			setInputError(true);
-			setMsg('이름을 입력해주세요.');
-			nameInput.current.focus();
-			return;
+		if (nameInput.current != null) {
+			if (waitingName.length === 0) {
+				setInputError(true);
+				setMsg('이름을 입력해주세요.');
+				nameInput.current.focus();
+				return;
+			} else if (waitingName.length > 5) {
+				setInputError(true);
+				setMsg('5글자 이하로 입력해주세요.');
+				nameInput.current.focus();
+				return;
+			}
 		}
 
 		const telRule = /^010[0-9]{3,4}[0-9]{4}$/;
