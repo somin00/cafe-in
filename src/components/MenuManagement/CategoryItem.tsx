@@ -5,8 +5,13 @@ import { categoryListState, selectedCategoryState } from '../../state/CategoryLi
 import { db } from '../../firebase/firebaseConfig';
 import { deleteDoc, collection, getDocs, query, where, updateDoc } from 'firebase/firestore';
 import { menuListState } from '../../state/MenuListState';
+import { CategoryType } from '../../types/menuMangementType';
 
-function CategoryItem() {
+interface CategoryItemPropType {
+	categoryItem: CategoryType;
+}
+function CategoryItem({ categoryItem }: CategoryItemPropType) {
+	const { id, category, isShowOptionModal } = categoryItem;
 	const categoryListRef = collection(db, 'categoryList');
 	const menuItemRef = collection(db, 'menuItem');
 
@@ -15,6 +20,7 @@ function CategoryItem() {
 	const setSelectedCategory = useSetRecoilState(selectedCategoryState);
 
 	const [editedCategoryName, setEditedCategoryName] = useState<string>('');
+	const [editShowOptionModal, setEditShowOptionModal] = useState<boolean>(isShowOptionModal);
 	const [selectedId, setSelectedId] = useState<number>(0);
 
 	const checkDisabled = useCallback(
@@ -78,51 +84,68 @@ function CategoryItem() {
 		setSelectedId(0);
 	};
 
+	const handleChangeOptionModal = async (value: boolean, id: number) => {
+		setEditShowOptionModal((prev) => !prev);
+		const data = await getDocs(query(categoryListRef, where('id', '==', id)));
+		if (data.docs.length !== 0) {
+			await updateDoc(data.docs[0].ref, {
+				isShowOptionModal: value,
+			});
+		}
+	};
 	return (
 		<>
-			{categoryList.map(({ id, category }) => (
-				<CategoryItemWrapper key={id} data-id={id}>
-					{id === selectedId ? (
-						<>
-							<label htmlFor="editCategoryName">수정할 카테고리 이름</label>
-							<input
-								type="text"
-								id="editCategoryName"
-								placeholder={category}
-								value={editedCategoryName}
-								onChange={handleEditCategoryName}
-							/>
-							<EditCategoryButton
-								type="button"
-								onClick={() => {
-									handleStoreEdit(id);
-								}}
-							>
-								저장
-							</EditCategoryButton>
-							<button type="button" onClick={handleDeleteEdit}>
-								취소
-							</button>
-						</>
-					) : (
-						<>
-							<span>{category}</span>
-							<EditCategoryButton type="button" onClick={() => handleClickEditButton(id)}>
-								수정
-							</EditCategoryButton>
-							<button
-								type="button"
-								disabled={checkDisabled(id) ? true : false}
-								onClick={() => {
-									handleRemoveCategory(id);
-								}}
-							>
-								삭제
-							</button>
-						</>
-					)}
-				</CategoryItemWrapper>
-			))}
+			<CategoryItemWrapper data-id={id}>
+				<label htmlFor={`${category}-option-checkbox`}>옵션 체크박스</label>
+				<input
+					type="checkbox"
+					id="optionCheckbox"
+					checked={editShowOptionModal}
+					onChange={(e: ChangeEvent<HTMLInputElement>) => {
+						console.log(e.target);
+						handleChangeOptionModal(e.currentTarget.checked, id);
+					}}
+				/>
+				{id === selectedId ? (
+					<>
+						<label htmlFor="editCategoryName">수정할 카테고리 이름</label>
+						<input
+							type="text"
+							id="editCategoryName"
+							placeholder={category}
+							value={editedCategoryName}
+							onChange={handleEditCategoryName}
+						/>
+						<EditCategoryButton
+							type="button"
+							onClick={() => {
+								handleStoreEdit(id);
+							}}
+						>
+							저장
+						</EditCategoryButton>
+						<button type="button" onClick={handleDeleteEdit}>
+							취소
+						</button>
+					</>
+				) : (
+					<>
+						<span>{category}</span>
+						<EditCategoryButton type="button" onClick={() => handleClickEditButton(id)}>
+							수정
+						</EditCategoryButton>
+						<button
+							type="button"
+							disabled={checkDisabled(id) ? true : false}
+							onClick={() => {
+								handleRemoveCategory(id);
+							}}
+						>
+							삭제
+						</button>
+					</>
+				)}
+			</CategoryItemWrapper>
 		</>
 	);
 }
@@ -131,6 +154,7 @@ export default CategoryItem;
 
 const CategoryItemWrapper = styled.li`
 	display: flex;
+	align-items: center;
 
 	label {
 		position: absolute;
@@ -138,6 +162,11 @@ const CategoryItemWrapper = styled.li`
 		height: 1px;
 		overflow: hidden;
 		clip-path: polygon(0 0, 0 0, 0 0);
+	}
+
+	input[type='checkbox'] {
+		width: 20px;
+		height: 20px;
 	}
 
 	span,

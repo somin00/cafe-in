@@ -6,10 +6,15 @@ import { db } from '../../firebase/firebaseConfig';
 import { addDoc, collection } from 'firebase/firestore';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { categoryListState, selectedCategoryState } from '../../state/CategoryList';
+import { CategoryType } from '../../types/menuMangementType';
 
 function CategoryManagementModal({ onClickToggleModal }: ModalDefaultType) {
 	const backgroundRef = useRef<HTMLDivElement>(null);
-	const [categoryName, setCategoryName] = useState<string>('');
+	const [categoryState, setCategoryState] = useState<CategoryType>({
+		id: 0,
+		category: '',
+		isShowOptionModal: false,
+	});
 	const [isDuplicate, setIsDuplicate] = useState<boolean>(false);
 	const categoryListRef = collection(db, 'categoryList');
 	const categoryList = useRecoilValue(categoryListState);
@@ -26,24 +31,41 @@ function CategoryManagementModal({ onClickToggleModal }: ModalDefaultType) {
 		[categoryList],
 	);
 
-	const handleChangeCategoryName = (e: ChangeEvent<HTMLInputElement>) => {
-		setCategoryName(e.target.value);
-		checkDuplicate(e.target.value);
+	const handleChangeCategoryState = (e: ChangeEvent<HTMLInputElement>) => {
+		const { name, value, checked } = e.target;
+		setCategoryState((prev) => {
+			if (name === 'isShowOptionModal') {
+				return {
+					...prev,
+					[name]: checked,
+				};
+			}
+			return {
+				...prev,
+				[name]: value,
+			};
+		});
+		if (name === 'category') {
+			checkDuplicate(value);
+		}
 	};
 
 	const handleAddCategory = useCallback(async () => {
-		if (categoryName.trim()) {
-			await addDoc(categoryListRef, { id: Date.now(), category: categoryName });
-			setSelectedCategory(categoryName);
-			setCategoryName('');
+		const { category, isShowOptionModal } = categoryState;
+
+		if (category.trim()) {
+			await addDoc(categoryListRef, { id: Date.now(), category, isShowOptionModal });
+			setSelectedCategory(category);
+			setCategoryState({ id: 0, category: '', isShowOptionModal: false });
 		}
-	}, [categoryListRef, categoryName, setSelectedCategory]);
+	}, [categoryListRef, categoryState, setSelectedCategory]);
 
 	const handleClickOutside = (e: React.MouseEvent<HTMLDivElement>) => {
 		if (e.target === backgroundRef.current) {
 			onClickToggleModal();
 		}
 	};
+
 	return (
 		<CategoryManagementWrapper ref={backgroundRef} onClick={handleClickOutside}>
 			<CategoryModalContent>
@@ -55,15 +77,38 @@ function CategoryManagementModal({ onClickToggleModal }: ModalDefaultType) {
 						}}
 					>
 						<label htmlFor="categoryName">카테고리이름</label>
-						<input type="text" id="categoryName" value={categoryName} onChange={handleChangeCategoryName} />
+						<input
+							type="text"
+							id="categoryName"
+							name="category"
+							value={categoryState.category}
+							onChange={handleChangeCategoryState}
+						/>
+						<div>
+							<label htmlFor="optionCheckbox">옵션 체크박스</label>
+							<input
+								type="checkbox"
+								id="optionCheckbox"
+								checked={categoryState.isShowOptionModal}
+								name="isShowOptionModal"
+								onChange={handleChangeCategoryState}
+							/>
+							<p>메뉴 주문시 옵션 선택 창 사용</p>
+						</div>
 					</form>
-					<button type="button" onClick={handleAddCategory} disabled={!categoryName || isDuplicate ? true : false}>
+					<button
+						type="button"
+						onClick={handleAddCategory}
+						disabled={!categoryState.category || isDuplicate ? true : false}
+					>
 						추가
 					</button>
 				</AddContainer>
 				<GuidText>* 메뉴가 포함된 카테고리는 삭제 불가능합니다.</GuidText>
 				<ul>
-					<CategoryItem />
+					{categoryList.map((item) => (
+						<CategoryItem key={item.id} categoryItem={item} />
+					))}
 				</ul>
 				<CloseButton type="button" onClick={onClickToggleModal}>
 					닫기
@@ -96,7 +141,7 @@ const CategoryModalContent = styled.div`
 	display: flex;
 	flex-direction: column;
 	align-items: start;
-	padding: 30px 0 0 58px;
+	padding: 30px 0 20px 40px;
 
 	ul {
 		display: flex;
@@ -115,7 +160,19 @@ const CategoryModalContent = styled.div`
 
 const AddContainer = styled.div`
 	display: flex;
+	align-items: flex-start;
 	margin-bottom: 25px;
+
+	div {
+		display: flex;
+		align-items: center;
+		margin-top: 10px;
+	}
+
+	input[type='checkbox'] {
+		width: 20px;
+		height: 20px;
+	}
 
 	label {
 		position: absolute;
