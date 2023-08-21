@@ -4,10 +4,10 @@ import styled, { useTheme } from 'styled-components';
 import AddPointModal from '../../components/UserMode/AddPointModal';
 import UsePointUser from '../../components/UserMode/UsePointUser';
 import { defaultTheme } from '../../style/theme';
-import { addDoc, collection, doc, getDocs, query, updateDoc, where } from 'firebase/firestore';
+import { addDoc, collection } from 'firebase/firestore';
 import { db } from '../../firebase/firebaseConfig';
 import { useRecoilState } from 'recoil';
-import { usedPointsState, userPhoneNumberState, userUsedPointsState } from '../../state/PointState';
+import { usedPointsState } from '../../state/PointState';
 import { orderListStateAtom } from '../../state/OrderListAtom';
 import Toast from '../../components/adminMode/Toast';
 import ModalPortal from '../../components/ModalPortal';
@@ -21,8 +21,7 @@ function OrderCheck() {
 	const [isOpenAddPointModal, setAddPointModalOpen] = useState<boolean>(false);
 	const [isOpenUsePointUserModal, setUsePointUserModalOpen] = useState<boolean>(false);
 	const [toastMessage, setToastMessage] = useState<string | null>(null);
-	const [phoneNumberFromState] = useRecoilState(userPhoneNumberState);
-	const [usedPointsFromState] = useRecoilState(userUsedPointsState);
+
 	const toggleModal = (modalSetter: React.Dispatch<React.SetStateAction<boolean>>) => () => {
 		modalSetter((prevState) => !prevState);
 	};
@@ -46,21 +45,7 @@ function OrderCheck() {
 
 			await addDoc(orderCollectionRef, { ...order, progress: '진행중', totalOrderPay });
 		}
-		if (phoneNumberFromState) {
-			try {
-				const pointsCollection = collection(db, 'point');
-				const q = query(pointsCollection, where('phoneNumber', '==', phoneNumberFromState));
-				const matchingDocs = await getDocs(q);
 
-				if (!matchingDocs.empty) {
-					const existingDoc = matchingDocs.docs[0];
-					const docRef = doc(db, 'point', existingDoc.id);
-					await updateDoc(docRef, { point: usedPointsFromState });
-				}
-			} catch (error) {
-				console.error('포인트 사용 오류:', error);
-			}
-		}
 		setOrderList((prevOrders) =>
 			prevOrders.map((order) => (order.progress === '주문완료' ? { ...order, progress: '진행중' } : order)),
 		);
@@ -115,7 +100,7 @@ function OrderCheck() {
 										<OrderMenuItem key={index}>
 											<div className="products-name">
 												<img src={item.imgUrl} alt="제품이미지" width={42} height={42} />
-												<p>{item.menu}</p>
+												<p className="name">{item.menu}</p>
 											</div>
 											<p>{item.quantity}</p>
 											<p>{item.totalPrice.toLocaleString()}원</p>
@@ -181,7 +166,7 @@ const Layout = styled.div`
 	position: relative;
 	background-color: ${({ theme }) => (theme.lightColor ? theme.textColor.white : theme.darkColor.background)};
 	overflow-y: hidden;
-	userselect: none;
+	user-select: none;
 `;
 const Header = styled.div`
 	display: flex;
@@ -229,6 +214,17 @@ const Tbody = styled.ul`
 	margin-top: 10px;
 	padding-top: 20px;
 	overflow-y: auto;
+	.name {
+		display: flex;
+		justify-content: center;
+		flex: 1;
+		align-items: center;
+		white-space: nowrap;
+		text-overflow: ellipsis;
+		overflow: hidden;
+		max-width: 200px;
+		padding-left: 10px;
+	}
 	&::-webkit-scrollbar {
 		display: none;
 	}
@@ -247,7 +243,8 @@ const OrderMenuItem = styled.li`
 		display: flex;
 		justify-content: center;
 		flex: 1;
-		align-items: center;
+		white-space: nowrap;
+		text-overflow: ellipsis;
 	}
 
 	.products-name {
@@ -320,6 +317,7 @@ const Payment = styled.div`
 		img {
 			position: absolute;
 			bottom: 0;
+			object-fit: cover;
 		}
 	}
 	.use-point {

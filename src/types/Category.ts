@@ -10,7 +10,6 @@ export interface Item {
 	soldOut?: boolean;
 	quantity: number;
 	totalPrice: number;
-	isShowOptionModal?: boolean;
 }
 
 export interface Category {
