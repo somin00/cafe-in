@@ -18,7 +18,6 @@ interface CheckPointUsedIt extends ModalAndModalType {
 }
 function CheckPointUsedIt({ isOpenModal, onClickOpenModal, points, onUsePoints, phoneNumber }: CheckPointUsedIt) {
 	const setUsedPoints = useSetRecoilState(usedPointsState);
-
 	const theme = useTheme();
 	const [point, setPoint] = useState('');
 	const [toastMessage, setToastMessage] = useState<string>('');
@@ -77,7 +76,7 @@ function CheckPointUsedIt({ isOpenModal, onClickOpenModal, points, onUsePoints, 
 				</div>
 				<div className="point-check-allBtn">
 					<button onClick={handlePointClick}>전액</button>
-					<p>잔여 : {changePriceFormat(String(point)) ?? '0'} point</p>
+					<p>잔여 : {changePriceFormat(String(points)) ?? '0'} point</p>
 				</div>
 				<InputExplain>
 					<label htmlFor="point" hidden />
