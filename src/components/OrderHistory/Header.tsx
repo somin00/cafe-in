@@ -25,7 +25,7 @@ function Header({ setIsProgress, setIsComplete }: HeaderPropType) {
 	return (
 		<>
 			<HeadWrapper>
-				<ManagementHeader headerText="주문 내역">
+				<ManagementHeader headerText="주문 관리">
 					<ButtonContainer>
 						<HeaderButton text="진행중" decorate="is-selected" ref={progressRef} onClick={handleClickProgress} />
 						<HeaderButton text="완료주문" ref={completeRef} onClick={handleClickComplete} />
