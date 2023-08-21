@@ -187,7 +187,7 @@ const AddContainer = styled.div`
 	}
 
 	input {
-		width: 262px;
+		width: 296px;
 		height: 66px;
 		background-color: ${({ theme }) => theme.textColor.white};
 		border: none;
@@ -209,7 +209,7 @@ const AddContainer = styled.div`
 		color: ${({ theme }) => (theme.lightColor ? theme.textColor.black : theme.textColor.white)};
 		border-radius: 10px;
 		font-size: ${({ theme }) => theme.fontSize['3xl']};
-		font-weight: ${({ theme }) => theme.fontWeight.regular};
+		font-weight: ${({ theme }) => theme.fontWeight.semibold};
 
 		&:disabled {
 			cursor: not-allowed;
