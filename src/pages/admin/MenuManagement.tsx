@@ -22,10 +22,11 @@ function MenuManagement() {
 			const unsub = onSnapshot(query(categoryRef, orderBy('id')), (snapshot) => {
 				const list: CategoryType[] = [];
 				snapshot.docs.map((doc) => {
-					const { id, category } = doc.data();
+					const { id, category, isShowOptionModal } = doc.data();
 					list.push({
 						id,
 						category,
+						isShowOptionModal,
 					});
 				});
 				setCategoryList(list);

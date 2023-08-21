@@ -3,6 +3,7 @@ import { Dispatch, SetStateAction } from 'react';
 export interface CategoryType {
 	id: number;
 	category: string;
+	isShowOptionModal: boolean;
 }
 
 export interface MenuType {
