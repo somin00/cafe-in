@@ -4,7 +4,7 @@ import { styled } from 'styled-components';
 import ManagementHeader from '../../components/adminMode/ManagementHeader';
 import { db } from '../../firebase/firebaseConfig';
 import { collection, getDocs } from 'firebase/firestore';
-import { changePriceFormat } from '../../utils/changeFormat';
+import { changePriceFormat, changeYYMMDD } from '../../utils/changeFormat';
 import { Order } from '../../types/Order';
 
 interface totalOrder extends Order {
@@ -19,7 +19,7 @@ interface DaySalesData {
 
 function SalesList() {
 	const currentDate = new Date();
-	const todayDate = currentDate.toISOString().split('T')[0];
+	const todayDate = changeYYMMDD(currentDate);
 	const [salesList, setSalesList] = useState<totalOrder[]>([]);
 	const [daySalesData, setDaySalesData] = useState<DaySalesData[]>([]);
 	const [displayDate, setDisplayDate] = useState(todayDate);
@@ -45,7 +45,7 @@ function SalesList() {
 		const salesByDate: { [date: string]: { salesData: totalOrder[]; totalPriceSum: number } } = {};
 
 		salesList.forEach((order) => {
-			const date = new Date(order.id).toISOString().split('T')[0];
+			const date = changeYYMMDD(new Date(order.id));
 			if (!salesByDate[date]) {
 				salesByDate[date] = { salesData: [], totalPriceSum: 0 };
 			}
@@ -66,14 +66,14 @@ function SalesList() {
 	const handlePreviousDay = () => {
 		const currentDate = new Date(displayDate);
 		currentDate.setDate(currentDate.getDate() - 1);
-		const previousDate = currentDate.toISOString().split('T')[0];
+		const previousDate = changeYYMMDD(currentDate);
 		setDisplayDate(previousDate);
 	};
 
 	const handleNextDay = () => {
 		const currentDate = new Date(displayDate);
 		currentDate.setDate(currentDate.getDate() + 1);
-		const nextDate = currentDate.toISOString().split('T')[0];
+		const nextDate = changeYYMMDD(currentDate);
 		setDisplayDate(nextDate);
 	};
 
