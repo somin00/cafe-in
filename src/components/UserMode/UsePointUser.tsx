@@ -30,6 +30,7 @@ function UsePointUser({ onClickToggleModal }: ModalDefaultType) {
 	const handleCloseBtnClick = (e: React.MouseEvent) => {
 		e.stopPropagation();
 		onClickToggleModal();
+		setPhoneNumber('');
 	};
 
 	const fetchUserPoints = async (): Promise<number | null> => {
@@ -68,6 +69,7 @@ function UsePointUser({ onClickToggleModal }: ModalDefaultType) {
 	const onClickOpenModal = useCallback(async () => {
 		const isPointsValid = await checkPointsAndSetMessage();
 		setModalOpen(isPointsValid);
+		setPhoneNumber('');
 	}, [phoneNumber]);
 
 	const handleUsePoints = async (usedPoints: number) => {
