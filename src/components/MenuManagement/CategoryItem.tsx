@@ -99,10 +99,9 @@ function CategoryItem({ categoryItem }: CategoryItemPropType) {
 				<label htmlFor={`${category}-option-checkbox`}>옵션 체크박스</label>
 				<input
 					type="checkbox"
-					id="optionCheckbox"
+					id={`${category}-option-checkbox`}
 					checked={editShowOptionModal}
 					onChange={(e: ChangeEvent<HTMLInputElement>) => {
-						console.log(e.target);
 						handleChangeOptionModal(e.currentTarget.checked, id);
 					}}
 				/>

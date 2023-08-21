@@ -169,6 +169,10 @@ const AddContainer = styled.div`
 		margin-top: 10px;
 	}
 
+	p {
+		color: ${({ theme }) => (theme.lightColor ? theme.textColor.black : theme.textColor.white)};
+	}
+
 	input[type='checkbox'] {
 		width: 20px;
 		height: 20px;
@@ -228,6 +232,6 @@ const CloseButton = styled.button`
 `;
 
 const GuidText = styled.p`
-	color: ${({ theme }) => theme.textColor.black};
+	color: ${({ theme }) => (theme.lightColor ? theme.textColor.black : theme.textColor.white)};
 	margin-bottom: 10px;
 `;
