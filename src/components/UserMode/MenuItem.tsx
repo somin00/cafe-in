@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import OptionMenu from './OptionMenu';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { Item } from '../../types/Category';
-import { collection, getDocs, query, where } from 'firebase/firestore';
+import { collection, getDocs, orderBy, query, where } from 'firebase/firestore';
 import { db } from '../../firebase/firebaseConfig';
 import { selectedCategoryState } from '../../state/CategoryList';
 import { selectedItemsState } from '../../firebase/FirStoreDoc';
@@ -30,7 +30,7 @@ function MenuItem() {
 				if (selectedCategory) {
 					itemsQuery = query(itemCollection, where('category', '==', selectedCategory));
 				} else {
-					itemsQuery = itemCollection;
+					itemsQuery = query(itemCollection, orderBy('name'));
 				}
 				const querySnapshot = await getDocs(itemsQuery);
 				const loadedItems = querySnapshot.docs.map((doc) => {
@@ -42,9 +42,7 @@ function MenuItem() {
 					} as Item;
 				});
 
-				// menuItem의 이름 순서대로 정렬
-				const sortedItems = loadedItems.sort((a, b) => a.name.localeCompare(b.name));
-				setItems(sortedItems);
+				setItems(loadedItems);
 			} catch (err) {
 				console.error(err);
 			}
