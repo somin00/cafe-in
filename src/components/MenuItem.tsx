@@ -60,6 +60,7 @@ const MenuItemWrapper = styled.li`
 		width: 218px;
 		height: 204px;
 		object-fit: cover;
+		border-radius: 10px;
 	}
 
 	div {
