@@ -2,7 +2,7 @@ import { useState, useEffect, useRef, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { styled, useTheme } from 'styled-components';
-import { collection, getDocs, addDoc } from 'firebase/firestore';
+import { collection, getDocs, addDoc, query, orderBy, limit, where } from 'firebase/firestore';
 import { db } from '../../firebase/firebaseConfig';
 import WaitingApplyModal from '../../components/waitingManagement/WaitingApplyModal';
 import RenderMinusIcon from '../../components/customSVG/RenderMinusIcon';
@@ -32,8 +32,20 @@ function Waiting() {
 	//* 기존 대기 데이터 수
 	const [currentWaitingNum, setCurrentWaitingNum] = useState<number>(0);
 
+	//* Localstorage로 관리되는 대기번호
+	const storedWaitingNum = localStorage.getItem('waitingNum');
+	const waitingNum = storedWaitingNum ? parseInt(storedWaitingNum) : 1;
+
 	//* 당일 날짜의 현재 대기 팀 수
 	const filteredWaitingNum = useMemo(() => filterTodayWaiting(currentData, 'waiting').length, [currentData]);
+
+	const todayWaitingNum = useMemo(
+		() =>
+			filterTodayWaiting(currentData, 'waiting').length +
+			filterTodayWaiting(currentData, 'waited').length +
+			filterTodayWaiting(currentData, 'seated').length,
+		[currentData],
+	);
 
 	//* 대기 신청 시 필수 입력 값
 	const [waitingPersonNum, setWaitingPersonNum] = useState<number>(1);
@@ -63,6 +75,9 @@ function Waiting() {
 
 	useEffect(() => {
 		const waitingCollection = collection(db, 'waitingList');
+		const today = new Date();
+		today.setHours(0, 0, 0, 0);
+
 		const getWaitingData = async () => {
 			try {
 				const data = await getDocs(waitingCollection);
@@ -71,15 +86,29 @@ function Waiting() {
 					...(doc.data() as WaitingDataType),
 				}));
 
+				const firstWaitingQuery = query(
+					waitingCollection,
+					where('date', '>=', today.getTime()),
+					orderBy('date'),
+					limit(1),
+				);
+				const firstWaitingData = await getDocs(firstWaitingQuery);
+
 				setCurrentData(dataArray);
 				setCurrentWaitingNum(dataArray.length);
+
+				if (firstWaitingData.docs.length === 0) {
+					localStorage.setItem('waitingNum', (0).toString());
+				} else {
+					localStorage.setItem('waitingNum', todayWaitingNum.toString());
+				}
 			} catch (error) {
 				console.error('Error getting waiting data:', error);
 			}
 		};
 
 		getWaitingData();
-	}, []);
+	}, [currentWaitingNum, filteredWaitingNum, todayWaitingNum]);
 
 	useEffect(() => {
 		if (waitingPersonNum === 1) {
@@ -93,7 +122,7 @@ function Waiting() {
 		if (!isOpenModal && isNavigate && modalType === 'try') {
 			navigate('/waitingcheck', {
 				state: {
-					userWaitingNum: currentWaitingNum + 1,
+					userWaitingNum: waitingNum,
 				},
 			});
 		}
@@ -105,11 +134,18 @@ function Waiting() {
 		const waitingCollection = collection(db, 'waitingList');
 
 		// *유효성 검사
-		if (waitingName.length === 0 && nameInput.current != null) {
-			setInputError(true);
-			setMsg('이름을 입력해주세요.');
-			nameInput.current.focus();
-			return;
+		if (nameInput.current != null) {
+			if (waitingName.length === 0) {
+				setInputError(true);
+				setMsg('이름을 입력해주세요.');
+				nameInput.current.focus();
+				return;
+			} else if (waitingName.length > 5) {
+				setInputError(true);
+				setMsg('5글자 이하로 입력해주세요.');
+				nameInput.current.focus();
+				return;
+			}
 		}
 
 		const telRule = /^010[0-9]{3,4}[0-9]{4}$/;
@@ -134,10 +170,11 @@ function Waiting() {
 				tel: waitingTel,
 				date: new Date().getTime(),
 				personNum: waitingPersonNum,
-				no: currentWaitingNum + 1,
+				no: waitingNum + 1,
 				status: 'waiting',
 			});
 			setModalType('try');
+			localStorage.setItem('waitingNum', (waitingNum + 1).toString());
 		} catch (error) {
 			setModalType('error');
 			console.error(error);
@@ -158,11 +195,11 @@ function Waiting() {
 					<ApplicationBox>
 						<ApplicationHeaderText>대기를 원하시면 번호를 입력해주세요.</ApplicationHeaderText>
 						<NumCheckBox>
-							<MinusBtn onClick={onDecrease} $decreaseDisable={decreaseDisable}>
+							<MinusBtn onClick={onDecrease} $decreaseDisable={decreaseDisable} aria-label="대기 인원 수 1 빼기">
 								<RenderMinusIcon theme={theme} decreaseDisable={decreaseDisable} />
 							</MinusBtn>
 							{waitingPersonNum}
-							<PlusBtn onClick={onIncrease}>
+							<PlusBtn onClick={onIncrease} aria-label="대기 인원 수 1 더하기">
 								<RenderPlusIcon theme={theme} />
 							</PlusBtn>
 						</NumCheckBox>
@@ -274,7 +311,7 @@ const ApplicationHeaderText = styled.h2`
 
 const NumCheckBox = styled.div`
 	width: 327px;
-	height: 96px;
+	height: 120px;
 	font-size: ${({ theme }) => theme.fontSize['6xl']};
 	display: flex;
 	justify-content: space-between;
@@ -292,12 +329,15 @@ const PlusBtn = styled.button``;
 
 const InputBoxWrapper = styled.div`
 	width: 400px;
-	height: 220px;
+	height: 165px;
+	position: static;
 
 	h1 {
 		padding-left: 5px;
 		font-size: ${({ theme }) => theme.fontSize.lg};
 		color: ${({ theme }) => (theme.lightColor ? theme.lightColor.point : theme.darkColor?.point)};
+		position: absolute;
+		bottom: 185px;
 	}
 `;
 const InputBox = styled.input`
@@ -308,6 +348,7 @@ const InputBox = styled.input`
 	margin-bottom: 26px;
 	font-size: ${({ theme }) => theme.fontSize['2xl']};
 	border: none;
+	outline-color: ${({ theme }) => theme.textColor.black};
 	padding-left: 15px;
 
 	::placeholder {
@@ -317,7 +358,7 @@ const InputBox = styled.input`
 `;
 
 const ApplicationButtnoWrapper = styled.div`
-	width: 359px;
+	width: 400px;
 	height: 64px;
 	display: flex;
 	justify-content: space-between;
@@ -325,7 +366,7 @@ const ApplicationButtnoWrapper = styled.div`
 `;
 
 const ApplicationBtn = styled.button`
-	width: 168px;
+	width: 180px;
 	height: 64px;
 	border-radius: 10px;
 	color: ${({ theme }) => theme.textColor.white};

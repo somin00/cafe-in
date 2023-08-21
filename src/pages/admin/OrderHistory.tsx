@@ -26,8 +26,15 @@ function OrderHistory() {
 export default withAuth(OrderHistory);
 
 const HistoryWrapper = styled.div`
+	user-select: none;
 	width: 1194px;
 	height: 834px;
+	padding-bottom: 30px;
 	background-color: ${({ theme }) => (theme.lightColor ? '#f9f9f9' : theme.darkColor?.background)};
 	overflow-y: auto;
+	-ms-overflow-style: none;
+	scrollbar-width: none;
+	&::-webkit-scrollbar {
+		display: none;
+	}
 `;

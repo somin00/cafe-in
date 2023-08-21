@@ -20,8 +20,7 @@ export const GlobalStyles = createGlobalStyle`
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: #eeeeee;
-
+    background-color: #F3F3F3;
   }
 
   a {

@@ -6,8 +6,9 @@ interface OrderItemPropType {
 	idx: number;
 	itemInfo: OrderListItemType;
 	toggleComplete: (id: number, checked: boolean) => void;
+	time: number;
 }
-function OrderItem({ idx, itemInfo, toggleComplete }: OrderItemPropType) {
+function OrderItem({ idx, itemInfo, toggleComplete, time }: OrderItemPropType) {
 	const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
 		const checked = e.currentTarget.checked;
 		toggleComplete(idx, checked);
@@ -16,10 +17,17 @@ function OrderItem({ idx, itemInfo, toggleComplete }: OrderItemPropType) {
 	return (
 		<OrderItemWrapper>
 			<Info>
-				<input type="checkbox" checked={itemInfo.isComplete} onChange={handleChange} />
+				<label htmlFor={`${time} ${itemInfo.menu} ${idx} checkbox`}>완료 체크</label>
+				<input
+					type="checkbox"
+					id={`${time} ${itemInfo.menu} ${idx} checkbox`}
+					checked={itemInfo.isComplete}
+					onChange={handleChange}
+				/>
 				<span>{itemInfo.quantity}개</span>
 			</Info>
 			<MenuName className={itemInfo.isComplete ? 'is-checked' : ''}>{itemInfo.menu}</MenuName>
+			<MenuOptions>{itemInfo.options !== '없음' && itemInfo.options}</MenuOptions>
 		</OrderItemWrapper>
 	);
 }
@@ -29,7 +37,7 @@ export default OrderItem;
 const OrderItemWrapper = styled.li`
 	background-color: ${({ theme }) => theme.textColor.white};
 	border-radius: 10px;
-	margin-bottom: 19px;
+	margin-bottom: 10px;
 	font-size: ${({ theme }) => theme.fontSize['2xl']};
 	display: flex;
 	flex-direction: column;
@@ -42,6 +50,14 @@ const Info = styled.div`
 	display: flex;
 	align-items: center;
 	margin-bottom: 10px;
+
+	label {
+		position: absolute;
+		width: 1px;
+		height: 1px;
+		overflow: hidden;
+		clip-path: polygon(0 0, 0 0, 0 0);
+	}
 
 	span {
 		font-size: ${({ theme }) => theme.fontSize['xl']};
@@ -59,4 +75,11 @@ const MenuName = styled.span`
 		text-decoration: line-through;
 		color: ${({ theme }) => theme.textColor.darkgray};
 	}
+`;
+
+const MenuOptions = styled.span`
+	margin-top: 10px;
+	font-size: ${({ theme }) => theme.fontSize['xl']};
+	font-weight: ${({ theme }) => theme.fontWeight.semibold};
+	color: ${({ theme }) => theme.textColor.darkgray};
 `;

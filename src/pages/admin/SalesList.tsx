@@ -4,18 +4,11 @@ import { styled } from 'styled-components';
 import ManagementHeader from '../../components/adminMode/ManagementHeader';
 import { db } from '../../firebase/firebaseConfig';
 import { collection, getDocs } from 'firebase/firestore';
+import { changePriceFormat, changeYYMMDD } from '../../utils/changeFormat';
+import { Order } from '../../types/Order';
 
-interface Order {
-	id: number;
-	list: {
-		menu: string;
-		quantity: number;
-		options: string;
-		isComplete: boolean;
-	}[];
-	totalPrice: number;
-	takeout: boolean;
-	progress: '진행중' | '완료주문';
+interface totalOrder extends Order {
+	totalOrderPay: number;
 }
 
 interface DaySalesData {
@@ -26,8 +19,8 @@ interface DaySalesData {
 
 function SalesList() {
 	const currentDate = new Date();
-	const todayDate = currentDate.toISOString().split('T')[0];
-	const [salesList, setSalesList] = useState<Order[]>([]);
+	const todayDate = changeYYMMDD(currentDate);
+	const [salesList, setSalesList] = useState<totalOrder[]>([]);
 	const [daySalesData, setDaySalesData] = useState<DaySalesData[]>([]);
 	const [displayDate, setDisplayDate] = useState(todayDate);
 	const [targetYear, setTargetYear] = useState(currentDate.getFullYear());
@@ -35,11 +28,11 @@ function SalesList() {
 
 	useEffect(() => {
 		const getSales = async () => {
-			const orderListCollection = collection(db, 'testOrderList');
+			const orderListCollection = collection(db, 'orderList');
 			const salesDocs = await getDocs(orderListCollection);
-			const salesDataList: Order[] = [];
+			const salesDataList: totalOrder[] = [];
 			salesDocs.forEach((doc) => {
-				salesDataList.push({ ...(doc.data() as Order) });
+				salesDataList.push({ ...(doc.data() as totalOrder) });
 			});
 			setSalesList(salesDataList);
 		};
@@ -49,15 +42,15 @@ function SalesList() {
 
 	// 같은 날짜 별로 데이터 그룹화하고 필요한 데이터만 저장
 	useEffect(() => {
-		const salesByDate: { [date: string]: { salesData: Order[]; totalPriceSum: number } } = {};
+		const salesByDate: { [date: string]: { salesData: totalOrder[]; totalPriceSum: number } } = {};
 
 		salesList.forEach((order) => {
-			const date = new Date(order.id).toISOString().split('T')[0];
+			const date = changeYYMMDD(new Date(order.id));
 			if (!salesByDate[date]) {
 				salesByDate[date] = { salesData: [], totalPriceSum: 0 };
 			}
 			salesByDate[date].salesData.push(order);
-			salesByDate[date].totalPriceSum += order.totalPrice;
+			salesByDate[date].totalPriceSum += order.totalOrderPay;
 		});
 
 		const daySalesList: DaySalesData[] = [];
@@ -73,14 +66,14 @@ function SalesList() {
 	const handlePreviousDay = () => {
 		const currentDate = new Date(displayDate);
 		currentDate.setDate(currentDate.getDate() - 1);
-		const previousDate = currentDate.toISOString().split('T')[0];
+		const previousDate = changeYYMMDD(currentDate);
 		setDisplayDate(previousDate);
 	};
 
 	const handleNextDay = () => {
 		const currentDate = new Date(displayDate);
 		currentDate.setDate(currentDate.getDate() + 1);
-		const nextDate = currentDate.toISOString().split('T')[0];
+		const nextDate = changeYYMMDD(currentDate);
 		setDisplayDate(nextDate);
 	};
 
@@ -139,7 +132,7 @@ function SalesList() {
 						</SalesBox>
 						<SalesBox>
 							<p>총 매출 액</p>
-							{dayData.length > 0 ? <p> {dayData[0].totalPriceSum}원</p> : <p>0원</p>}
+							{dayData.length > 0 ? <p> {changePriceFormat(dayData[0].totalPriceSum.toString())}원</p> : <p>0원</p>}
 						</SalesBox>
 					</SalesBoxWrapper>
 				</DailySalesWrapper>
@@ -157,7 +150,7 @@ function SalesList() {
 						<SalesBox>
 							<p>{targetMonth}월 매출</p>{' '}
 							{monthData.length > 0 ? (
-								<p> {monthData.reduce((sum, data) => sum + data.totalPriceSum, 0)}원</p>
+								<p> {changePriceFormat(monthData.reduce((sum, data) => sum + data.totalPriceSum, 0).toString())}원</p>
 							) : (
 								<p>0 원</p>
 							)}
@@ -191,18 +184,18 @@ const SalesContent = styled.div`
 	p {
 		font-size: ${({ theme }) => theme.fontSize['4xl']};
 		color: ${({ theme }) => (theme.lightColor ? theme.textColor.black : theme.textColor.white)};
-		margin-bottom: 30px;
+		margin-bottom: 20px;
 		display: flex;
 		justify-content: space-between;
 	}
 `;
 
 const SalesBoxWrapper = styled.div`
-	background-color: ${({ theme }) => (theme.lightColor ? theme.lightColor.background : theme.darkColor.background)};
 	height: 239px;
 	display: flex;
 	justify-content: center;
 	align-items: center;
+	border-radius: 10px;
 
 	.totalOrder {
 		margin-right: 46px;
@@ -210,9 +203,10 @@ const SalesBoxWrapper = styled.div`
 `;
 
 const SalesBox = styled.div`
-	width: 194px;
+	width: 300px;
 	height: 194px;
-	background-color: ${({ theme }) => (theme.lightColor ? theme.textColor.white : theme.darkColor.main)};
+	background-color: ${({ theme }) => (theme.lightColor ? theme.lightColor.background : theme.darkColor.main)};
+	border-radius: 10px;
 	display: flex;
 	flex-flow: column nowrap;
 	align-items: center;
@@ -220,16 +214,29 @@ const SalesBox = styled.div`
 	line-height: 50px;
 	font-size: ${({ theme }) => theme.fontSize['3xl']};
 	color: ${({ theme }) => (theme.lightColor ? theme.textColor.black : theme.textColor.white)};
+	padding-top: 20px;
 `;
 
 const DailySalesWrapper = styled.div`
-	width: 486px;
+	width: 500px;
 	height: 288px;
 	text-align: center;
+
+	> p {
+		font-weight: ${({ theme }) => theme.fontWeight.semibold};
+		padding-left: 5px;
+		padding-right: 5px;
+	}
 `;
 
 const MonthlySalesWrapper = styled.div`
-	width: 260px;
+	width: 300px;
 	height: 288px;
 	text-align: center;
+
+	> p {
+		font-weight: ${({ theme }) => theme.fontWeight.semibold};
+		padding-left: 5px;
+		padding-right: 5px;
+	}
 `;

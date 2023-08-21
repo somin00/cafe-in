@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import styled from 'styled-components';
 import ModalInput from './ModalInput';
 import { ModalDefaultType } from '../../types/ModalOpenTypes';
@@ -10,6 +10,7 @@ import { useRecoilValue } from 'recoil';
 import { selectedCategoryState } from '../../state/CategoryList';
 
 function AddMenuModal({ onClickToggleModal }: ModalDefaultType) {
+	const backgroundRef = useRef<HTMLDivElement>(null);
 	const selectedCategory = useRecoilValue(selectedCategoryState);
 
 	const initialMenu: MenuType = {
@@ -65,8 +66,13 @@ function AddMenuModal({ onClickToggleModal }: ModalDefaultType) {
 		onClickToggleModal();
 	};
 
+	const handleClickOutside = (e: React.MouseEvent<HTMLDivElement>) => {
+		if (e.target === backgroundRef.current) {
+			onClickToggleModal();
+		}
+	};
 	return (
-		<AddModalWrapper>
+		<AddModalWrapper ref={backgroundRef} onClick={handleClickOutside}>
 			<AddModalContent>
 				<ModalInput menuInfo={menuInfo} setMenuState={setMenuInfo} setFile={setFile} />
 				<Guide>*모든 정보 입력 후 메뉴 추가가 가능합니다.</Guide>
@@ -86,12 +92,13 @@ function AddMenuModal({ onClickToggleModal }: ModalDefaultType) {
 export default AddMenuModal;
 
 const AddModalWrapper = styled.div`
-	width: 100%;
-	height: 100%;
+	width: 1194px;
+	height: 834px;
 	background-color: rgba(0, 0, 0, 0.2);
 	position: fixed;
-	left: 0;
+	left: 50%;
 	top: 0;
+	transform: translateX(-597px);
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -122,7 +129,7 @@ const Button = styled.button`
 	border-radius: 10px;
 	font-size: ${({ theme }) => theme.fontSize['3xl']};
 	font-weight: ${({ theme }) => theme.fontWeight.regular};
-	color: ${({ theme }) => theme.textColor.white};
+	color: ${({ theme }) => (theme.lightColor ? theme.textColor.black : theme.textColor.white)};
 	background-color: ${({ theme }) => (theme.lightColor ? theme.lightColor.sub : theme.darkColor.main)};
 
 	&:first-child {
@@ -132,5 +139,6 @@ const Button = styled.button`
 	&:disabled {
 		cursor: not-allowed;
 		background-color: ${({ theme }) => theme.textColor.darkgray};
+		color: ${({ theme }) => theme.textColor.white};
 	}
 `;

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { styled, useTheme } from 'styled-components';
 import { Routes, Route, NavLink } from 'react-router-dom';
-import { useRecoilState, useRecoilValue } from 'recoil';
+import { useRecoilState } from 'recoil';
 import ManagementHeader from '../../components/adminMode/ManagementHeader';
 import WaitingTableBox from '../../components/waitingManagement/WaitingTableBox';
 import WaitingModal from '../../components/waitingManagement/WaitingModal';
@@ -61,6 +61,8 @@ const WaitingManagement = () => {
 						>
 							<img
 								alt="대기 중 명단 선택 상태 안내"
+								width={24}
+								height={24}
 								src={
 									isWaiting
 										? process.env.PUBLIC_URL +
@@ -87,6 +89,8 @@ const WaitingManagement = () => {
 										: process.env.PUBLIC_URL +
 										  (theme.lightColor ? '/assets/admin/check-able_light.svg' : '/assets/admin/check-able_dark.svg')
 								}
+								width={24}
+								height={24}
 								alt="대기 완료 명단 선택 상태 안내"
 							/>
 							대기 완료 명단
@@ -181,14 +185,28 @@ const WaitingAbleBtn = styled.button<styleProps>`
 	width: 137px;
 	height: 54px;
 	background-color: ${({ theme, $isWaitingAvailable }) =>
-		$isWaitingAvailable ? (theme.lightColor ? theme.lightColor.point : theme.textColor.darkgray) : 'none'};
+		$isWaitingAvailable
+			? theme.lightColor
+				? theme.color === 'blue'
+					? theme.lightColor.sub
+					: theme.lightColor.point
+				: theme.textColor.darkgray
+			: 'none'};
 	color: ${({ theme, $isWaitingAvailable }) =>
-		$isWaitingAvailable ? theme.textColor.white : theme.lightColor ? theme.lightColor.point : theme.textColor.darkgray};
+		$isWaitingAvailable
+			? theme.textColor.white
+			: theme.lightColor
+			? theme.color === 'blue'
+				? theme.lightColor.sub
+				: theme.lightColor.point
+			: theme.textColor.darkgray};
 	border: ${({ theme, $isWaitingAvailable }) =>
 		$isWaitingAvailable
 			? 'none'
 			: theme.lightColor
-			? `2px solid ${theme.lightColor.point}`
+			? theme.color === 'blue'
+				? `2px solid ${theme.lightColor.sub}`
+				: `2px solid ${theme.lightColor.point}`
 			: `2px solid ${theme.textColor.darkgray}`};
 	border-radius: 10px;
 	margin-right: 8px;
@@ -199,13 +217,25 @@ const WaitingDisableBtn = styled.button<styleProps>`
 	height: 54px;
 	border-radius: 10px;
 	background-color: ${({ theme, $isWaitingAvailable }) =>
-		$isWaitingAvailable ? 'none' : theme.lightColor ? theme.lightColor.point : theme.textColor.darkgray};
+		$isWaitingAvailable
+			? 'none'
+			: theme.lightColor
+			? theme.color === 'blue'
+				? theme.lightColor.sub
+				: theme.lightColor.point
+			: theme.textColor.darkgray};
 	border: ${({ theme }) =>
-		theme.lightColor ? `2px solid ${theme.lightColor.point}` : `2px solid ${theme.textColor.darkgray}`};
+		theme.lightColor
+			? theme.color === 'blue'
+				? `2px solid ${theme.lightColor.sub}`
+				: `2px solid ${theme.lightColor.point}`
+			: `2px solid ${theme.textColor.darkgray}`};
 	color: ${({ theme, $isWaitingAvailable }) =>
 		$isWaitingAvailable
 			? theme.lightColor
-				? theme.lightColor.point
+				? theme.color === 'blue'
+					? theme.lightColor.sub
+					: theme.lightColor.point
 				: theme.textColor.darkgray
 			: theme.textColor.white};
 `;

@@ -20,8 +20,8 @@ function ManagementHeader(props: HeaderTextProps) {
 
 	return (
 		<ManagementHeaderWrapper>
-			<IconWrapper onClick={handleBackClick}>
-				<img alt="뒤로가기 버튼" />
+			<IconWrapper onClick={handleBackClick} aria-label="뒤로가기">
+				<img alt="뒤로가기 버튼" width={25} height={23} />
 			</IconWrapper>
 			<HeaderTitle className={children ? 'has-button' : ''}>{headerText}</HeaderTitle>
 			{children}

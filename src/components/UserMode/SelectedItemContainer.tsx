@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { styled } from 'styled-components';
-import { useRecoilState, useRecoilValue } from 'recoil';
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import { selectedItemsState } from '../../firebase/FirStoreDoc';
 import { orderListStateAtom } from '../../state/OrderListAtom';
 import { OrderProgress } from '../../types/Order';
@@ -15,7 +15,7 @@ function SelectedItemContainer() {
 	const navigate = useNavigate();
 	const takeOut = useRecoilValue(takeOutState);
 	const [selectedItems, setSelectedItems] = useRecoilState(selectedItemsState);
-	const [orderList, setOrderList] = useRecoilState(orderListStateAtom);
+	const setOrderList = useSetRecoilState(orderListStateAtom);
 	const handleItemDelete = (itemName: string) => {
 		setSelectedItems((prev) => prev.filter((item) => item.id.toString() !== itemName));
 	};
@@ -43,6 +43,7 @@ function SelectedItemContainer() {
 	};
 
 	const totalPrice = selectedItems.reduce((acc, item) => acc + item.totalPrice * item.quantity, 0);
+	// eslint-disable-next-line react-hooks/exhaustive-deps
 	const handleDeleteAll = () => {
 		setSelectedItems([]);
 	};
