@@ -21,9 +21,9 @@ const Button = styled.button`
 	height: 56px;
 	border-radius: 10px;
 	font-size: ${({ theme }) => theme.fontSize['2xl']};
-	font-weight: ${({ theme }) => theme.fontWeight.medium};
+	font-weight: ${({ theme }) => theme.fontWeight.semibold};
 	background-color: ${({ theme }) => (theme.lightColor ? theme.textColor.white : theme.darkColor.background)};
-	border: ${({ theme }) => (theme.lightColor ? theme.lightColor.point : theme.textColor.white)} 1px solid;
+	border: ${({ theme }) => (theme.lightColor ? theme.lightColor.point : theme.textColor.white)} 2px solid;
 	color: ${({ theme }) => (theme.lightColor ? theme.lightColor.point : theme.textColor.white)};
 
 	&:first-child {
