@@ -4,10 +4,10 @@ import styled, { useTheme } from 'styled-components';
 import AddPointModal from '../../components/UserMode/AddPointModal';
 import UsePointUser from '../../components/UserMode/UsePointUser';
 import { defaultTheme } from '../../style/theme';
-import { addDoc, collection } from 'firebase/firestore';
+import { addDoc, collection, doc, getDocs, query, updateDoc, where } from 'firebase/firestore';
 import { db } from '../../firebase/firebaseConfig';
 import { useRecoilState } from 'recoil';
-import { usedPointsState } from '../../state/PointState';
+import { usedPointsState, userPhoneNumberState, userUsedPointsState } from '../../state/PointState';
 import { orderListStateAtom } from '../../state/OrderListAtom';
 import Toast from '../../components/adminMode/Toast';
 import ModalPortal from '../../components/ModalPortal';
@@ -21,7 +21,8 @@ function OrderCheck() {
 	const [isOpenAddPointModal, setAddPointModalOpen] = useState<boolean>(false);
 	const [isOpenUsePointUserModal, setUsePointUserModalOpen] = useState<boolean>(false);
 	const [toastMessage, setToastMessage] = useState<string | null>(null);
-
+	const [phoneNumberFromState] = useRecoilState(userPhoneNumberState);
+	const [usedPointsFromState] = useRecoilState(userUsedPointsState);
 	const toggleModal = (modalSetter: React.Dispatch<React.SetStateAction<boolean>>) => () => {
 		modalSetter((prevState) => !prevState);
 	};
@@ -45,7 +46,21 @@ function OrderCheck() {
 
 			await addDoc(orderCollectionRef, { ...order, progress: '진행중', totalOrderPay });
 		}
+		if (phoneNumberFromState) {
+			try {
+				const pointsCollection = collection(db, 'point');
+				const q = query(pointsCollection, where('phoneNumber', '==', phoneNumberFromState));
+				const matchingDocs = await getDocs(q);
 
+				if (!matchingDocs.empty) {
+					const existingDoc = matchingDocs.docs[0];
+					const docRef = doc(db, 'point', existingDoc.id);
+					await updateDoc(docRef, { point: usedPointsFromState });
+				}
+			} catch (error) {
+				console.error('포인트 사용 오류:', error);
+			}
+		}
 		setOrderList((prevOrders) =>
 			prevOrders.map((order) => (order.progress === '주문완료' ? { ...order, progress: '진행중' } : order)),
 		);

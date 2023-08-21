@@ -51,6 +51,7 @@ function CheckPointUsedIt({ isOpenModal, onClickOpenModal, points, onUsePoints, 
 	const handlePointChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		setPoint(e.target.value);
 	};
+
 	const handlePointClick = () => {
 		setPoint(points?.toString() ?? '');
 		setUsedPoints(points);
@@ -60,6 +61,7 @@ function CheckPointUsedIt({ isOpenModal, onClickOpenModal, points, onUsePoints, 
 		e.stopPropagation();
 		onClickOpenModal();
 	};
+
 	const phoneLastFourDigits = phoneNumber.slice(-4);
 	return isOpenModal ? (
 		<ModalContainer onClick={onClickOpenModal}>
@@ -69,7 +71,7 @@ function CheckPointUsedIt({ isOpenModal, onClickOpenModal, points, onUsePoints, 
 					<p>사용하실 포인트 입력 해주세요 </p>
 					<img
 						src={theme.lightColor ? '/assets/user/yellowcloud_light.svg' : '/assets/user/pinkcloud_dark.svg'}
-						alt=""
+						alt="포인트 구름"
 						width={95}
 					/>
 				</div>
@@ -86,7 +88,7 @@ function CheckPointUsedIt({ isOpenModal, onClickOpenModal, points, onUsePoints, 
 						value={point}
 						placeholder="숫자만 입력해주세요"
 						onChange={handlePointChange}
-					></input>
+					/>
 					<p>1,000 포인트 이상 사용 가능합니다. </p>
 				</InputExplain>
 				<BtnContainer>
