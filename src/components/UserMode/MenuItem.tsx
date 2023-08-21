@@ -87,7 +87,7 @@ function MenuItem() {
 		});
 	};
 	const handleClickMenuItem = (item: Item) => {
-		if (['스무디', '디저트', '푸드'].includes(item.category)) {
+		if (['스무디', '디저트', '푸드', '생과일주스'].includes(item.category)) {
 			addSelectedItem(item);
 		} else {
 			setClickedMenuItem(item);
