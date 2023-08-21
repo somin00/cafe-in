@@ -6,12 +6,15 @@ import { collection, query, where, getDocs, doc, updateDoc } from 'firebase/fire
 import { db } from '../../firebase/firebaseConfig';
 import Toast from '../adminMode/Toast';
 import ModalPortal from '../ModalPortal';
+import { useRecoilState } from 'recoil';
+import { userPhoneNumberState, userUsedPointsState } from '../../state/PointState';
 
 function UsePointUser({ onClickToggleModal }: ModalDefaultType) {
 	const [isOpenModal, setModalOpen] = useState<boolean>(false);
-	const [phoneNumber, setPhoneNumber] = useState('');
-	const [userPoints, setUserPoints] = useState<number | null>(null);
+	const [phoneNumber, setPhoneNumber] = useRecoilState(userPhoneNumberState);
+	const [userPoints, setUserPoints] = useRecoilState(userUsedPointsState);
 	const [toastMessage, setToastMessage] = useState<string>('');
+
 	useEffect(() => {
 		if (toastMessage) {
 			const timer = setTimeout(() => {
@@ -21,12 +24,15 @@ function UsePointUser({ onClickToggleModal }: ModalDefaultType) {
 			return () => clearTimeout(timer);
 		}
 	}, [toastMessage]);
+
 	const handlePhoneNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => setPhoneNumber(e.target.value);
 
 	const handleCloseBtnClick = (e: React.MouseEvent) => {
 		e.stopPropagation();
 		onClickToggleModal();
+		setPhoneNumber('');
 	};
+
 	const fetchUserPoints = async (): Promise<number | null> => {
 		try {
 			const pointsCollection = collection(db, 'point');
@@ -42,6 +48,7 @@ function UsePointUser({ onClickToggleModal }: ModalDefaultType) {
 			return null;
 		}
 	};
+
 	const checkPointsAndSetMessage = async () => {
 		const points = await fetchUserPoints();
 		if (points === null) {
@@ -62,6 +69,7 @@ function UsePointUser({ onClickToggleModal }: ModalDefaultType) {
 	const onClickOpenModal = useCallback(async () => {
 		const isPointsValid = await checkPointsAndSetMessage();
 		setModalOpen(isPointsValid);
+		setPhoneNumber('');
 	}, [phoneNumber]);
 
 	const handleUsePoints = async (usedPoints: number) => {
@@ -72,16 +80,7 @@ function UsePointUser({ onClickToggleModal }: ModalDefaultType) {
 			}
 			const remainingPoints = userPoints - usedPoints;
 			setUserPoints(remainingPoints);
-
-			const pointsCollection = collection(db, 'point');
-			const q = query(pointsCollection, where('phoneNumber', '==', phoneNumber));
-			const matchingDocs = await getDocs(q);
-
-			if (!matchingDocs.empty) {
-				const existingDoc = matchingDocs.docs[0];
-				const docRef = doc(db, 'point', existingDoc.id);
-				await updateDoc(docRef, { point: remainingPoints });
-			}
+			setPhoneNumber(phoneNumber);
 		} catch (error) {
 			console.error('포인트 사용 오류:', error);
 		}
@@ -100,7 +99,7 @@ function UsePointUser({ onClickToggleModal }: ModalDefaultType) {
 						value={phoneNumber}
 						placeholder="숫자만 입력해주세요"
 						onChange={handlePhoneNumberChange}
-					></input>
+					/>
 					<button>
 						<img src="/assets/user/BackBtn_light.svg" alt="지우기" width={45} />
 					</button>
@@ -119,11 +118,13 @@ function UsePointUser({ onClickToggleModal }: ModalDefaultType) {
 					phoneNumber={phoneNumber}
 				/>
 			)}
+
 			{toastMessage && (
 				<ModalPortal>
 					<Toast text={toastMessage} />
 				</ModalPortal>
 			)}
+
 			<Backdrop
 				onClick={(e: React.MouseEvent) => {
 					e.preventDefault();
@@ -135,6 +136,7 @@ function UsePointUser({ onClickToggleModal }: ModalDefaultType) {
 		</ModalContainer>
 	);
 }
+
 export const ModalContainer = styled.div`
 	width: 100%;
 	height: 100%;

@@ -6,6 +6,7 @@ import { selectedItemsState } from '../../firebase/FirStoreDoc';
 import { orderListStateAtom } from '../../state/OrderListAtom';
 import { OrderProgress } from '../../types/Order';
 import { takeOutState } from '../../state/TakeOut';
+import { changePriceFormat } from '../../utils/changeFormat';
 type StyledProps = {
 	$quantity: number;
 };
@@ -135,7 +136,7 @@ function SelectedItemContainer() {
 				<PayContainer>
 					<TotalPrice>
 						<p>총 결제 금액</p>
-						<p className="total-price">{totalPrice.toLocaleString()}원</p>
+						<p className="total-price">{changePriceFormat(String(totalPrice))}원</p>
 					</TotalPrice>
 					<AllDeleteBtn onClick={handleDeleteAll}>
 						<img src="/assets/user/AllDeleteBtn.svg" alt="전체삭제" />

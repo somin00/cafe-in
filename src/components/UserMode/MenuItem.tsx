@@ -3,18 +3,20 @@ import styled from 'styled-components';
 import OptionMenu from './OptionMenu';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { Item } from '../../types/Category';
-import { collection, getDocs, query, where } from 'firebase/firestore';
+import { collection, getDocs, orderBy, query, where } from 'firebase/firestore';
 import { db } from '../../firebase/firebaseConfig';
 import { selectedCategoryState } from '../../state/CategoryList';
 import { selectedItemsState } from '../../firebase/FirStoreDoc';
 import { Option } from '../../types/OptinalState';
 import { takeOutState } from '../../state/TakeOut';
+import { changePriceFormat } from '../../utils/changeFormat';
 function MenuItem() {
 	const selectedCategory = useRecoilValue(selectedCategoryState);
 	const [isOpenModal, setModalOpen] = useState<boolean>(false);
 	const [items, setItems] = useState<Item[]>([]);
 	const [selectedItems, setSelectedItems] = useRecoilState(selectedItemsState);
 	const takeOut = useRecoilValue(takeOutState);
+
 	const [clickedMenuItem, setClickedMenuItem] = useState<Item | null>(null);
 	const onClickToggleModal = useCallback(() => {
 		setModalOpen(!isOpenModal);
@@ -28,7 +30,7 @@ function MenuItem() {
 				if (selectedCategory) {
 					itemsQuery = query(itemCollection, where('category', '==', selectedCategory));
 				} else {
-					itemsQuery = itemCollection;
+					itemsQuery = query(itemCollection, orderBy('name'));
 				}
 				const querySnapshot = await getDocs(itemsQuery);
 				const loadedItems = querySnapshot.docs.map((doc) => {
@@ -39,6 +41,7 @@ function MenuItem() {
 						price: Number(data.price),
 					} as Item;
 				});
+
 				setItems(loadedItems);
 			} catch (err) {
 				console.error(err);
@@ -82,7 +85,7 @@ function MenuItem() {
 		});
 	};
 	const handleClickMenuItem = (item: Item) => {
-		if (['스무디', '디저트'].includes(item.category)) {
+		if (['스무디', '디저트', '푸드', '생과일주스'].includes(item.category)) {
 			addSelectedItem(item);
 		} else {
 			setClickedMenuItem(item);
@@ -97,7 +100,7 @@ function MenuItem() {
 					<button onClick={() => handleClickMenuItem(item)}>
 						<img src={item.imageUrl} alt={item.imageName} />
 						<p className="menu-name">{item.name}</p>
-						<p className="menu-price">{item.price.toLocaleString()}</p>
+						<p className="menu-price">{changePriceFormat(String(item.price))}원</p>
 					</button>
 				</MenuItemWrapper>
 			))}
@@ -124,6 +127,8 @@ const MenuItemWrapper = styled.li`
 	img {
 		width: 218px;
 		height: 204px;
+		object-fit: cover;
+		border-radius: 10px;
 	}
 
 	.menu-name {
