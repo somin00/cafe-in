@@ -4,7 +4,6 @@ import { collection, getDocs } from 'firebase/firestore';
 import { db } from '../../firebase/firebaseConfig';
 import withAuth from '../../components/adminMode/WithAuth';
 import ManagementHeader from '../../components/adminMode/ManagementHeader';
-import { changePriceFormat } from '../../utils/changeFormat';
 
 type Points = {
 	id?: string;

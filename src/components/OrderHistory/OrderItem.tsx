@@ -68,6 +68,15 @@ const Info = styled.div`
 		height: 20px;
 		margin-right: 10px;
 	}
+
+	input[type='checkbox'] {
+		accent-color: ${({ theme }) =>
+			theme.lightColor
+				? theme.color === 'blue'
+					? theme.lightColor.sub
+					: theme.lightColor.point
+				: theme.darkColor.main};
+	}
 `;
 
 const MenuName = styled.span`

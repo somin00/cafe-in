@@ -166,6 +166,12 @@ const CategoryItemWrapper = styled.li`
 	input[type='checkbox'] {
 		width: 20px;
 		height: 20px;
+		accent-color: ${({ theme }) =>
+			theme.lightColor
+				? theme.color === 'blue'
+					? theme.lightColor.sub
+					: theme.lightColor.point
+				: theme.darkColor.main};
 	}
 
 	span,
