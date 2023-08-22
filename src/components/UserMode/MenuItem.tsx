@@ -1,11 +1,11 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import OptionMenu from './OptionMenu';
-import { useRecoilState, useRecoilValue } from 'recoil';
+import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { Item } from '../../types/Category';
 import { collection, getDocs, orderBy, query, where } from 'firebase/firestore';
 import { db } from '../../firebase/firebaseConfig';
-import { selectedCategoryState } from '../../state/CategoryList';
+import { categoriesState, selectedCategoryState } from '../../state/CategoryList';
 import { selectedItemsState } from '../../firebase/FirStoreDoc';
 import { Option } from '../../types/OptinalState';
 import { takeOutState } from '../../state/TakeOut';
@@ -14,8 +14,9 @@ function MenuItem() {
 	const selectedCategory = useRecoilValue(selectedCategoryState);
 	const [isOpenModal, setModalOpen] = useState<boolean>(false);
 	const [items, setItems] = useState<Item[]>([]);
-	const [selectedItems, setSelectedItems] = useRecoilState(selectedItemsState);
+	const setSelectedItems = useSetRecoilState(selectedItemsState);
 	const takeOut = useRecoilValue(takeOutState);
+	const categories = useRecoilValue(categoriesState);
 
 	const [clickedMenuItem, setClickedMenuItem] = useState<Item | null>(null);
 	const onClickToggleModal = useCallback(() => {
@@ -50,7 +51,7 @@ function MenuItem() {
 			}
 		};
 		fetchItems();
-	}, [selectedCategory]);
+	}, [selectedCategory, takeOut]);
 
 	const addSelectedItem = (item: Item, options: Option[] = []) => {
 		const optionsStr =
@@ -87,7 +88,12 @@ function MenuItem() {
 		});
 	};
 	const handleClickMenuItem = (item: Item) => {
-		if (['스무디', '디저트', '푸드', '생과일주스'].includes(item.category)) {
+		if (
+			categories
+				.filter((v) => v.isShowOptionModal === false)
+				.map((v) => v.category)
+				.includes(item.category)
+		) {
 			addSelectedItem(item);
 		} else {
 			setClickedMenuItem(item);

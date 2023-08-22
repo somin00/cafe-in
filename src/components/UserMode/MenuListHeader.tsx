@@ -2,18 +2,17 @@ import React, { useEffect, useState } from 'react';
 import styled, { useTheme } from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import { defaultTheme } from '../../style/theme';
-import { Category } from '../../types/Category';
 import { db } from '../../firebase/firebaseConfig';
 import { getDocs, collection, query, orderBy } from 'firebase/firestore';
 import { useRecoilState, useSetRecoilState } from 'recoil';
-import { selectedCategoryState } from '../../state/CategoryList';
+import { categoriesState, selectedCategoryState } from '../../state/CategoryList';
 import { selectedItemsState } from '../../firebase/FirStoreDoc';
 
 function MenuListHeader() {
 	const setCategory = useSetRecoilState(selectedCategoryState);
 	const [activeBtn, setActiveBtn] = useState<string>('');
-	const [categories, setCategories] = useState<Category[]>([]);
-	const [selectedItems, setSelectedItems] = useRecoilState(selectedItemsState);
+	const [categories, setCategories] = useRecoilState(categoriesState);
+	const setSelectedItems = useSetRecoilState(selectedItemsState);
 
 	const navigate = useNavigate();
 	const theme = useTheme();
@@ -24,6 +23,7 @@ function MenuListHeader() {
 			const loadedCategories = querySnapshot.docs.map((doc) => ({
 				id: doc.id,
 				category: doc.data().category,
+				isShowOptionModal: doc.data().isShowOptionModal,
 			}));
 
 			setCategories(loadedCategories);
@@ -35,7 +35,9 @@ function MenuListHeader() {
 			}
 		};
 		loadCategories();
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
+
 	const onCategoryClick = (category: string) => {
 		setActiveBtn(category); // activeBtn 상태 업데이트
 		setCategory(category);
