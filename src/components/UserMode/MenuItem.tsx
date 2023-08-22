@@ -42,7 +42,9 @@ function MenuItem() {
 					} as Item;
 				});
 
-				setItems(loadedItems);
+				// menuItem의 이름 순서대로 정렬
+				const sortedItems = loadedItems.sort((a, b) => a.name.localeCompare(b.name));
+				setItems(sortedItems);
 			} catch (err) {
 				console.error(err);
 			}
