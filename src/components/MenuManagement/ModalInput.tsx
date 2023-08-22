@@ -5,6 +5,7 @@ import { useRecoilValue } from 'recoil';
 import { categoryListState } from '../../state/CategoryList';
 
 function ModalInput({ menuInfo, setMenuState, setFile }: ModalInputPropType) {
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	const [imgSrc, setImgSrc]: any = useState(menuInfo.imageUrl ? menuInfo.imageUrl : '');
 
 	const categoryList = useRecoilValue(categoryListState);
