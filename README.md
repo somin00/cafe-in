@@ -2,14 +2,16 @@
 
 # 🍰 카페 인 - Cafe in 🍩
 
-카페에 꼭 필요한 서비스 ! 메뉴 주문 및 카페 운영 관리 서비스 < Cafe-in >입니다. 🐰
+<br/>
 
-카페 인의 프로젝트 진행 방식 및 과정은 [Wiki 페이지](https://github.com/Cafe-Manage-Service-CAFE-IN/cafe-in/wiki)에서 확인할 수 있습니다.
+카페에 꼭 필요한 서비스 ! 메뉴 주문 및 카페 운영 관리 서비스 **Cafe-in**입니다. 🐰
+
+**Cafe-in**의 프로젝트 진행 방식 및 과정은 [Wiki 페이지](https://github.com/Cafe-Manage-Service-CAFE-IN/cafe-in/wiki)에서 확인할 수 있습니다.
 
 <br/>
 <br/>
 
-[💛 Cafe-in 사용 해보기](https://cafe-in.web.app)
+**[💛 Cafe-in 사용 해보기](https://cafe-in.web.app)**
 
 - 관리자 로그인 비밀번호는 `0716`입니다.
 
@@ -19,6 +21,8 @@
 
 <br>
 <br>
+
+[![Hits](https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2FCafe-Manage-Service-CAFE-IN&count_bg=%23fcc&title_bg=%23555&icon=&icon_color=%23E7E7E7&title=hits&edge_flat=false)](https://hits.seeyoufarm.com)
 
 ## 프로젝트 구성원 🐰
 
@@ -34,11 +38,11 @@
 
 ## 프로젝트 개요
 
-💡 프로젝트 주제 : 메뉴 주문 및 카페 운영 관리 서비스
+**💡 프로젝트 주제** : 메뉴 주문 및 카페 운영 관리 서비스
 
-🏃🏻‍♂️ 프로젝트 구현 기간 : 2023.07.16 ~ 2023.08.22
+**🏃🏻‍♂️ 프로젝트 구현 기간** : 2023.07.16 ~ 2023.08.22
 
-🖼 디자인 시안 : [Cafe-in Figma](https://www.figma.com/file/nOaYQCWHk4QwtT78UCXp7E/%EC%B9%B4%ED%8E%98-%EC%9D%B8-%EB%94%94%EC%9E%90%EC%9D%B8?type=design&node-id=6-2&mode=design&t=HRTTTvBhBAgtHyV2-0)
+**🖼 디자인 시안** : [Cafe-in Figma](https://www.figma.com/file/nOaYQCWHk4QwtT78UCXp7E/%EC%B9%B4%ED%8E%98-%EC%9D%B8-%EB%94%94%EC%9E%90%EC%9D%B8?type=design&node-id=6-2&mode=design&t=HRTTTvBhBAgtHyV2-0)
 
 <br/>
 <br/>
