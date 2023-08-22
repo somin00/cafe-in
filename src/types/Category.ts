@@ -15,4 +15,5 @@ export interface Item {
 export interface Category {
 	id: string;
 	category: string;
+	isShowOptionModal: boolean;
 }
