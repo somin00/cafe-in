@@ -28,7 +28,8 @@
 
 |  [강지윤 FE](https://github.com/eeeyooon)  |  [안유진 FE](https://github.com/Anyudbwls)  |  [오소민 FE](https://github.com/somin00)  |
 | :----------------------------------------: | :-----------------------------------------: | :---------------------------------------: |
-| ![강지윤](https://github.com/eeeyooon.png) | ![안유진](https://github.com/Anyudbwls.png) | ![오소민](https://github.com/somin00.png) |
+| <img width="200" alt="강지윤 깃허브 프로필 이미지" src="https://github.com/eeeyooon.png"> | <img width="200" alt="안유진 깃허브 프로필 이미지" src="https://github.com/Anyudbwls.png">| <img width="200" alt="오소민 깃허브 프로필 이미지" src="https://github.com/somin00.png">
+
 
 <br/>
 <br/>
@@ -42,16 +43,22 @@
 **🖼 디자인 시안** : [Cafe-in Figma](https://www.figma.com/file/nOaYQCWHk4QwtT78UCXp7E/%EC%B9%B4%ED%8E%98-%EC%9D%B8-%EB%94%94%EC%9E%90%EC%9D%B8?type=design&node-id=6-2&mode=design&t=HRTTTvBhBAgtHyV2-0)
 
 <br/>
-<br/>
 
 ## 기술 스택
 
-<img src="https://img.shields.io/badge/NPM v.9.1.2-CB3837?style=flat&logo=npm&logoColor=white"/>
-<img src="https://img.shields.io/badge/Node v.18.12.1-339933?style=flat&logo=Node.js&logoColor=white"/>
-<img src="https://img.shields.io/badge/Git v.2.35.1-F05032?style=flat&logo=Git&logoColor=white"/>
+<img src="https://img.shields.io/badge/NPM v.9.1.2-CB3837?style=flat&logo=npm&logoColor=white"/> <img src="https://img.shields.io/badge/Node v.18.12.1-339933?style=flat&logo=Node.js&logoColor=white"/> <img src="https://img.shields.io/badge/Git v.2.35.1-F05032?style=flat&logo=Git&logoColor=white"/>
 
 <img src="https://img.shields.io/badge/TypeScript-3178C6?style=flat&logo=TypeScript&logoColor=white"/> <img src="https://img.shields.io/badge/React-61DAFB?style=flat&logo=React&logoColor=white"/> <img src="https://img.shields.io/badge/React Router-CA4245?style=flat&logo=ReactRouter&logoColor=white"/> <img src="https://img.shields.io/badge/Recoil-3578E5?style=flat&logo=Recoil&logoColor=white"/> <img src="https://img.shields.io/badge/styledcomponents-DB7093?style=flat&logo=styled-components&logoColor=white"/> <img src="https://img.shields.io/badge/Firebase-FFCA28?style=flat&logo=Firebase&logoColor=white"/>
 
+<br/>
+<br/>
+
+## 디자인 시안
+
+<img src="https://github.com/eeeyooon/moonbucks/assets/102462534/f4ef925e-92c4-46ad-b1ba-0f632f07178b" alt="카페 인 디자인 시안" width="800">
+
+
+<br/>
 <br/>
 
 ## 핵심 기능 소개
@@ -73,6 +80,7 @@
 - 대기 가능 시, 사용자는 대기 신청을 할 수 있습니다.
 - 서비스 관리자는 대기 상황을 보며 대기 취소, 착석완료를 설정할 수 있고 대기 명단을 확인할 수 있습니다.
 
+<br/>
 <br/>
 
 ## 서비스 기능 목록
