@@ -3,7 +3,7 @@ import { styled } from 'styled-components';
 import { CategoryType } from '../../types/menuMangementType';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { categoryListState, selectedCategoryState } from '../../state/CategoryList';
-import { checkDuplicate } from '../../utils/checkCategoryDuplication';
+import { checkDuplicate } from '../../utils/Category/checkCategory';
 import { SELECT_USING_OPTION } from '../../constants/category';
 import { addToDB, getCollection } from '../../utils/db';
 
