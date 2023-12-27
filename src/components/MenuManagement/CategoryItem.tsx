@@ -26,7 +26,7 @@ function CategoryItem({ categoryItem }: { categoryItem: CategoryType }) {
 
 	const clickEditButton = () => {
 		resetEdit();
-		bindId.onChangeNumber(id);
+		bindId.setId(id);
 	};
 
 	const storeEditName = async () => {
@@ -40,7 +40,7 @@ function CategoryItem({ categoryItem }: { categoryItem: CategoryType }) {
 	};
 
 	const toggleOption = async (e: ChangeEvent<HTMLInputElement>) => {
-		bindOption.onChangeBoolean(e);
+		bindOption.onChange(e);
 		await toggleOptionModal(e.currentTarget.checked, id);
 		setSelectedCategory(category);
 	};
@@ -63,7 +63,7 @@ function CategoryItem({ categoryItem }: { categoryItem: CategoryType }) {
 							id="editCategoryName"
 							placeholder={category}
 							value={editedCategoryName}
-							onChange={bindEdit.onChangeString}
+							onChange={bindEdit.onChange}
 						/>
 						<EditCategoryButton type="button" onClick={storeEditName}>
 							저장
