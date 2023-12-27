@@ -7,7 +7,7 @@ import { useRecoilValue } from 'recoil';
 import { selectedCategoryState } from '../../state/CategoryList';
 import { isValidMenu } from '../../utils/MenuManagement/checkMenu';
 import useInput from '../../hooks/useInput';
-import { addMenu, storeImage } from '../../utils/MenuManagement/addMenu';
+import { addMenu, storeImage } from '../../utils/MenuManagement/menuDB';
 
 const initialMenu: MenuType = {
 	id: Date.now(),
