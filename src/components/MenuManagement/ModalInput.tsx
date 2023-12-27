@@ -1,10 +1,16 @@
-import React, { ChangeEvent, useRef, useState, KeyboardEvent } from 'react';
+import { ChangeEvent, useRef, useState, KeyboardEvent, Dispatch, SetStateAction } from 'react';
 import styled from 'styled-components';
-import { ModalInputPropType } from '../../types/menuMangementType';
+import { MenuType } from '../../types/menuMangementType';
 import { useRecoilValue } from 'recoil';
 import { categoryListState } from '../../state/CategoryList';
+import { BindMenuType } from '../../hooks/useInput';
 
-function ModalInput({ menuInfo, setMenuState, setFile }: ModalInputPropType) {
+type ModalInputPropType = {
+	menuInfo: MenuType;
+	bindMenu: BindMenuType;
+	setFile: Dispatch<SetStateAction<File | undefined>>;
+};
+function ModalInput({ menuInfo, bindMenu, setFile }: ModalInputPropType) {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	const [imgSrc, setImgSrc]: any = useState(menuInfo.imageUrl ? menuInfo.imageUrl : '');
 
@@ -14,36 +20,15 @@ function ModalInput({ menuInfo, setMenuState, setFile }: ModalInputPropType) {
 	const soldoutRef = useRef<HTMLButtonElement>(null);
 	const imageInputRef = useRef<HTMLInputElement>(null);
 
-	const handleChangeInput = (e: ChangeEvent<HTMLInputElement> | ChangeEvent<HTMLSelectElement>) => {
-		const { name, value } = e.target;
-		setMenuState((prev) => {
-			return {
-				...prev,
-				[name]: value,
-			};
-		});
+	const inputText = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+		bindMenu.onChange(e);
 	};
 
-	const handleClickInStockButton = () => {
-		instockRef.current?.classList.add('is-selected');
-		soldoutRef.current?.classList.remove('is-selected');
-		setMenuState((prev) => {
-			return {
-				...prev,
-				soldout: false,
-			};
-		});
-	};
-
-	const handleClickSoldoutButton = () => {
-		soldoutRef.current?.classList.add('is-selected');
-		instockRef.current?.classList.remove('is-selected');
-		setMenuState((prev) => {
-			return {
-				...prev,
-				soldout: true,
-			};
-		});
+	const toggleStock = () => {
+		instockRef.current?.classList.toggle('is-selected');
+		soldoutRef.current?.classList.toggle('is-selected');
+		const isSoldOut = soldoutRef.current?.classList.contains('is-selected');
+		bindMenu.onSet('soldout', isSoldOut);
 	};
 
 	const handleKeyDown = (e: KeyboardEvent<HTMLLabelElement>) => {
@@ -59,12 +44,7 @@ function ModalInput({ menuInfo, setMenuState, setFile }: ModalInputPropType) {
 		const file = files[0];
 		const fileName = `${Date.now()}${file.name}`;
 		setFile(file);
-		setMenuState((prev) => {
-			return {
-				...prev,
-				imageName: fileName,
-			};
-		});
+		bindMenu.onSet('imageName', fileName);
 
 		const reader = new FileReader();
 		reader.readAsDataURL(file);
@@ -83,12 +63,7 @@ function ModalInput({ menuInfo, setMenuState, setFile }: ModalInputPropType) {
 
 	const deleteImage = () => {
 		setFile(undefined);
-		setMenuState((prev) => {
-			return {
-				...prev,
-				imageName: '',
-			};
-		});
+		bindMenu.onSet('imageName', '');
 		setImgSrc('');
 	};
 
@@ -138,7 +113,7 @@ function ModalInput({ menuInfo, setMenuState, setFile }: ModalInputPropType) {
 							name="name"
 							id={`${menuInfo.name} name`}
 							defaultValue={menuInfo.name || ''}
-							onChange={handleChangeInput}
+							onChange={inputText}
 						/>
 					</li>
 					<li>
@@ -148,7 +123,7 @@ function ModalInput({ menuInfo, setMenuState, setFile }: ModalInputPropType) {
 							name="price"
 							id={`${menuInfo.name} price`}
 							defaultValue={menuInfo.price || ''}
-							onChange={handleChangeInput}
+							onChange={inputText}
 						/>
 					</li>
 					<li>
@@ -157,7 +132,7 @@ function ModalInput({ menuInfo, setMenuState, setFile }: ModalInputPropType) {
 							name="category"
 							id={`${menuInfo.name} category`}
 							defaultValue={menuInfo.category || ''}
-							onChange={handleChangeInput}
+							onChange={inputText}
 						>
 							{categoryList.map((category) => (
 								<option key={category.id} value={category.category}>
@@ -171,7 +146,7 @@ function ModalInput({ menuInfo, setMenuState, setFile }: ModalInputPropType) {
 							type="button"
 							ref={instockRef}
 							className={menuInfo.soldout ? '' : 'is-selected'}
-							onClick={handleClickInStockButton}
+							onClick={toggleStock}
 						>
 							재고있음
 						</InventoryButton>
@@ -179,7 +154,7 @@ function ModalInput({ menuInfo, setMenuState, setFile }: ModalInputPropType) {
 							type="button"
 							ref={soldoutRef}
 							className={menuInfo.soldout ? 'is-selected' : ''}
-							onClick={handleClickSoldoutButton}
+							onClick={toggleStock}
 						>
 							품절
 						</InventoryButton>
