@@ -26,7 +26,7 @@ function CategoryItem({ categoryItem }: { categoryItem: CategoryType }) {
 
 	const clickEditButton = () => {
 		resetEdit();
-		bindId.setId(id);
+		bindId.setValue(id);
 	};
 
 	const storeEditName = async () => {

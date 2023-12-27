@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useRef } from 'react';
 import styled from 'styled-components';
 import ModalInput from './ModalInput';
 import { ModalDefaultType } from '../../types/ModalOpenTypes';
@@ -28,7 +28,7 @@ function AddMenuModal({ onClickToggleModal }: ModalDefaultType) {
 		...initialMenu,
 		category: selectedCategory,
 	});
-	const [file, setFile] = useState<File>();
+	const [file, bindFile, resetFile] = useInput<File | null>(null);
 
 	const handleAddMenu = async () => {
 		if (!file) return;
@@ -48,10 +48,11 @@ function AddMenuModal({ onClickToggleModal }: ModalDefaultType) {
 			onClickToggleModal();
 		}
 	};
+
 	return (
 		<AddModalWrapper ref={backgroundRef} onClick={handleClickOutside}>
 			<AddModalContent>
-				<ModalInput menuInfo={menuInfo} bindMenu={bindMenu} setFile={setFile} />
+				<ModalInput menuInfo={menuInfo} bindMenu={bindMenu} bindFile={bindFile} resetFile={resetFile} />
 				<Guide>*모든 정보 입력 후 메뉴 추가가 가능합니다.</Guide>
 				<div>
 					<Button type="button" onClick={handleAddMenu} disabled={!isValidMenu(menuInfo) ? true : false}>

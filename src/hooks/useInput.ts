@@ -1,14 +1,16 @@
 import { ChangeEvent, useState } from 'react';
 
+export type UnionProp = number | string | boolean | object | File | null;
+
 export type BindMenuType = {
-	setId: (id: number) => void;
+	setValue: (newValue: UnionProp) => void;
 	onChange: (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void;
-	onSet: <U>(key: string, newValue: U) => void;
+	setObject: <U>(key: string, newValue: U) => void;
 };
 
 type UseInputType<T> = [T, BindMenuType, () => void];
 
-function useInput<T extends number | string | boolean | object>(initialValue: T): UseInputType<T> {
+function useInput<T extends UnionProp>(initialValue: T): UseInputType<T> {
 	const [input, setInput] = useState<T>(initialValue);
 
 	const reset = () => {
@@ -16,9 +18,6 @@ function useInput<T extends number | string | boolean | object>(initialValue: T)
 	};
 
 	const bind = {
-		setId: (id: number) => {
-			setInput(id as T);
-		},
 		onChange: (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
 			if (typeof input === 'string') {
 				setInput(e.target.value as T);
@@ -35,7 +34,10 @@ function useInput<T extends number | string | boolean | object>(initialValue: T)
 				} as T);
 			}
 		},
-		onSet: <U>(key: string, newValue: U) => {
+		setValue: (newValue: UnionProp) => {
+			setInput(newValue as T);
+		},
+		setObject: <U>(key: string, newValue: U) => {
 			if (typeof input === 'object') {
 				setInput({
 					...input,

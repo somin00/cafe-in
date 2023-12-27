@@ -1,18 +1,19 @@
-import { ChangeEvent, useRef, useState, KeyboardEvent, Dispatch, SetStateAction } from 'react';
+import { ChangeEvent, useRef, KeyboardEvent } from 'react';
 import styled from 'styled-components';
 import { MenuType } from '../../types/menuMangementType';
 import { useRecoilValue } from 'recoil';
 import { categoryListState } from '../../state/CategoryList';
-import { BindMenuType } from '../../hooks/useInput';
+import useInput, { BindMenuType } from '../../hooks/useInput';
 
 type ModalInputPropType = {
 	menuInfo: MenuType;
 	bindMenu: BindMenuType;
-	setFile: Dispatch<SetStateAction<File | undefined>>;
+	bindFile: BindMenuType;
+	resetFile: () => void;
 };
-function ModalInput({ menuInfo, bindMenu, setFile }: ModalInputPropType) {
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	const [imgSrc, setImgSrc]: any = useState(menuInfo.imageUrl ? menuInfo.imageUrl : '');
+
+function ModalInput({ menuInfo, bindMenu, bindFile, resetFile }: ModalInputPropType) {
+	const [imgSrc, bindImage, resetImage] = useInput(menuInfo.imageUrl ? menuInfo.imageUrl : '');
 
 	const categoryList = useRecoilValue(categoryListState);
 
@@ -28,7 +29,7 @@ function ModalInput({ menuInfo, bindMenu, setFile }: ModalInputPropType) {
 		instockRef.current?.classList.toggle('is-selected');
 		soldoutRef.current?.classList.toggle('is-selected');
 		const isSoldOut = soldoutRef.current?.classList.contains('is-selected');
-		bindMenu.onSet('soldout', isSoldOut);
+		bindMenu.setObject('soldout', isSoldOut);
 	};
 
 	const handleKeyDown = (e: KeyboardEvent<HTMLLabelElement>) => {
@@ -41,30 +42,26 @@ function ModalInput({ menuInfo, bindMenu, setFile }: ModalInputPropType) {
 	const handleRegisterImage = (e: ChangeEvent<HTMLInputElement>) => {
 		const files = e.target.files as FileList;
 		if (!files) return;
+
 		const file = files[0];
 		const fileName = `${Date.now()}${file.name}`;
-		setFile(file);
-		bindMenu.onSet('imageName', fileName);
+
+		bindFile.setValue(file);
+		bindMenu.setObject('imageName', fileName);
 
 		const reader = new FileReader();
 		reader.readAsDataURL(file);
+		reader.onload = () => {
+			bindImage.setValue(reader.result as string);
+		};
 
 		e.target.value = '';
-
-		return new Promise<void>((resolve) => {
-			reader.onload = () => {
-				if (reader.result) {
-					setImgSrc(reader.result);
-					resolve();
-				}
-			};
-		});
 	};
 
 	const deleteImage = () => {
-		setFile(undefined);
-		bindMenu.onSet('imageName', '');
-		setImgSrc('');
+		resetFile();
+		bindMenu.setObject('imageName', '');
+		resetImage();
 	};
 
 	return (

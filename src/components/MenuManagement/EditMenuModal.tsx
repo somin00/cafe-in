@@ -14,7 +14,7 @@ interface EditModalPropType {
 function EditMenuModal({ menu, onCloseModal }: EditModalPropType) {
 	const backgroundRef = useRef<HTMLDivElement>(null);
 	const [menuInfo, bindMenu, resetMenu] = useInput(menu);
-	const [file, setFile] = useState<File>();
+	const [file, bindFile, resetFile] = useInput<File | null>(null);
 	const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
 
 	const handleEditMenu = async () => {
@@ -45,7 +45,7 @@ function EditMenuModal({ menu, onCloseModal }: EditModalPropType) {
 		<>
 			<EditModalWrapper ref={backgroundRef} onClick={handleClickOutside}>
 				<EditModalContent>
-					<ModalInput menuInfo={menu} bindMenu={bindMenu} setFile={setFile} />
+					<ModalInput menuInfo={menu} bindMenu={bindMenu} bindFile={bindFile} resetFile={resetFile} />
 					<div>
 						<Button type="button" onClick={handleEditMenu}>
 							수정
